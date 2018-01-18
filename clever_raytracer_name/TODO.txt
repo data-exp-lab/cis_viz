@@ -1,0 +1,19 @@
+TO DO LIST
+
+*****1/17/18******
+
+*Push code to GitHub
+*DEBUG
+
+
+*need light intensity of each individual leaf
+	*convergence test->how small does the value need to be?
+*visualization can take in parameters; output geometry 
+	*use as set of parameters for validation
+*need mesh structure
+*need diffuse light -> multi bounce
+	*recursive function (ray packet that gets absorbed can get re-emitted)
+
+
+
+
