@@ -1,3 +1,7 @@
+#ifndef __RAY__
+#define __RAY__
+
+#include "point.hpp"
 #include <iostream>
 #include <vector>
 #include <cmath>
@@ -13,8 +17,9 @@ namespace raytrace
     class Vector
     {
     private:
-        T x, y, z;
+        //T x, y, z;
     public:
+        T x, y, z;
         Vector() : x(0.0), y(0.0), z(0.0){}
         Vector(const T &n) : x(n), y(n), z(n){}
         Vector(const T &s, const T &t, const T &u) : x(s), y(t), z(u){}
@@ -104,7 +109,7 @@ namespace raytrace
     };
     
     typedef Vector<float> Vect;
-    
+/*
     class Camera
     {
     private:
@@ -181,16 +186,25 @@ namespace raytrace
             bottom = b;
         }
     };
-    
+ */
     class Ray
     {
-    private:
-        Vect origin;
-        Vect direction;
+
     public:
-        Ray(){}
-        Ray(const Vect &ori, const Vect &dir) : origin(ori), direction(dir){}
-        Vect getOrigin() const
+        Point origin;
+        Vect direction;
+        double photonFlux2;
+        
+        Ray(void);
+        Ray(const Point &ori, const Vect &dir) : origin(ori), direction(dir){}
+        Ray(const Point& origin, const raytrace::Vect& direction, const double pf);
+        Ray(const Ray& ray);
+        Ray(const Ray* ray_ptr);
+        Ray& operator= (const Ray& rhs);
+        
+        ~Ray(void);
+        
+        Point getOrigin() const
         {
             return origin;
         }
@@ -199,7 +213,7 @@ namespace raytrace
             return direction;
         }
     };
-    
+ /*
     class Light
     {
     private:
@@ -343,4 +357,7 @@ namespace raytrace
         void render(void);
         Vect draw(const Ray &ray, const int &level);
     };
-}
+*/}
+
+#endif
+

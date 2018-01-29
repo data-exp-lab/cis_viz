@@ -10,7 +10,7 @@ public:
     void add_triangle(Triangle* triangle);
     vector<Triangle*> get_triangleList();
     
-    virtual bool hit(const Ray& ray, double & tmin, int& j_hit, int& updown) const;
+    virtual bool hit(const raytrace::Ray& ray, double & tmin, int& j_hit, int& updown) const;
     
     Compound();
     virtual ~Compound();

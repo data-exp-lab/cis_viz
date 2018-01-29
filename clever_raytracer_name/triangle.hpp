@@ -1,7 +1,11 @@
+#ifndef __TRIANGLE__
+#define __TRIANGLE__
+
 #include "ray.hpp"
 #include "point.hpp"
 #include "constants.hpp"
 #include "climate.hpp"
+#include "normal.hpp"
 #include <vector>
 
 class Triangle
@@ -40,11 +44,13 @@ public:
     vector<double> A;
     
     Triangle(double startHour, double endHour, double hourInterval);
-    Triangle(const Point& a, const Point& b, const Point& c, const int leafID, const double leafL, const double position, const double chlSPAD, const double KT, double KR, cosnt double nitrogenPerArea, double startHour, double endHour, double hourInterval);
+    Triangle(const Point& a, const Point& b, const Point& c, const int leafID, const double leafL, const double position, const double chlSPAD, const double KT, double KR, const double nitrogenPerArea, double startHour, double endHour, double hourInterval);
     virtual ~Triangle();
     
-    bool hit(const Ray& ray, double& tmin);
+    bool hit(const raytrace::Ray& ray, double& tmin);
     
     void compute_normal(void);
     
 };
+
+#endif

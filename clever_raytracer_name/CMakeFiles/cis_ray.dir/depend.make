@@ -3,6 +3,10 @@
 
 CMakeFiles/cis_ray.dir/climate.cpp.o: climate.cpp
 CMakeFiles/cis_ray.dir/climate.cpp.o: climate.hpp
+CMakeFiles/cis_ray.dir/climate.cpp.o: constants.hpp
+CMakeFiles/cis_ray.dir/climate.cpp.o: parameters.hpp
+CMakeFiles/cis_ray.dir/climate.cpp.o: point.hpp
+CMakeFiles/cis_ray.dir/climate.cpp.o: ray.hpp
 
 CMakeFiles/cis_ray.dir/color.cpp.o: color.cpp
 CMakeFiles/cis_ray.dir/color.cpp.o: color.hpp
@@ -10,8 +14,16 @@ CMakeFiles/cis_ray.dir/color.cpp.o: color.hpp
 CMakeFiles/cis_ray.dir/commandArgs.cpp.o: commandArgs.cpp
 CMakeFiles/cis_ray.dir/commandArgs.cpp.o: commandArgs.hpp
 
+CMakeFiles/cis_ray.dir/compound.cpp.o: climate.hpp
 CMakeFiles/cis_ray.dir/compound.cpp.o: compound.cpp
 CMakeFiles/cis_ray.dir/compound.cpp.o: compound.hpp
+CMakeFiles/cis_ray.dir/compound.cpp.o: constants.hpp
+CMakeFiles/cis_ray.dir/compound.cpp.o: leaf.hpp
+CMakeFiles/cis_ray.dir/compound.cpp.o: normal.hpp
+CMakeFiles/cis_ray.dir/compound.cpp.o: parameters.hpp
+CMakeFiles/cis_ray.dir/compound.cpp.o: point.hpp
+CMakeFiles/cis_ray.dir/compound.cpp.o: ray.hpp
+CMakeFiles/cis_ray.dir/compound.cpp.o: triangle.hpp
 
 CMakeFiles/cis_ray.dir/equations.cpp.o: constants.hpp
 CMakeFiles/cis_ray.dir/equations.cpp.o: equations.cpp
@@ -20,26 +32,61 @@ CMakeFiles/cis_ray.dir/equations.cpp.o: equations.hpp
 CMakeFiles/cis_ray.dir/io.cpp.o: commandArgs.hpp
 CMakeFiles/cis_ray.dir/io.cpp.o: io.cpp
 
+CMakeFiles/cis_ray.dir/leaf.cpp.o: ciModel.hpp
+CMakeFiles/cis_ray.dir/leaf.cpp.o: climate.hpp
+CMakeFiles/cis_ray.dir/leaf.cpp.o: constants.hpp
+CMakeFiles/cis_ray.dir/leaf.cpp.o: energyBalance.hpp
+CMakeFiles/cis_ray.dir/leaf.cpp.o: equations.hpp
+CMakeFiles/cis_ray.dir/leaf.cpp.o: farquharModel.hpp
 CMakeFiles/cis_ray.dir/leaf.cpp.o: leaf.cpp
 CMakeFiles/cis_ray.dir/leaf.cpp.o: leaf.hpp
+CMakeFiles/cis_ray.dir/leaf.cpp.o: normal.hpp
+CMakeFiles/cis_ray.dir/leaf.cpp.o: parameters.hpp
+CMakeFiles/cis_ray.dir/leaf.cpp.o: point.hpp
+CMakeFiles/cis_ray.dir/leaf.cpp.o: ray.hpp
+CMakeFiles/cis_ray.dir/leaf.cpp.o: stomata.hpp
+CMakeFiles/cis_ray.dir/leaf.cpp.o: thermal.hpp
+CMakeFiles/cis_ray.dir/leaf.cpp.o: triangle.hpp
 
 CMakeFiles/cis_ray.dir/light.cpp.o: light.cpp
 CMakeFiles/cis_ray.dir/light.cpp.o: light.hpp
 
+CMakeFiles/cis_ray.dir/main.cpp.o: climate.hpp
 CMakeFiles/cis_ray.dir/main.cpp.o: commandArgs.hpp
+CMakeFiles/cis_ray.dir/main.cpp.o: compound.hpp
+CMakeFiles/cis_ray.dir/main.cpp.o: constants.hpp
+CMakeFiles/cis_ray.dir/main.cpp.o: grid.hpp
 CMakeFiles/cis_ray.dir/main.cpp.o: io.hpp
+CMakeFiles/cis_ray.dir/main.cpp.o: leaf.hpp
 CMakeFiles/cis_ray.dir/main.cpp.o: main.cpp
+CMakeFiles/cis_ray.dir/main.cpp.o: normal.hpp
+CMakeFiles/cis_ray.dir/main.cpp.o: parameters.hpp
+CMakeFiles/cis_ray.dir/main.cpp.o: point.hpp
 CMakeFiles/cis_ray.dir/main.cpp.o: ray.hpp
 CMakeFiles/cis_ray.dir/main.cpp.o: reader.hpp
+CMakeFiles/cis_ray.dir/main.cpp.o: triangle.hpp
 
+CMakeFiles/cis_ray.dir/ray.cpp.o: point.hpp
 CMakeFiles/cis_ray.dir/ray.cpp.o: ray.cpp
 CMakeFiles/cis_ray.dir/ray.cpp.o: ray.hpp
 
 CMakeFiles/cis_ray.dir/scene.cpp.o: scene.cpp
 
+CMakeFiles/cis_ray.dir/stomata.cpp.o: climate.hpp
+CMakeFiles/cis_ray.dir/stomata.cpp.o: constants.hpp
+CMakeFiles/cis_ray.dir/stomata.cpp.o: parameters.hpp
+CMakeFiles/cis_ray.dir/stomata.cpp.o: point.hpp
+CMakeFiles/cis_ray.dir/stomata.cpp.o: ray.hpp
 CMakeFiles/cis_ray.dir/stomata.cpp.o: stomata.cpp
 CMakeFiles/cis_ray.dir/stomata.cpp.o: stomata.hpp
 
+CMakeFiles/cis_ray.dir/triangle.cpp.o: climate.hpp
+CMakeFiles/cis_ray.dir/triangle.cpp.o: constants.hpp
+CMakeFiles/cis_ray.dir/triangle.cpp.o: equations.hpp
+CMakeFiles/cis_ray.dir/triangle.cpp.o: normal.hpp
+CMakeFiles/cis_ray.dir/triangle.cpp.o: parameters.hpp
+CMakeFiles/cis_ray.dir/triangle.cpp.o: point.hpp
+CMakeFiles/cis_ray.dir/triangle.cpp.o: ray.hpp
 CMakeFiles/cis_ray.dir/triangle.cpp.o: triangle.cpp
 CMakeFiles/cis_ray.dir/triangle.cpp.o: triangle.hpp
 
