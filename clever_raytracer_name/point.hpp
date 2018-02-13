@@ -1,7 +1,13 @@
 #ifndef __POINT__
 #define __POINT__
 
-#include "ray.hpp"
+namespace raytrace {
+  template<typename T> class Vector;
+  typedef Vector<float> Vect;
+}
+
+// We do cross-includes, so we will forward declare a handful of things.
+
 
 class Point
 {
@@ -29,38 +35,5 @@ public:
     double d_squared(const Point& p) const;
     double distance(const Point& p) const;
 };
-
-inline Point Point::operator- (void) const
-{
-    return (Point(-x, -y, -z));
-}
-
-inline raytrace::Vect Point::operator- (const Point& p) const
-{
-    return (raytrace::Vect(x - p.x, y - p.y, z - p.z));
-}
-
-inline Point Point::operator- (const raytrace::Vect& v) const
-{
-    //return (Point&(x - v.x, y - v.y, z - v.z));
-    return (Point(x - v.x, y - v.y, z - v.z));
-}
-
-inline Point Point::operator* (const double a) const
-{
-    return (Point(x * a, y * a, z * a));
-}
-
-inline double Point::d_squared(const Point& p) const
-{
-    return ((x - p.x) * (x - p.x) + (y - p.y) * (y - p.y) + (z - p.z) * (z - p.z));
-}
-
-Point operator*(double a, const Point& p);
-
-inline Point operator* (double a, const Point& p)
-{
-    return (Point(a * p.x, a * p.y, a * p.z));
-}
 
 #endif
