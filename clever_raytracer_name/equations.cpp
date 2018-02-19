@@ -2,6 +2,11 @@
 #include "constants.hpp"
 #include <cmath>
 
+using namespace std;
+
+#define EQN_EPS 1e90
+#define isZero(x) ((x) > -EQN_EPS && (x) < EQN_EPS)
+
 int SolveQuadric(double c[3], double s[2])
 {
     double p;
@@ -69,7 +74,7 @@ int SolveCubic(double c[4], double s[3])
         double u = cbrt(-q);
         s[0] = 2 * u;
         s[1] = -u;
-        num = 2
+        num = 2;
     }
     }
     else if(D < 0)
@@ -86,7 +91,7 @@ int SolveCubic(double c[4], double s[3])
     {
         double sqrt_D = sqrt(D);
         double U = cbrt(sqrt_D - q);
-        double v = -cbrt(sqrt_D + q);
+        double V = -cbrt(sqrt_D + q);
         
         s[0] = U + V;
         num = 1;

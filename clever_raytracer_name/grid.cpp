@@ -13,17 +13,11 @@ Grid::Grid(double ignore_threshold)
 {
     ignore_Photon_Flux_threshold = ignore_threshold;
     
-    //double check this
-    leaf_optics = new Leaf();
+    Leaf* leaf_optics = new Leaf();
 }
 
 void Grid::setup_cells(Point p0, Point p1)
 {
-    //find minimum and maximum coordinates of the grid
-    //defaults are set to -100 and 100 respectively
-    //pull these from the constants file
-    
-    
     //COMPUTE NUMBER OF CELLS IN THE X, Y, AND Z DIRECTIONS
     int num_triangles = triangles.size();
     float wx = p1.x - p0.x;
@@ -92,16 +86,19 @@ void Grid::setup_cells(Point p0, Point p1)
             {
                 for(int iz = izmin; iz <= izmax; iz++)
                 {
-                    index = ix + nx * iy + nx * ny * iz;
-                    
-                    if(counts[index] == 0)
+                    for(int ix = ixmin; ix <= ixmax; ix++)
                     {
-                        Compound* compound_ptr = new Compound;
-                        cells[index] = compound_ptr;
+                        index = ix + nx * iy + nx * ny * iz;
+                        
+                        if(counts[index] == 0)
+                        {
+                            Compound* compound_ptr = new Compound;
+                            cells[index] = compound_ptr;
+                        }
+                        //ADD TRIANGLE TO CELL
+                        cells[index]->add_triangle(triangles[j]);
+                        counts[index] += 1;
                     }
-                    //ADD TRIANGLE TO CELL
-                    cells[index]->add_triangle(triangles[j]);
-                    counts[index] += 1;
                 }
             }
         }
@@ -111,14 +108,14 @@ void Grid::setup_cells(Point p0, Point p1)
     
 }
 
-bool Grid::hit(Ray& ray, double& t, const int& hour_th, int& lightType) const
+bool Grid::hit(raytrace::Ray& ray, double& t, const int& hour_th, int& lightType, Constants &cs) const
 {
-    double ox = ray.o.x;
-    double oy = ray.o.y;
-    double oz = ray.o.z;
-    double dx = ray.d.x;
-    double dy = ray.d.y;
-    double dz = ray.d.z;
+    double ox = ray.origin.x;
+    double oy = ray.origin.y;
+    double oz = ray.origin.z;
+    double dx = ray.direction.x;
+    double dy = ray.direction.y;
+    double dz = ray.direction.z;
     
     double x0 = box.x0;
     double y0 = box.y0;
@@ -206,7 +203,7 @@ bool Grid::hit(Ray& ray, double& t, const int& hour_th, int& lightType) const
     int iy;
     int iz;
     
-    if(box.inside(ray.o))
+    if(box.inside(ray.origin))
     {
         ix = clamp((ox - x0) * nx / (x1 - x0), 0, nx - 1);
         iy = clamp((oy - y0) * ny / (y1 - y0), 0, ny - 1);
@@ -215,9 +212,9 @@ bool Grid::hit(Ray& ray, double& t, const int& hour_th, int& lightType) const
     else
     {
         //INITIAL HIT POINT WITHIN GRID
-        Point p = ray.o + t0 * ray.d;
+        Point p = ray.origin + t0 * ray.direction;
         
-        x = clamp((ox - x0) * nx / (x1 - x0), 0, nx - 1);
+        ix = clamp((ox - x0) * nx / (x1 - x0), 0, nx - 1);
         iy = clamp((oy - y0) * ny / (y1 - y0), 0, ny - 1);
         iz = clamp((oz - z0) * nz / (z1 - z0), 0, nz - 1);
     }
@@ -242,7 +239,7 @@ bool Grid::hit(Ray& ray, double& t, const int& hour_th, int& lightType) const
     
     if(dx > 0)
     {
-        tx_mext = tx_min + (ix + 1) * dtx;
+        tx_next = tx_min + (ix + 1) * dtx;
         ix_step = +1;
         ix_start = 0;
         ix_stop = nx;
@@ -257,7 +254,7 @@ bool Grid::hit(Ray& ray, double& t, const int& hour_th, int& lightType) const
     
     if(dx == 0.0)
     {
-        tx_next = kHugeValue;
+        tx_next = cs.kHugeValue;
         ix_step = -1;
         ix_start = nx - 1;
         ix_stop = -1;
@@ -280,7 +277,7 @@ bool Grid::hit(Ray& ray, double& t, const int& hour_th, int& lightType) const
     
     if(dy == 0.0)
     {
-        ty_next = kHugeValue;
+        ty_next = cs.kHugeValue;
         iy_step = -1;
         iy_start = ny - 1;
         iy_stop = -1;
@@ -301,7 +298,7 @@ bool Grid::hit(Ray& ray, double& t, const int& hour_th, int& lightType) const
     
     if(dz == 0.0)
     {
-        tz_next = kHugeValue;
+        tz_next = cs.kHugeValue;
         iz_step = -1;
         iz_stop = -1;
     }
@@ -317,7 +314,7 @@ bool Grid::hit(Ray& ray, double& t, const int& hour_th, int& lightType) const
         
         if(tx_next < ty_next && tx_next < tz_next)
         {
-            if(compound_ptr && compound_ptr->hit(ray, t, j_hit, updown) && t < tx_next)
+            if(compound_ptr && compound_ptr->hit(ray, t, j_hit, updown, cs) && t < tx_next)
             {
                 //DIRECT LIGHT
                 if(lightType == 1)
@@ -340,7 +337,7 @@ bool Grid::hit(Ray& ray, double& t, const int& hour_th, int& lightType) const
                     }
                     if(updown == -1)
                     {
-                        compound_ptr->get_triangleList()[j_hit]->photonFlux_down_diff[hour_th] += (ray.photonFlux2 * (1 - compound_ptr->get_triangleList()[j_hit]->kLeafReflectance = compound_ptr->get_triangleList()[j_hit]->kLeafTransmittance));
+                        compound_ptr->get_triangleList()[j_hit]->photonFlux_down_diff[hour_th] += (ray.photonFlux2 * (1 - compound_ptr->get_triangleList()[j_hit]->kLeafReflectance - compound_ptr->get_triangleList()[j_hit]->kLeafTransmittance));
                     }
                 }
                 //SCATTER LIGHT
@@ -356,7 +353,7 @@ bool Grid::hit(Ray& ray, double& t, const int& hour_th, int& lightType) const
                     }
                 }
                 
-                hit = generate_scatter_rays_2(ray, compound_ptr->get_triangleList()[j_hit], hour_th);
+                hit = generate_scatter_rays(ray, compound_ptr->get_triangleList()[j_hit], hour_th, cs);
                 
                 return hit;
                 
@@ -367,7 +364,7 @@ bool Grid::hit(Ray& ray, double& t, const int& hour_th, int& lightType) const
             
             if(ix == ix_stop)
             {
-                ray.o.x = ray.o.x - ix_step * (box.x1 - box.x0);
+                ray.origin.x = ray.origin.x - ix_step * (box.x1 - box.x0);
                 ix = ix_start;
                 
                 continue;
@@ -377,7 +374,7 @@ bool Grid::hit(Ray& ray, double& t, const int& hour_th, int& lightType) const
         {
             if(ty_next < tz_next)
             {
-                if(compound_ptr && compound_ptr->hit(ray, t, j_hit, updown) && t < ty_next)
+                if(compound_ptr && compound_ptr->hit(ray, t, j_hit, updown, cs) && t < ty_next)
                 {
                     //DIRECT LIGHT
                     if(lightType == 1)
@@ -416,14 +413,14 @@ bool Grid::hit(Ray& ray, double& t, const int& hour_th, int& lightType) const
                         }
                     }
                     
-                    hit = generate_scatter_rays_2(ray, compound_ptr->get_triangleList()[j_hit], hour_th);
+                    hit = generate_scatter_rays(ray, compound_ptr->get_triangleList()[j_hit], hour_th, cs);
                     return hit;
                 }
                 ty_next += dty;
                 iy += iy_step;
                 if(iy == iy_stop)
                 {
-                    ray.o.y = ray.o.y - iy_step * (box.y1 - box.y0);
+                    ray.origin.y = ray.origin.y - iy_step * (box.y1 - box.y0);
                     iy = iy_start;
                     
                     continue;
@@ -431,7 +428,7 @@ bool Grid::hit(Ray& ray, double& t, const int& hour_th, int& lightType) const
             }
             else
             {
-                if(compound_ptr && compound_ptr->hit(ray, t, j_hit, updown) && t < tz_next)
+                if(compound_ptr && compound_ptr->hit(ray, t, j_hit, updown, cs) && t < tz_next)
                 {
                     //DIRECT LIGHT
                     if(lightType == 1)
@@ -469,7 +466,7 @@ bool Grid::hit(Ray& ray, double& t, const int& hour_th, int& lightType) const
                             compound_ptr->get_triangleList()[j_hit]->photonFlux_down_scat[hour_th] += (ray.photonFlux2 * (1 - compound_ptr->get_triangleList()[j_hit]->kLeafReflectance - compound_ptr->get_triangleList()[j_hit]->kLeafTransmittance));
                         }
                     }
-                    hit = generate_scatter_rays_2(ray, compound_ptr->get_triangleList()[j_hit], hour_th);
+                    hit = generate_scatter_rays(ray, compound_ptr->get_triangleList()[j_hit], hour_th, cs);
                     return hit;
                 }
                 tz_next += dtz;
@@ -483,39 +480,42 @@ bool Grid::hit(Ray& ray, double& t, const int& hour_th, int& lightType) const
     }
 }
 
-bool Grid::hit_scatter_rays(vector<Ray*> scatter_rays, const int& hour_th) const
+bool Grid::hit_scatter_rays(vector<raytrace::Ray*> scatter_rays, const int& hour_t, Constants &cs) const
 {
     return true;
 }
 
-bool Grid::generate_scatter_rays(Ray& ray, Triangle* triangle_ptr, const int& hour_th) const
+bool Grid::generate_scatter_rays(raytrace::Ray& ray, Triangle* triangle_ptr, const int& hour_th, Constants &cs) const
 {
-    vector<Ray*> scatter_rays;
+    vector<raytrace::Ray*> scatter_rays;
     triangle_ptr->compute_normal();
-    Vect normal_triangle(triangle_ptr->normal);
+    raytrace::Vect normal_triangle(triangle_ptr->normal);
+    
+    raytrace::Vect norm_by_direction = normal_triangle * ray.direction;
     
     //IF L AND N ARE OPPOSITE DIRECTION
     //IF NOT, FLIP THE N DIRECTION
-    if(normal_triangle * ray.d > 0)
+    if(norm_by_direction.x > 0 && norm_by_direction.y > 0 && norm_by_direction.z > 0)
     {
-        normal_triangle = -normal_triangle;
+        normal_triangle.negative();
     }
     
-    //double check this
     Leaf* leaf_optics = new Leaf();
     
     double pf = ray.photonFlux2 * triangle_ptr->kLeafReflectance;
     if(pf > ignore_Photon_Flux_threshold)
     {
-        Vect reflect_d = leaf_optics->get_reflect_dir(-ray.d, normal_triangle);
-        scatter_rays.push_back(new Ray(triangle_ptr->hit_point, reflect_d, pf));
+        raytrace::Vect L = ray.direction * -1;
+        raytrace::Vect reflect_d = leaf_optics->get_reflect_dir(L, normal_triangle, cs);
+        scatter_rays.push_back(new raytrace::Ray(triangle_ptr->hit_point, reflect_d, pf));
     }
     
     double pf2 = ray.photonFlux2 * triangle_ptr->kLeafTransmittance;
     if(pf2 > ignore_Photon_Flux_threshold)
     {
-        Vect transmit_d = leaf_optics->get_transmit_dir(-ray.d, normal_triangle);
-        scatter_rays.push_back(new Ray(triangle_ptr->hit_point, transmit_d, pf2));
+        raytrace::Vect L = ray.direction * -1;
+        raytrace::Vect transmit_d = leaf_optics->get_transmit_dir(L, normal_triangle, cs);
+        scatter_rays.push_back(new raytrace::Ray(triangle_ptr->hit_point, transmit_d, pf2));
     }
     
     delete leaf_optics;
@@ -524,13 +524,13 @@ bool Grid::generate_scatter_rays(Ray& ray, Triangle* triangle_ptr, const int& ho
     int lightType3 = 3;
     for(unsigned int k = 0; k < scatter_rays.size(); k++)
     {
-        double t = kHugeValue;
-        Ray ray = Ray(scatter_rays[k]);
-        this->hit(ray, t, hour_th, lightType3);
+        double t = cs.kHugeValue;
+        raytrace::Ray ray = raytrace::Ray(scatter_rays[k]);
+        this->hit(ray, t, hour_th, lightType3, cs);
     }
     
     //DELETE THE VECTORS
-    for(vector<Ray*>::iterator iter = scatter_rays.begin(); iter != scatter_rays.end(); ++iter)
+    for(vector<raytrace::Ray*>::iterator iter = scatter_rays.begin(); iter != scatter_rays.end(); ++iter)
     {
         delete *iter;
     }

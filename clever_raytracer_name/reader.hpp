@@ -16,7 +16,7 @@ public:
 };
 
 //MEAN FILE
-void readMeanFile(string mean_file_name)
+void readMeanFile(string mean_file_name, vector<float>& branch_ID_main, vector<float>& node_main, vector<float>& branch_angle_main, vector<float>& pet1_angle_main, vector<float>& pet2_angle_main, vector<float>& mid_if_angle_main, vector<float>& left_angle_main, vector<float>& right_angle_main, vector<float>& middle_angle_main, vector<float>& internode_main, vector<float>& pet1_main, vector<float>& pet2_main, vector<float>& lat1L_main, vector<float>& lat1W_main,vector<float>& lat2L_main, vector<float>& lat2W_main, vector<float>& midL_main, vector<float>& midW_main)
 {
     const int NUM_COLUMNS = 18;
     
@@ -24,7 +24,7 @@ void readMeanFile(string mean_file_name)
     
     ifstream mean_file(mean_file_name);
     
-    //determine how many lines of data are in the means_file
+    //DETERMINE HOW MANY LINES OF DATA ARE IN THE MEANS_FILE
     if(mean_file.is_open())
     {
         float num;
@@ -165,12 +165,30 @@ void readMeanFile(string mean_file_name)
         column_to_input++;
     }
     
-    
     mean_file.close();
+    
+    branch_ID_main = branch_ID;
+    node_main = node;
+    branch_angle_main = branch_angle;
+    pet1_angle_main = pet1_angle;
+    pet2_angle_main = pet2_angle;
+    mid_if_angle_main = mid_if_angle;
+    left_angle_main = left_angle;
+    right_angle_main = right_angle;
+    middle_angle_main = middle_angle;
+    internode_main = internode;
+    pet1_main = pet1;
+    pet2_main = pet2;
+    lat1L_main = lat1L;
+    lat1W_main = lat1W;
+    lat2L_main = lat2L;
+    lat2W_main = lat2W;
+    midL_main = midL;
+    midW_main = midW;
 };
 
 //MODEL FILE
-void readModelFile(string model_file_name)
+void readModelFile(string model_file_name, vector<float>& x1_main, vector<float>& y1_main, vector<float>& z1_main, vector<float>& x2_main, vector<float>& y2_main, vector<float>& z2_main, vector<float>& x3_main, vector<float>& y3_main, vector<float>& z3_main, vector<float>& leafID_main, vector<float>& leafL_main, vector<float>& position_main, vector<float>& chlSPAD_main, vector<float>& kt_main, vector<float>& kr_main, vector<float>& n_per_area_main, vector<float>& facet_area_main, vector<float>& seven_h_main)
 {
     const int NUM_COLUMNS = 18;
     
@@ -178,7 +196,7 @@ void readModelFile(string model_file_name)
     
     ifstream model_file(model_file_name);
     
-    //determine how many lines of data are in the means_file
+    //DETERMINE HOW MANY LINES OF DATA ARE IN THE MEANS_FILE
     if(model_file.is_open())
     {
         float num;
@@ -322,10 +340,28 @@ void readModelFile(string model_file_name)
     
     model_file.close();
     
+    x1_main = x1;
+    y1_main = y1;
+    z1_main = z1;
+    x2_main = x2;
+    y2_main = y2;
+    z2_main = z2;
+    x3_main = x3;
+    y3_main = y3;
+    z3_main = z3;
+    leafID_main = leafID;
+    leafL_main = leafL;
+    position_main = position;
+    chlSPAD_main = chlSPAD;
+    kt_main = kt;
+    kr_main = kr;
+    n_per_area_main = n_per_area;
+    facet_area_main = facet_area;
+    seven_h_main = seven_h;
 };
 
 //STD FILE
-void readSTDFile(string std_file_name)
+void readSTDFile(string std_file_name, vector<float>& branch_ID_std_main, vector<float>& node_std_main, vector<float>& branch_angle_std_main, vector<float>& pet1_angle_std_main, vector<float>& pet2_angle_std_main, vector<float>& mid_if_angle_std_main, vector<float>& left_angle_std_main, vector<float>& right_angle_std_main, vector<float>& middle_angle_std_main, vector<float>& internode_std_main, vector<float>& pet1_std_main, vector<float>& pet2_std_main, vector<float>& lat1L_std_main, vector<float>& lat1W_std_main, vector<float>& lat2L_std_main, vector<float>& lat2W_std_main, vector<float>& midL_std_main, vector<float>& midW_std_main)
 {
     const int NUM_COLUMNS = 18;
     
@@ -333,7 +369,7 @@ void readSTDFile(string std_file_name)
     
     ifstream std_file(std_file_name);
     
-    //determine how many lines of data are in the means_file
+    //DETERMINE HOW MANY LINES OF DATA ARE IN THE MEANS_FILE
     if(std_file.is_open())
     {
         float num;
@@ -475,10 +511,31 @@ void readSTDFile(string std_file_name)
     }
     
     std_file.close();
+
+    branch_ID_std_main = branch_ID_std;
+    node_std_main = node_std;
+    branch_angle_std_main = branch_angle_std;
+    pet1_angle_std_main = pet1_angle_std;
+    pet2_angle_std_main = pet1_angle_std;
+    mid_if_angle_std_main = mid_if_angle_std;
+    left_angle_std_main = left_angle_std;
+    right_angle_std_main = right_angle_std;
+    middle_angle_std_main = middle_angle_std;
+    internode_std_main = internode_std;
+    pet1_std_main = pet1_std;
+    pet2_std_main = pet2_std;
+    lat1L_std_main = lat1L_std;
+    lat1W_std_main = lat1W_std;
+    lat2L_std_main = lat2L_std;
+    lat2W_std_main = lat2W_std;
+    midL_std_main = midL_std;
+    midW_std_main = midW_std;
+
 };
 
 //VERTEX FILE
-void readVertexFile(string vertex_file_name)
+//void readVertexFile(string vertex_file_name)
+void readVertexFile(string vertex_file_name, vector<float>& DOY_main, vector<float>& vertex_mean_for_stem_main, vector<float>& vertex_std_for_stem_main, vector<float>& sensescense_add_main, vector<float>& ambient_vc_max_mean_main, vector<float>& ambient_jmax_mean_main, vector<float>& vertex_br1_main, vector<float>& vertex_br2_main, vector<float>& vertex_br3_main, vector<float>& vertex_br4_main, vector<float>& vertex_br5_main, vector<float>& vertex_br6_main)
 {
     const int NUM_COLUMNS = 12;
     
@@ -486,7 +543,7 @@ void readVertexFile(string vertex_file_name)
     
     ifstream vertex_file(vertex_file_name);
     
-    //determine how many lines of data are in the means_file
+    //DETERMINE HOW MANY LINES OF DATA ARE IN THE MEANS_FILE
     if(vertex_file.is_open())
     {
         float num;
@@ -592,5 +649,18 @@ void readVertexFile(string vertex_file_name)
     }
     
     vertex_file.close();
+    
+    DOY_main = DOY;
+    vertex_mean_for_stem_main = vertex_mean_for_stem;
+    vertex_std_for_stem_main = vertex_std_for_stem;
+    sensescense_add_main = sensescense_add;
+    ambient_vc_max_mean_main = ambient_vc_max_mean;
+    ambient_jmax_mean_main = ambient_jmax_mean;
+    vertex_br1_main = vertex_br1;
+    vertex_br2_main = vertex_br2;
+    vertex_br3_main = vertex_br3;
+    vertex_br4_main = vertex_br4;
+    vertex_br5_main = vertex_br5;
+    vertex_br6_main = vertex_br6;
     
 };

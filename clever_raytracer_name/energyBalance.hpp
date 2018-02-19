@@ -8,7 +8,7 @@ public:
     Parameters calculateLeafT_withWindSpeed(Constants cs, Parameters ip, double canopyHeight);
     EnergyBalance();
 private:
-    double leafWindth;
+    double leafWidth;
     double windSpeedHeightCoeff;
     double windSpeedRoughnessLength;
-}
+};

@@ -2,6 +2,7 @@
 #define __RAY__
 
 #include "point.hpp"
+#include "normal.hpp"
 #include <iostream>
 #include <vector>
 #include <cmath>
@@ -10,7 +11,10 @@
 #include <fstream>
 
 using namespace std;
+class Point;
+class Normal;
 
+double x, y, z;
 namespace raytrace
 {
     template<typename T>
@@ -23,6 +27,8 @@ namespace raytrace
         Vector() : x(0.0), y(0.0), z(0.0){}
         Vector(const T &n) : x(n), y(n), z(n){}
         Vector(const T &s, const T &t, const T &u) : x(s), y(t), z(u){}
+        Vector(const Vector &vector) : x(vector.x), y(vector.y), z(vector.z){}
+        Vector(const Normal &n) : x(n.x), y(n.y), z(n.z){}
         T getX()
         {
             return x;
@@ -75,6 +81,17 @@ namespace raytrace
         {
             return Vector<T>(x += n.x, y += n.y, z += n.z);
         }
+        Vector<T> operator= (const Point& rhs)
+        {
+            x = rhs.x;
+            y = rhs.y;
+            z = rhs.z;
+            return(*this);
+        }
+        /*Vector<T> length(void)
+        {
+            return (sqrt(x * x + y * y + z * z));
+        }*/
         friend std::ostream & operator << (std::ostream &os, const Vector<T> &v)
         {
             os << v.x << " " << v.y << " " << v.z;
@@ -105,10 +122,86 @@ namespace raytrace
         {
             return x + y + z;
         }
+                                                                   
+       double getVectX()
+       {
+           return x;
+       }
+                                                                   
+       double getVectY()
+       {
+           return y;
+       }
+         
+       double getVectZ()
+       {
+           return z;
+       }
+        
+        typedef Vector<float> Vect;
+        
+        Vect vectAdd(Vect v)
+        {
+            return Vect(x + v.getVectX(), y + v.getVectY(), z + v.getVectZ());
+        }
+        
+        Vect vectMult(double scalar)
+        {
+            return Vect(x * scalar, y * scalar, z * scalar);
+        }
+        
+        Vect negative()
+        {
+            return Vect(-x, -y, -z);
+        }
+        
+        Vect operator=(const Vect& rhs)
+        {
+            if(this == &rhs)
+            {
+                return (*this);
+            }
+            x = rhs.x;
+            y = rhs.y;
+            z = rhs.z;
+            
+            return (*this);
+        }
+        
+        Vect operator^(const Vect& v)
+        {
+            return (Vect(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x));
+        }
+        
+        Vect operator*(const Vect& v)
+        {
+            return(x * v.x + y * v.y + z * v.z);
+        }
+        
+        Vect operator*(const double a)
+        {
+            return(Vect(x * a, y * a, z * a));
+        }
+        double length(void)
+        {
+            return (sqrt(x * x + y * y + z * z));
+        }
         
     };
+    double operator*(const double a, const raytrace::Vect& v)
+    {
+        return(a * v.x, a * v.y, a * v.z);
+    }
     
-    typedef Vector<float> Vect;
+    double operator/(const double a, const raytrace::Vect& v)
+    {
+        return(a / v.x, a / v.y, a / v.z);
+    }
+    
+    
+    
+    
+    
 /*
     class Camera
     {
@@ -197,7 +290,7 @@ namespace raytrace
         
         Ray(void);
         Ray(const Point &ori, const Vect &dir) : origin(ori), direction(dir){}
-        Ray(const Point& origin, const raytrace::Vect& direction, const double pf);
+        Ray(const Point &origin, const raytrace::Vect& direction, const double pf);
         Ray(const Ray& ray);
         Ray(const Ray* ray_ptr);
         Ray& operator= (const Ray& rhs);

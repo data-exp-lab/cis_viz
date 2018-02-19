@@ -6,6 +6,8 @@
 #include "ray.hpp"
 #include "triangle.hpp"
 #include "leaf.hpp"
+#include "constants.hpp"
+#include "box.hpp"
 #include <vector>
 
 class Grid
@@ -22,7 +24,7 @@ public:
     vector<Compound*> get_cells();
     vector<Triangle*> get_triangles();
     
-    bool hit(raytrace::Ray & ray, double& tmin, const int& hour_th, int& firstStep) const;
+    bool hit(raytrace::Ray & ray, double& tmin, const int& hour_th, int& firstStep, Constants &cs) const;
     
     double plantHeight;
     
@@ -30,17 +32,19 @@ private:
     vector<Compound*> cells;
     vector<Triangle*> triangles;
     
+    Box box;
+    
     int nx;
     int ny;
     int nz;
     
-    bool hit_scatter_rays(vector<raytrace::Ray*> scatter_rays, const int& hour_th) const;
-    bool generate_scatter_rays(raytrace::Ray& ray, Triangle* triangle_ptr, const int& hour_th) const;
+    bool hit_scatter_rays(vector<raytrace::Ray*> scatter_rays, const int& hour_th, Constants &cs) const;
+    bool generate_scatter_rays(raytrace::Ray& ray, Triangle* triangle_ptr, const int& hour_th, Constants &cs) const;
     
     Point min_coordinates(void);
     Point max_coordinates(void);
     
-    Leaf* leaf_optics;
+    //Leaf* leaf_optics;
     
     
 };

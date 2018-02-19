@@ -21,9 +21,9 @@ public:
     Climate();
     virtual ~Climate();
     
-    void climate_calculation_PPFD(double latitude, double solarTimeNoon, double atmosphericTransmittance, int day, double startHour, double endHour, double hourInterval, Parameters ip);
-    void climate_calculation_Tair(double latitude, double solarTimeNoon, double atmosphericTransmittance, int day, double startHour, double endHour, double hourInterval, Parameters ip);
-    void directlyInput(Parameters ip);
+    void climate_calculation_PPFD(double latitude, double solarTimeNoon, double atmosphericTransmittance, vector<float> day, double startHour, double endHour, double hourInterval, Parameters ip, Constants cs);
+    void climate_calculation_Tair(double latitude, double solarTimeNoon, double atmosphericTransmittance, vector<float> day, double startHour, double endHour, double hourInterval, Parameters ip, Constants cs);
+    void directlyInput(Parameters ip, Constants cs);
 };
 
 #endif

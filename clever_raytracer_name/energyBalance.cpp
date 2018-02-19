@@ -13,9 +13,9 @@ EnergyBalance::EnergyBalance()
 
 Parameters EnergyBalance::calculateLeafT(Constants cs, Parameters ip, double canopyHeight)
 {
-    double I = cs.PPFD * 0.235;
+    double I = ip.PPFD * 0.235;
     double JA = I * 1.57;
-    double TAIR = ip.TAIR;
+    double TAIR = cs.TAIR;
     
     //ENERGY BALANCE MODEL FOR LEAF
     
@@ -24,20 +24,20 @@ Parameters EnergyBalance::calculateLeafT(Constants cs, Parameters ip, double can
     
     //RH ON LEAF SURFACE
     double leafRelativeHumidity;
-    if(ip.RH > 0 && ip.RH < 1)
+    if(cs.RH > 0 && cs.RH < 1)
     {
-        leafRelativeHumidity = ip.RH * 100;
+        leafRelativeHumidity = cs.RH * 100;
     }
     else
     {
-        leafRelativeHumidity = ip.RH;
+        leafRelativeHumidity = cs.RH;
     }
     
     //VAPOR PRESSURE DEFICITY
     double VPD = EST * (1 - leafRelativeHumidity / 100);
     
     double L = -0.0000614342 * pow(TAIR,3) + 0.00158927 * pow(TAIR,2) - 2.36418 * TAIR + 2500.79;
-    double latentHeatVaporization = L 10e3;
+    double latentHeatVaporization = L * 10e3;
     
     //WATER VAPOR / DRY AIR
     double MWRATIO = 0.622;
@@ -45,13 +45,13 @@ Parameters EnergyBalance::calculateLeafT(Constants cs, Parameters ip, double can
     double RV = 0;
     RV = RH;
     //STOMATAL RESISTANCE
-    double RS = 1 / (cs.GS * 1e-3 * 24.39 * 1e-3);
+    double RS = 1 / (ip.GS * 1e-3 * 24.39 * 1e-3);
     
     //AIR DENSITY
     double ROUGH = 101.3e3 / (287.058 * (273.16 + TAIR));
     double air_pressure = 101;
     
-    double CP = AIR_SPECIFIC_HEAT_CAPACITY;
+    double CP = cs.SPECIFIC_HEAT_CAPACITY_AIR;
     
     double psychromatric = CP * air_pressure / (latentHeatVaporization * MWRATIO);
     double psychromatric_star = psychromatric * (RV + RS) / RH;
@@ -72,7 +72,7 @@ Parameters EnergyBalance::calculateLeafT(Constants cs, Parameters ip, double can
     {
         deltaTal_old = deltaTal;
         //RADIATIVE EXCHANGE
-        RN = (4 * STEFAN_BOLTZMAN_CONST * pow(273 + TAIR, 3) * deltaTal);
+        RN = (4 * cs.STEFAN_BOLTZMAN_CONST * pow(273 + TAIR, 3) * deltaTal);
         
         //CALCULATE NET ABSORBED RADIATIVE ENERGY
         PHIN = JA + RN;
@@ -88,22 +88,22 @@ Parameters EnergyBalance::calculateLeafT(Constants cs, Parameters ip, double can
     }
     
     double TLEAF = TAIR + deltaTal;
-    cs.TLEAF = TLEAF;
+    ip.Tleaf = TLEAF;
     
-    return cs;
+    return ip;
 }
 
 Parameters EnergyBalance::calculateLeafT_withWindSpeed(Constants cs, Parameters ip, double canopyHeight)
 {
-    double I = cs.PPFD * 0.235;
+    double I = ip.PPFD * 0.235;
     double JA = I * 2;
     
-    double TAIR = ip.TAIR;
+    double TAIR = cs.TAIR;
     
     double layerWindSpeed = 0.5;
     
     //CALCULATION OF LEAF BOUNDARY LAYER
-    double leafBoundaryLayer = (2.126e-5 + 1.48e - 7 * TAIR) / (0.004 * sqrt(leafWidth / layerWindSpeed));
+    double leafBoundaryLayer = (2.126e-5 + 1.48e-7 * TAIR) / (0.004 * sqrt(leafWidth / layerWindSpeed));
     //CALCULATE THE DIFFUSION COEFFICIENT OF WATER VAPOR
     //CALCULATE THE BOUNDARY LAYER THICKNESS FROM THE SIZE OF THE LEAF IN THE DIRECTION OF THE WIND AND THE WIND SPEED
     
@@ -113,8 +113,8 @@ Parameters EnergyBalance::calculateLeafT_withWindSpeed(Constants cs, Parameters 
     
     double windSpeedHeight = 2.5;
     
-    double u_star = WINDSPEED_TEMP;
-    double u = (u_star / KAPPA) * (log((windSpeedHeight - D) / Z0));
+    double u_star = cs.WINDSPEED_TEMP;
+    double u = (u_star / cs.KAPPA) * (log((windSpeedHeight - D) / Z0));
     
     //ENERGY BALANCE MODEL
     
@@ -122,13 +122,13 @@ Parameters EnergyBalance::calculateLeafT_withWindSpeed(Constants cs, Parameters 
     
     //RH ON LEAF SURFACE
     double leafRelativeHumidity;
-    if(ip.RH > 0 && ip.RH < 1)
+    if(cs.RH > 0 && cs.RH < 1)
     {
-        leafRelativeHumidity = ip.RH * 100;
+        leafRelativeHumidity = cs.RH * 100;
     }
     else
     {
-        leafRelativeHumidity = ip.RH;
+        leafRelativeHumidity = cs.RH;
     }
     
     //VAPOR PRESSURE DEFICITY
@@ -148,13 +148,13 @@ Parameters EnergyBalance::calculateLeafT_withWindSpeed(Constants cs, Parameters 
     RV = RH;
     
     //STOMATAL RESISTANCE
-    double RS = 1 / (cs.GS * 1e3 * 24.39 * 1e-3);
+    double RS = 1 / (ip.GS * 1e3 * 24.39 * 1e-3);
     
     //AIR DENSITY
     double ROUGH = 101.3e3 / (287.058 * (273.16 + TAIR));
     double air_pressure = 101 * 1000;
     
-    double CP = AIR_SPECIFIC_HEAT_CAPACITY;
+    double CP = cs.SPECIFIC_HEAT_CAPACITY_AIR;
     
     double psychromatric = CP * air_pressure / (latentHeatVaporization * MWRATIO);
     double psychromatric_star = psychromatric * (RV + RS) / RH;
@@ -177,7 +177,7 @@ Parameters EnergyBalance::calculateLeafT_withWindSpeed(Constants cs, Parameters 
         deltaTal_old = deltaTal;
         
         //RADIATIVE EXCHANGE
-        RN = (4 * STEFAN_BOLTZMAN_CONST * pow(273 + TAIR,3) * deltaTal);
+        RN = (4 * cs.STEFAN_BOLTZMAN_CONST * pow(273 + TAIR,3) * deltaTal);
         
         //CALCULATE NET ABSORBED RADIATIVE ENERGY
         PHIN = JA - RN;
@@ -193,9 +193,9 @@ Parameters EnergyBalance::calculateLeafT_withWindSpeed(Constants cs, Parameters 
     
     double E = (S * PHIN + ROUGH * CP * VPD / RH) / (S + psychromatric_star) / latentHeatVaporization;
     double TLEAF = TAIR + deltaTal;
-    cs.TLEAF = TLEAF;
+    ip.Tleaf = TLEAF;
     
-    return cs;
+    return ip;
   
 }
 

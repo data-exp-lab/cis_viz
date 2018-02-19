@@ -1,4 +1,5 @@
 #include "parameters.hpp"
+#include "constants.hpp"
 
 Parameters::Parameters()
 {
@@ -7,7 +8,7 @@ Parameters::Parameters()
 
 Parameters::Parameters(int parameterFlag)
 {
-    PPFd = 1000;
+    PPFD = 1000;
     Tleaf = 25;
     VCMAX0 = 78.8;
     JMAX0 = 155.7;
@@ -20,47 +21,55 @@ Parameters::Parameters(int parameterFlag)
     RD = 1;
     CI = 270;
     OI = 210;
+    KC = 404;
+    KO = 278;
+    GS = 0.7;
 }
 
-void Parameters::prepare(/*INPUT PARAMETERS*/ int leafID, double CLAI, double PPFD1)
+void Parameters::prepare(int leafID, double CLAI, double PPFD1)
 {
-    Tleaf = TAIR;
+    Constants cs;
+    Parameters ip;
+    
+    Tleaf = cs.TAIR;
     PPFD = PPFD1;
-    THETA = THETA; //FROM INPUT PARAMETERS
-    F = F; //FROM INPUT PARAMETERS
-    JMAX = JMAX; //FROM INPUT PARAMETERS
+    THETA = cs.THETA;
+    F = cs.F;
+    JMAX = cs.JMAX;
     
-    OI = OA;
-    GSTAR = GSTAR; //FROM INPUT PARAMETERS
-    RD0 = RD;
-    KMC = KC;
-    KMO = KO;
-    VCMAX = VCMAX; //FROM INPUT PARAMETERS
+    OI = cs.OA;
+    GSTAR = cs.GSTAR;
+    RD0 = cs.RD;
+    KMC = ip.KC;
+    KMO = ip.KO;
+    VCMAX = cs.VCMAX;
     
-    VCMAX0 = VCMAX_LIST[leafID - 1];
-    JMAX0 = JMAX_LIST[leafID - 1];
-    double KN = KN; //FROM INPUT PARAMETERS
+    VCMAX0 = cs.VCMAX_LIST[leafID - 1];
+    JMAX0 = cs.JMAX_LIST[leafID - 1];
+    double KN = cs.KN; 
     VCMAX = VCMAX * exp(-KN * CLAI);
     JMAX = JMAX * exp(-KN * CLAI);
     
-    CI = CA * 0.7;
+    ip.CI = cs.CA * 0.7;
 }
 
-void Parameters::prepare_avgVcmaxJmax(/*INPUT PARAMETERS*/ double PPFD1, double leafT)
+void Parameters::prepare_avgVcmaxJmax(double PPFD1, double leafT)
 {
+    Constants cs;
+    
     double CLAI = 1;
-    prepare(ip, 1, CLAI, PPFD1);
+    prepare(1, CLAI, PPFD1);
     double sumVcmax = 0;
     double sumJmax = 0;
     
-    for(int i = 0; i < VCMAX_LIST.size(); i++)
+    for(int i = 0; i < cs.VCMAX_LIST.size(); i++)
     {
-        sumVcmax += VCMAX_LIST[i];
-        sumJmax += JMAX_LIST[i];
+        sumVcmax += cs.VCMAX_LIST[i];
+        sumJmax += cs.JMAX_LIST[i];
     }
     
-    VCMAX = sumVcmax / VCMAX_LIST.size();
-    JMAX = sumJmax / JMAX_LIST.size();
+    VCMAX = sumVcmax / cs.VCMAX_LIST.size();
+    JMAX = sumJmax / cs.JMAX_LIST.size();
     VCMAX0 = VCMAX;
     JMAX0 = JMAX;
     

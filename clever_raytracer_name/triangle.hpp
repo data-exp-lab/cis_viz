@@ -6,15 +6,16 @@
 #include "constants.hpp"
 #include "climate.hpp"
 #include "normal.hpp"
+#include "box.hpp"
 #include <vector>
 
 class Triangle
 {
 public:
+    Point hit_point;
     Point v0;
     Point v1;
     Point v2;
-    //FIX REFERENCE FROM WHERE THIS IS
     Normal normal;
     double area;
     
@@ -47,7 +48,9 @@ public:
     Triangle(const Point& a, const Point& b, const Point& c, const int leafID, const double leafL, const double position, const double chlSPAD, const double KT, double KR, const double nitrogenPerArea, double startHour, double endHour, double hourInterval);
     virtual ~Triangle();
     
-    bool hit(const raytrace::Ray& ray, double& tmin);
+    bool hit(const raytrace::Ray& ray, double& tmin, Constants cs);
+    
+    Box get_bounding_box(void);
     
     void compute_normal(void);
     

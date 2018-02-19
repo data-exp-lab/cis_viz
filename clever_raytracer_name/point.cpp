@@ -22,7 +22,7 @@ Point::~Point()
     
 }
 
-Point& Point::operator=(cosnt Point& rhs)
+Point& Point::operator=(const Point& rhs)
 {
     if(this == &rhs)
     {
@@ -40,4 +40,6 @@ double Point::distance(const Point& p) const
 {
     return (sqrt((x - p.x) * (x - p.x) + (y - p.y) * (y - p.y) + (z - p.z) * (z - p.z)));
 }
+
+
 

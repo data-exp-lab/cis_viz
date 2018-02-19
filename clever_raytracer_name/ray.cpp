@@ -1,4 +1,5 @@
 #include "ray.hpp"
+#include "point.hpp"
 using namespace std;
 using namespace raytrace;
 
@@ -11,7 +12,7 @@ float mix(const float &a, const float &b, const float &mix)
 Ray::Ray(void) : origin(0.0), direction(0.0, 0.0, 1.0), photonFlux2(0)
 {}
 
-Ray::Ray(const Point& origin, const Vect& direction, const double pf) : o(origin), d(dir), photonFlux2(pf)
+Ray::Ray(const Point &origin, const Vect &direction, const double pf) : origin(origin), direction(direction), photonFlux2(pf)
 {}
 
 Ray::Ray(const Ray& ray) : origin(ray.origin), direction(ray.direction), photonFlux2(ray.photonFlux2)
@@ -39,7 +40,7 @@ Ray::~Ray(void)
 }
 
 
-Vect refractRay(Vect const &W, Vect const &pt, Vect const &N, float const &eta1, float const &eta2, Shape const &shape)
+/*Vect refractRay(Vect const &W, Vect const &pt, Vect const &N, float const &eta1, float const &eta2, Shape const &shape)
 {
     float etar = eta1 / eta2;
     float a = etar * -1;
@@ -67,7 +68,62 @@ Ray refractExit(Vect const &W, Vect const &pt, float const &eta_in, Shape const 
         refR = Ray(exit, T2);
     }
     return refR;
+}*/
+
+//INLINE FUNCTIONS
+/*
+inline Vect Vect::operator- (void) const
+{
+    return (Vect(-x, -y, -z));
 }
+
+inline double Vect::len_squared(void)
+{
+    return (x * x + y * y + z * z);
+}
+
+inline Vect Vect::operator* (const double a) const
+{
+    return (Vect(x * a, y * a, z * a));
+}
+
+inline Vect Vect::operator/ (const double a) const
+{
+    return (Vect(x / a, y / a, z / a));
+}
+
+inline Vect Vect::operator+ (const Vect& v) const
+{
+    return (Vect(x + v.x, y + v.y, z + v.z));
+}
+
+inline Vect Vect::operator- (const Vect& v) const
+{
+    return (Vect(x - v.x, y - v.y, z - v.z));
+}
+
+inline double Vect::operator* (const Vect& v) const
+{
+    return (x * v.x + y * v.y + z * v.z);
+}
+
+inline raytrace::Vect Vect::operator^ (const Vect& v) const
+{
+    return (Vect(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x));
+}
+
+inline Vect& Vect::operator+= (const Vect& v)
+{
+    x += v.x;
+    y += v.y;
+    z += v.z;
+    
+    return (*this);
+}
+*/
+
+
+
 /*
 bool Sphere::intersect(const Ray &ray, float &t0, float &t1)
 {

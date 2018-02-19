@@ -53,6 +53,7 @@
 #include "triangle.hpp"
 #include "normal.hpp"
 #include "grid.hpp"
+#include "writer.hpp"
 
 using namespace std;
 using namespace raytrace;
@@ -63,18 +64,90 @@ int main(int argc, char *argv[])
     
     ProcessCommandLine(argc, argv);
     
-    readModelFile(cla.threeDModelFile);
-    readMeanFile(cla.meansFile);
-    readSTDFile(cla.stdFile);
-    readVertexFile(cla.vxFile);
+    //MEAN FILE
+    vector<float> branch_ID_main;
+    vector<float> node_main;
+    vector<float> branch_angle_main;
+    vector<float> pet1_angle_main;
+    vector<float> pet2_angle_main;
+    vector<float> mid_if_angle_main;
+    vector<float> left_angle_main;
+    vector<float> right_angle_main;
+    vector<float> middle_angle_main;
+    vector<float> internode_main;
+    vector<float> pet1_main;
+    vector<float> pet2_main;
+    vector<float> lat1L_main;
+    vector<float> lat1W_main;
+    vector<float> lat2L_main;
+    vector<float> lat2W_main;
+    vector<float> midL_main;
+    vector<float> midW_main;
+    
+    //MODEL FILE
+    vector<float> x1_main;
+    vector<float> y1_main;
+    vector<float> z1_main;
+    vector<float> x2_main;
+    vector<float> y2_main;
+    vector<float> z2_main;
+    vector<float> x3_main;
+    vector<float> y3_main;
+    vector<float> z3_main;
+    vector<float> leafID_main;
+    vector<float> leafL_main;
+    vector<float> position_main;
+    vector<float> chlSPAD_main;
+    vector<float> kt_main;
+    vector<float> kr_main;
+    vector<float> n_per_area_main;
+    vector<float> facet_area_main;
+    vector<float> seven_h_main;
+    
+    //STD FILE
+    vector<float> branch_ID_std_main;
+    vector<float> node_std_main;
+    vector<float> branch_angle_std_main;
+    vector<float> pet1_angle_std_main;
+    vector<float> pet2_angle_std_main;
+    vector<float> mid_if_angle_std_main;
+    vector<float> left_angle_std_main;
+    vector<float> right_angle_std_main;
+    vector<float> middle_angle_std_main;
+    vector<float> internode_std_main;
+    vector<float> pet1_std_main;
+    vector<float> pet2_std_main;
+    vector<float> lat1L_std_main;
+    vector<float> lat1W_std_main;
+    vector<float> lat2L_std_main;
+    vector<float> lat2W_std_main;
+    vector<float> midL_std_main;
+    vector<float> midW_std_main;
+    
+    //VERTEX FILE
+    vector<float> DOY_main;
+    vector<float> vertex_mean_for_stem_main;
+    vector<float> vertex_std_for_stem_main;
+    vector<float> sensescense_add_main;
+    vector<float> ambient_vc_max_mean_main;
+    vector<float> ambient_jmax_mean_main;
+    vector<float> vertex_br1_main;
+    vector<float> vertex_br2_main;
+    vector<float> vertex_br3_main;
+    vector<float> vertex_br4_main;
+    vector<float> vertex_br5_main;
+    vector<float> vertex_br6_main;
+
+    readMeanFile(cla.meansFile, ref(branch_ID_main), ref(node_main), ref(branch_angle_main), ref(pet1_angle_main), ref(pet2_angle_main), ref(mid_if_angle_main), ref(left_angle_main), ref(right_angle_main), ref(middle_angle_main), ref(internode_main), ref(pet1_main), ref(pet2_main), ref(lat1L_main), ref(lat1W_main), ref(lat2L_main), ref(lat2W_main), ref(midL_main), ref(midW_main));
+    readModelFile(cla.threeDModelFile, ref(x1_main), ref(y1_main), ref(z1_main), ref(x2_main), ref(y2_main), ref(z2_main), ref(x3_main), ref(y3_main), ref(z3_main), ref(leafID_main), ref(leafL_main), ref(position_main), ref(chlSPAD_main), ref(kt_main), ref(kr_main), ref(n_per_area_main), ref(facet_area_main), ref(seven_h_main));
+    readSTDFile(cla.stdFile, ref(branch_ID_std_main), ref(node_std_main), ref(branch_angle_std_main), ref(pet1_angle_std_main), ref(pet2_angle_std_main), ref(mid_if_angle_std_main), ref(left_angle_std_main), ref(right_angle_std_main), ref(middle_angle_std_main), ref(internode_std_main), ref(pet1_std_main), ref(pet2_std_main), ref(lat1L_std_main), ref(lat1W_std_main), ref(lat2L_std_main), ref(lat2W_std_main), ref(midL_std_main), ref(midW_std_main));
+    readVertexFile(cla.vxFile, ref(DOY_main), ref(vertex_mean_for_stem_main), ref(vertex_std_for_stem_main), ref(sensescense_add_main), ref(ambient_vc_max_mean_main), ref(ambient_jmax_mean_main), ref(vertex_br1_main), ref(vertex_br2_main), ref(vertex_br3_main), ref(vertex_br4_main), ref(vertex_br5_main), ref(vertex_br6_main));
     double startHour = cla.startHour;
     double endHour = cla.endHour;
     double intervalHour = cla.intervalHour;
     double rayDistance = cla.rayDistance;
     double leafTransmittance = cla.leafTransmittance;
     double leafReflectivity = cla.leafReflectivity;
-    
-    //LINK STUFF FROM INPUT FILES TO HERE
     
     Parameters ps;
     Constants cs;
@@ -104,10 +177,9 @@ int main(int argc, char *argv[])
     Y_ptr = lc.runCurves(cs, ps, X, x_start, x_end, Y, T, t);
     
     //CALCULATE FROM ATMOSPHERE TRANSMITTANCE
-    //CHECK INPUTS HERE->where are they coming from? Need ps?
-    climate.climate_calculation_PPFD(cs.LATITUDE, stn, cs.ATMOSPHERE_TRANSMITTANCE, DOY, start, end, interval, cs);
+    climate.climate_calculation_PPFD(cs.LATITUDE, stn, cs.ATMOSPHERE_TRANSMITTANCE, DOY_main, start, end, interval, ps, cs);
     //RUN CLIMATE MODEL FOR TAIR PREDICTION
-    climate.climate_calculation_Tair(cs.LATITUDE, stn, cs.ATMOSPHERE_TRANSMITTANCE, DOY, start, end, interval, cs);
+    climate.climate_calculation_Tair(cs.LATITUDE, stn, cs.ATMOSPHERE_TRANSMITTANCE, DOY_main, start, end, interval, ps, cs);
     
     //SET UP THE GRID
     Grid* grid = new Grid(cs.ignore_PPFD_threshold * cs.NEAREST_RAY_DISTANCE * cs.NEAREST_RAY_DISTANCE * 1e-4);
@@ -158,8 +230,7 @@ int main(int argc, char *argv[])
                 {
                     ray.origin = Point(x, y, zMax);
                     
-                    //DOUBLE CHECK -> MIGHT NEED GRID HIT FUNCTION
-                    grid->hit(ray, t, i, lightType1);
+                    grid->hit(ray, t, i, lightType1, cs);
                 }
             }
         }
@@ -183,7 +254,7 @@ int main(int argc, char *argv[])
                 {
                     ray.origin = Point(x, y, zMax);
                     ray.direction = raytrace::Vect(true);
-                    grid->hit(ray, t, i, lightType2);
+                    grid->hit(ray, t, i, lightType2, cs);
                 }
             }
         }
@@ -194,128 +265,17 @@ int main(int argc, char *argv[])
 
     //LEAF PHOTOSYNTHESIS
     Leaf lps;
-    lps.run_FarquharModel(start, end, interval, cs, climate);
+    lps.run_FarquharModel(grid, start, end, interval, ps, cs, climate);
     
-    //OUTPUT FROM LEAF PHOTOSYNTHESIS
-    ofstream myfile(outputFile);
-    if(myfile.is_open())
-    {
-        //TITLES
-        myfile << "x1" << "\t" << "y1" << "\t" << "z1" << "\t";
-        myfile << "x2" << "\t" << "y2" << "\t" << "z2" << "\t";
-        myfile << "x3" << "\t" << "y3" << "\t" << "z3" << "\t";
-        myfile << "leafID" << "\t" << "leafL" << "\t" << "pos" << "\t" << "SPAD" << "\t" << "KT" << "\t" << "KR" << "\t" << "NpArea" << "\t" << "facetS" << "\t";
-        
-        for(int i = 0; i <= num; i++)
-        {
-            double hour = start + i * interval;
-            myfile << hour << "PPFD" << "\t";
-            myfile << hour << "Isat" << "\t";
-            myfile << hour << "RbcLim" << "\t";
-            myfile << hour << "GS" << "\t";
-            myfile << hour << "CI" << "\t";
-            myfile << hour << "A" << "\t";
-        }
-        myfile << "\n";
-        
-        double area;
-        int num_triangles = grid->get_triangles().size();
-        
-        myfile.setf(ios::fixed);
-        vector<Triangle*> v = grid->get_triangles();
-        vector<Triangle*>::iterator it;
-        
-        for(it = v.begin(); it != v.end(); it++)
-        {
-            if((*it)->v0.x > xMin && (*it)->v0.y > yMin && (*it)->v1.x > xMin && (*it)->v1.y > yMin && (*it)->v2.x > xMin && (*it)->v2.y > yMin &&
-               (*it)->v0.x < xMax && (*it)->v0.y < yMax && (*it)->v1.x < xMax && (*it)->v1.y < yMax && (*it)->v2.x < xMax && (*it)->v2.y < yMax)
-            {
-                area = (((*it)->v1 - (*it)->v0) ^ ((*it)->v2 - (*it)->v0)).length() * 0.5;
-                
-                myfile << setprecision(2) << (*it)->v0.x << "\t"
-                << setprecision(2) << (*it)->v0.y << "\t"
-                << setprecision(2) << (*it)->v0.z << "\t"
-                << setprecision(2) << (*it)->v1.x << "\t"
-                << setprecision(2) << (*it)->v1.y << "\t"
-                << setprecision(2) << (*it)->v1.z << "\t"
-                << setprecision(2) << (*it)->v2.x << "\t"
-                << setprecision(2) << (*it)->v2.y << "\t"
-                << setprecision(2) << (*it)->v2.z << "\t"
-                << setprecision(0) << (*it)->leID << "\t"
-                << setprecision(2) << (*it)->leL << "\t"
-                << setprecision(2) << (*it)->pos << "\t"
-                << setprecision(2) << (*it)->chlSPA << "\t"
-                << setprecision(2) << (*it)->kLeafTransmittance << "\t"
-                << setprecision(2) << (*it)->kLeafReflectance << "\t"
-                << setprecision(2) << (*it)->nitrogenPerA << "\t"
-                << setprecision(4) << area << "\t";
-                
-                vector<double> photonFlux_up_dir = (*it)->photonFlux_up_dir;
-                vector<double> photonFlux_up_diff = (*it)->photonFlux_up_diff;
-                vector<double> photonFlux_up_scat = (*it)->photonFlux_up_scat;
-                vector<double> photonFlux_down_dir = (*it)->photonFlux_down_dir;
-                vector<double> photonFlux_down_diff = (*it)->photonFlux_down_diff;
-                vector<double> photonFlux_down_scat = (*it)->photonFlux_down_scat;
-                
-                //LEAF ASSIMILATION RATE
-                vector<double> A = (*it)->A;
-                vector<double> leafT = (*it)->LEAFT;
-                vector<double> GS = (*it)->GS;
-                vector<double> CI = (*it)->CI;
-                vector<double> PPFDsat = (*it)->PPFDSAT;
-                vector<int> isRubiscoLimit = (*it)->isRubiscoLimit;
-                
-                vector<double>::iterator it1;
-                vector<double>::iterator it2;
-                vector<double>::iterator it3;
-                vector<double>::iterator it4;
-                vector<double>::iterator it5;
-                vector<double>::iterator it6;
-                vector<double>::iterator itA;
-                vector<double>::iterator itT;
-                vector<double>::iterator itGS;
-                vector<double>::iterator itCI;
-                vector<double>::iterator itPPFDsat;
-                vector<int>::iterator itIsRubiscoLimit;
-                
-                double area_factor = 1 / (area * 1e-4);
-                
-                it2 = photonFlux_up_diff.begin();
-                it3 = photonFlux_up_scat.begin();
-                it4 = photonFlux_down_dir.begin();
-                it5 = photonFlux_down_diff.begin();
-                it6 = photonFlux_down_scat.begin();
-                itA = A.begin();
-                itT = leafT.begin();
-                itGS = GS.begin();
-                itCI = CI.begin();
-                itPPFDsat = PPFDsat.begin();
-                itIsRubiscoLimit = isRubiscoLimit.begin();
-                
-                for(it1 = photonFlux_up_dir.begin(); it1 != photonFlux_up_dir.end(); it1++)
-                {
-                    myfile << setprecision(1) << ( (*it1) + (*it2) + (*it3) + (*it4) + (*it5) + (*it6) ) * area_factor << "\t" << setprecision(1) << (*itPPFDsat) << "\t" << (*itIsRubiscoLimit) << "\t" << setprecision(1) << (*itT) << "\t" << setprecision(2) << (*itGS) << "\t" << setprecision(1) << (*itCI) << "\t" << setprecision(2) << (*itA) << "\t";
-                    
-                    it2++;
-                    it3++;
-                    it4++;
-                    it5++;
-                    it6++;
-                    itA++;
-                    itT++;
-                    itGS++;
-                    itCI++;
-                    itPPFDsat++;
-                    itIsRubiscoLimit++;
-                }
-                
-                myfile << "\n";
-                
-            }
-        }
-        myfile.close();
-        
-    }
+    //OUTPUT TO FILE FROM LEAF PHOTOSYNTHESIS
+    const char *output_model_file_name = "output_model_file_name";
+    writeModelFile(output_model_file_name, num, start, interval, grid, xMax, xMin, yMax, yMin, zMax, zMin);
+    
+    const char *photosynthesis_rate_file_name = "photosynthesis_rate_file_name";
+    
+    
+    const char *metabolite_concentrations_file_name = "metabolite_concentrations_file_name";
+    
     
     cout << "EXIT SUCCESSFUL" << endl;
 }

@@ -1,10 +1,11 @@
 #include "triangle.hpp"
 #include "equations.hpp"
+#include "constants.hpp"
 #include <iostream>
 
 Triangle::Triangle(double startHour, double endHour, double hourInterval)
 {
-    int num = (int)((endHour - starthour) / hourInterval);
+    int num = (int)((endHour - startHour) / hourInterval);
     
     for(int i = 0; i <= num; i++)
     {
@@ -31,7 +32,7 @@ Triangle::Triangle(const Point& a, const Point& b, const Point& c, const int lea
     
     //RIGHT HAND RULE
     normal = (v1 - v0) ^ (v2 - v0);
-    normal.normalize();
+    normal.normalize(v0, v1, v2);
     
     area = ((v1 - v0) ^ (v2 - v0)).length() * 0.5;
     int num = (int)((endHour - startHour) / hourInterval);
@@ -77,20 +78,20 @@ void Triangle::compute_normal(void)
     normal.normalize();
 }
 
-bool Triangle::hit(const Ray& ray, double& tmin)
+bool Triangle::hit(const raytrace::Ray& ray, double& tmin, Constants cs)
 {
     double a = v0.x - v1.x;
     double b = v0.x - v2.x;
-    double c = ray.d.x;
-    double d = v0.x - ray.o.x;
+    double c = ray.direction.x;
+    double d = v0.x - ray.origin.x;
     double e = v0.y - v1.y;
     double f = v0.y - v2.y;
-    double g = ray.d.y;
-    double h = v0.y - ray.o.y;
+    double g = ray.direction.y;
+    double h = v0.y - ray.origin.y;
     double i = v0.z - v1.z;
     double j = v0.z - v2.z;
-    double k = ray.d.z;
-    double l = v0.z - ray.o.z;
+    double k = ray.direction.z;
+    double l = v0.z - ray.origin.z;
     double m = f * k - g * j;
     double n = h * k - g * l;
     double p = f * l - h * j;
@@ -123,15 +124,22 @@ bool Triangle::hit(const Ray& ray, double& tmin)
     double e3 = a * p + b * r + d * s;
     double t = e3 * inv_denom;
     
-    if(t < kEpsilon)
+    if(t < cs.kEpsilon)
     {
         return false;
     }
     
     tmin = t;
     
-    hit_point = ray.o + t * ray.d;
+    hit_point = ray.origin + t * ray.direction;
     
     return true;
+}
+
+Box Triangle::get_bounding_box(void)
+{
+    double delta = 0.000001;
+    
+    return(Box(min(min(v0.x, v1.x), v2.x) - delta, max(max(v0.x, v1.x), v2.x) + delta, min(min(v0.y, v1.y), v2.y) - delta, max(max(v0.y, v1.y), v2.y) + delta, min(min(v0.z, v1.z), v2.z) - delta, max(max(v0.z, v1.z), v2.z) + delta));
 }
 

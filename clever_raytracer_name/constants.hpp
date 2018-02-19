@@ -3,6 +3,10 @@
 
 #include <stdlib.h>
 #include <string>
+#include <sstream>
+#include <iostream>
+#include <vector>
+#include "parameters.hpp"
 
 using namespace std;
 
@@ -10,6 +14,9 @@ using namespace std;
 class Constants
 {
 public:
+    Constants();
+    ~Constants();
+    
     const double PI = 3.1415926535897932384;
     const double PI_div_2 = 1.5707963267948922192;
     const double PI_mul_4_div_9 = 1.39626340159546;
@@ -65,7 +72,8 @@ public:
     double LEAF_TRAN = 0.075;
 
     //ENERGY BALANCE MODEL
-
+    const double KAPPA = 0.41;
+    
 
     //TEMP SETTING FOR WINDSPEED PARAMETER
     const double WINDSPEED_TEMP = 1;
@@ -174,8 +182,6 @@ public:
     double RH = 50;
     double G0 = 20;
     double G1 = 11.35;
-    double GS = 0.7;
-    double CI = 210;
     
     //LIGHT REACTION AND ELECTRON TRANSPORT RATE
     //FARQUHAR MODEL FOR DARK REACTION
@@ -184,8 +190,6 @@ public:
     double OA = 210;
     double GSTAR = 41;
     double RD = 1;
-    double KC = 404;
-    double KO = 278;
     double VCMAX = 80;
     double KN = 2;
     

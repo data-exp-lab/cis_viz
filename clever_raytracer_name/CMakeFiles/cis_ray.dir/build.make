@@ -84,9 +84,33 @@ CMakeFiles/cis_ray.dir/main.cpp.o.provides: CMakeFiles/cis_ray.dir/main.cpp.o.re
 CMakeFiles/cis_ray.dir/main.cpp.o.provides.build: CMakeFiles/cis_ray.dir/main.cpp.o
 
 
+CMakeFiles/cis_ray.dir/leaf.cpp.o: CMakeFiles/cis_ray.dir/flags.make
+CMakeFiles/cis_ray.dir/leaf.cpp.o: leaf.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/cis_ray.dir/leaf.cpp.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/cis_ray.dir/leaf.cpp.o -c "/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/leaf.cpp"
+
+CMakeFiles/cis_ray.dir/leaf.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/cis_ray.dir/leaf.cpp.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/leaf.cpp" > CMakeFiles/cis_ray.dir/leaf.cpp.i
+
+CMakeFiles/cis_ray.dir/leaf.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/cis_ray.dir/leaf.cpp.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/leaf.cpp" -o CMakeFiles/cis_ray.dir/leaf.cpp.s
+
+CMakeFiles/cis_ray.dir/leaf.cpp.o.requires:
+
+.PHONY : CMakeFiles/cis_ray.dir/leaf.cpp.o.requires
+
+CMakeFiles/cis_ray.dir/leaf.cpp.o.provides: CMakeFiles/cis_ray.dir/leaf.cpp.o.requires
+	$(MAKE) -f CMakeFiles/cis_ray.dir/build.make CMakeFiles/cis_ray.dir/leaf.cpp.o.provides.build
+.PHONY : CMakeFiles/cis_ray.dir/leaf.cpp.o.provides
+
+CMakeFiles/cis_ray.dir/leaf.cpp.o.provides.build: CMakeFiles/cis_ray.dir/leaf.cpp.o
+
+
 CMakeFiles/cis_ray.dir/io.cpp.o: CMakeFiles/cis_ray.dir/flags.make
 CMakeFiles/cis_ray.dir/io.cpp.o: io.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/cis_ray.dir/io.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/cis_ray.dir/io.cpp.o"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/cis_ray.dir/io.cpp.o -c "/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/io.cpp"
 
 CMakeFiles/cis_ray.dir/io.cpp.i: cmake_force
@@ -108,9 +132,57 @@ CMakeFiles/cis_ray.dir/io.cpp.o.provides: CMakeFiles/cis_ray.dir/io.cpp.o.requir
 CMakeFiles/cis_ray.dir/io.cpp.o.provides.build: CMakeFiles/cis_ray.dir/io.cpp.o
 
 
+CMakeFiles/cis_ray.dir/normal.cpp.o: CMakeFiles/cis_ray.dir/flags.make
+CMakeFiles/cis_ray.dir/normal.cpp.o: normal.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/cis_ray.dir/normal.cpp.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/cis_ray.dir/normal.cpp.o -c "/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/normal.cpp"
+
+CMakeFiles/cis_ray.dir/normal.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/cis_ray.dir/normal.cpp.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/normal.cpp" > CMakeFiles/cis_ray.dir/normal.cpp.i
+
+CMakeFiles/cis_ray.dir/normal.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/cis_ray.dir/normal.cpp.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/normal.cpp" -o CMakeFiles/cis_ray.dir/normal.cpp.s
+
+CMakeFiles/cis_ray.dir/normal.cpp.o.requires:
+
+.PHONY : CMakeFiles/cis_ray.dir/normal.cpp.o.requires
+
+CMakeFiles/cis_ray.dir/normal.cpp.o.provides: CMakeFiles/cis_ray.dir/normal.cpp.o.requires
+	$(MAKE) -f CMakeFiles/cis_ray.dir/build.make CMakeFiles/cis_ray.dir/normal.cpp.o.provides.build
+.PHONY : CMakeFiles/cis_ray.dir/normal.cpp.o.provides
+
+CMakeFiles/cis_ray.dir/normal.cpp.o.provides.build: CMakeFiles/cis_ray.dir/normal.cpp.o
+
+
+CMakeFiles/cis_ray.dir/grid.cpp.o: CMakeFiles/cis_ray.dir/flags.make
+CMakeFiles/cis_ray.dir/grid.cpp.o: grid.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/cis_ray.dir/grid.cpp.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/cis_ray.dir/grid.cpp.o -c "/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/grid.cpp"
+
+CMakeFiles/cis_ray.dir/grid.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/cis_ray.dir/grid.cpp.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/grid.cpp" > CMakeFiles/cis_ray.dir/grid.cpp.i
+
+CMakeFiles/cis_ray.dir/grid.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/cis_ray.dir/grid.cpp.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/grid.cpp" -o CMakeFiles/cis_ray.dir/grid.cpp.s
+
+CMakeFiles/cis_ray.dir/grid.cpp.o.requires:
+
+.PHONY : CMakeFiles/cis_ray.dir/grid.cpp.o.requires
+
+CMakeFiles/cis_ray.dir/grid.cpp.o.provides: CMakeFiles/cis_ray.dir/grid.cpp.o.requires
+	$(MAKE) -f CMakeFiles/cis_ray.dir/build.make CMakeFiles/cis_ray.dir/grid.cpp.o.provides.build
+.PHONY : CMakeFiles/cis_ray.dir/grid.cpp.o.provides
+
+CMakeFiles/cis_ray.dir/grid.cpp.o.provides.build: CMakeFiles/cis_ray.dir/grid.cpp.o
+
+
 CMakeFiles/cis_ray.dir/commandArgs.cpp.o: CMakeFiles/cis_ray.dir/flags.make
 CMakeFiles/cis_ray.dir/commandArgs.cpp.o: commandArgs.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/cis_ray.dir/commandArgs.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/cis_ray.dir/commandArgs.cpp.o"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/cis_ray.dir/commandArgs.cpp.o -c "/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/commandArgs.cpp"
 
 CMakeFiles/cis_ray.dir/commandArgs.cpp.i: cmake_force
@@ -134,7 +206,7 @@ CMakeFiles/cis_ray.dir/commandArgs.cpp.o.provides.build: CMakeFiles/cis_ray.dir/
 
 CMakeFiles/cis_ray.dir/ray.cpp.o: CMakeFiles/cis_ray.dir/flags.make
 CMakeFiles/cis_ray.dir/ray.cpp.o: ray.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/cis_ray.dir/ray.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/cis_ray.dir/ray.cpp.o"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/cis_ray.dir/ray.cpp.o -c "/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/ray.cpp"
 
 CMakeFiles/cis_ray.dir/ray.cpp.i: cmake_force
@@ -158,7 +230,7 @@ CMakeFiles/cis_ray.dir/ray.cpp.o.provides.build: CMakeFiles/cis_ray.dir/ray.cpp.
 
 CMakeFiles/cis_ray.dir/climate.cpp.o: CMakeFiles/cis_ray.dir/flags.make
 CMakeFiles/cis_ray.dir/climate.cpp.o: climate.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/cis_ray.dir/climate.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/cis_ray.dir/climate.cpp.o"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/cis_ray.dir/climate.cpp.o -c "/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/climate.cpp"
 
 CMakeFiles/cis_ray.dir/climate.cpp.i: cmake_force
@@ -182,7 +254,7 @@ CMakeFiles/cis_ray.dir/climate.cpp.o.provides.build: CMakeFiles/cis_ray.dir/clim
 
 CMakeFiles/cis_ray.dir/color.cpp.o: CMakeFiles/cis_ray.dir/flags.make
 CMakeFiles/cis_ray.dir/color.cpp.o: color.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/cis_ray.dir/color.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/cis_ray.dir/color.cpp.o"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/cis_ray.dir/color.cpp.o -c "/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/color.cpp"
 
 CMakeFiles/cis_ray.dir/color.cpp.i: cmake_force
@@ -206,7 +278,7 @@ CMakeFiles/cis_ray.dir/color.cpp.o.provides.build: CMakeFiles/cis_ray.dir/color.
 
 CMakeFiles/cis_ray.dir/compound.cpp.o: CMakeFiles/cis_ray.dir/flags.make
 CMakeFiles/cis_ray.dir/compound.cpp.o: compound.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/cis_ray.dir/compound.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/cis_ray.dir/compound.cpp.o"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/cis_ray.dir/compound.cpp.o -c "/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/compound.cpp"
 
 CMakeFiles/cis_ray.dir/compound.cpp.i: cmake_force
@@ -230,7 +302,7 @@ CMakeFiles/cis_ray.dir/compound.cpp.o.provides.build: CMakeFiles/cis_ray.dir/com
 
 CMakeFiles/cis_ray.dir/equations.cpp.o: CMakeFiles/cis_ray.dir/flags.make
 CMakeFiles/cis_ray.dir/equations.cpp.o: equations.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/cis_ray.dir/equations.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/cis_ray.dir/equations.cpp.o"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/cis_ray.dir/equations.cpp.o -c "/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/equations.cpp"
 
 CMakeFiles/cis_ray.dir/equations.cpp.i: cmake_force
@@ -252,33 +324,9 @@ CMakeFiles/cis_ray.dir/equations.cpp.o.provides: CMakeFiles/cis_ray.dir/equation
 CMakeFiles/cis_ray.dir/equations.cpp.o.provides.build: CMakeFiles/cis_ray.dir/equations.cpp.o
 
 
-CMakeFiles/cis_ray.dir/leaf.cpp.o: CMakeFiles/cis_ray.dir/flags.make
-CMakeFiles/cis_ray.dir/leaf.cpp.o: leaf.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/cis_ray.dir/leaf.cpp.o"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/cis_ray.dir/leaf.cpp.o -c "/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/leaf.cpp"
-
-CMakeFiles/cis_ray.dir/leaf.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/cis_ray.dir/leaf.cpp.i"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/leaf.cpp" > CMakeFiles/cis_ray.dir/leaf.cpp.i
-
-CMakeFiles/cis_ray.dir/leaf.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/cis_ray.dir/leaf.cpp.s"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/leaf.cpp" -o CMakeFiles/cis_ray.dir/leaf.cpp.s
-
-CMakeFiles/cis_ray.dir/leaf.cpp.o.requires:
-
-.PHONY : CMakeFiles/cis_ray.dir/leaf.cpp.o.requires
-
-CMakeFiles/cis_ray.dir/leaf.cpp.o.provides: CMakeFiles/cis_ray.dir/leaf.cpp.o.requires
-	$(MAKE) -f CMakeFiles/cis_ray.dir/build.make CMakeFiles/cis_ray.dir/leaf.cpp.o.provides.build
-.PHONY : CMakeFiles/cis_ray.dir/leaf.cpp.o.provides
-
-CMakeFiles/cis_ray.dir/leaf.cpp.o.provides.build: CMakeFiles/cis_ray.dir/leaf.cpp.o
-
-
 CMakeFiles/cis_ray.dir/light.cpp.o: CMakeFiles/cis_ray.dir/flags.make
 CMakeFiles/cis_ray.dir/light.cpp.o: light.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/cis_ray.dir/light.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/cis_ray.dir/light.cpp.o"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/cis_ray.dir/light.cpp.o -c "/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/light.cpp"
 
 CMakeFiles/cis_ray.dir/light.cpp.i: cmake_force
@@ -302,7 +350,7 @@ CMakeFiles/cis_ray.dir/light.cpp.o.provides.build: CMakeFiles/cis_ray.dir/light.
 
 CMakeFiles/cis_ray.dir/scene.cpp.o: CMakeFiles/cis_ray.dir/flags.make
 CMakeFiles/cis_ray.dir/scene.cpp.o: scene.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/cis_ray.dir/scene.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object CMakeFiles/cis_ray.dir/scene.cpp.o"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/cis_ray.dir/scene.cpp.o -c "/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/scene.cpp"
 
 CMakeFiles/cis_ray.dir/scene.cpp.i: cmake_force
@@ -326,7 +374,7 @@ CMakeFiles/cis_ray.dir/scene.cpp.o.provides.build: CMakeFiles/cis_ray.dir/scene.
 
 CMakeFiles/cis_ray.dir/stomata.cpp.o: CMakeFiles/cis_ray.dir/flags.make
 CMakeFiles/cis_ray.dir/stomata.cpp.o: stomata.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/cis_ray.dir/stomata.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object CMakeFiles/cis_ray.dir/stomata.cpp.o"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/cis_ray.dir/stomata.cpp.o -c "/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/stomata.cpp"
 
 CMakeFiles/cis_ray.dir/stomata.cpp.i: cmake_force
@@ -348,9 +396,33 @@ CMakeFiles/cis_ray.dir/stomata.cpp.o.provides: CMakeFiles/cis_ray.dir/stomata.cp
 CMakeFiles/cis_ray.dir/stomata.cpp.o.provides.build: CMakeFiles/cis_ray.dir/stomata.cpp.o
 
 
+CMakeFiles/cis_ray.dir/thermal.cpp.o: CMakeFiles/cis_ray.dir/flags.make
+CMakeFiles/cis_ray.dir/thermal.cpp.o: thermal.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_15) "Building CXX object CMakeFiles/cis_ray.dir/thermal.cpp.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/cis_ray.dir/thermal.cpp.o -c "/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/thermal.cpp"
+
+CMakeFiles/cis_ray.dir/thermal.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/cis_ray.dir/thermal.cpp.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/thermal.cpp" > CMakeFiles/cis_ray.dir/thermal.cpp.i
+
+CMakeFiles/cis_ray.dir/thermal.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/cis_ray.dir/thermal.cpp.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/thermal.cpp" -o CMakeFiles/cis_ray.dir/thermal.cpp.s
+
+CMakeFiles/cis_ray.dir/thermal.cpp.o.requires:
+
+.PHONY : CMakeFiles/cis_ray.dir/thermal.cpp.o.requires
+
+CMakeFiles/cis_ray.dir/thermal.cpp.o.provides: CMakeFiles/cis_ray.dir/thermal.cpp.o.requires
+	$(MAKE) -f CMakeFiles/cis_ray.dir/build.make CMakeFiles/cis_ray.dir/thermal.cpp.o.provides.build
+.PHONY : CMakeFiles/cis_ray.dir/thermal.cpp.o.provides
+
+CMakeFiles/cis_ray.dir/thermal.cpp.o.provides.build: CMakeFiles/cis_ray.dir/thermal.cpp.o
+
+
 CMakeFiles/cis_ray.dir/triangle.cpp.o: CMakeFiles/cis_ray.dir/flags.make
 CMakeFiles/cis_ray.dir/triangle.cpp.o: triangle.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object CMakeFiles/cis_ray.dir/triangle.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_16) "Building CXX object CMakeFiles/cis_ray.dir/triangle.cpp.o"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/cis_ray.dir/triangle.cpp.o -c "/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/triangle.cpp"
 
 CMakeFiles/cis_ray.dir/triangle.cpp.i: cmake_force
@@ -372,41 +444,203 @@ CMakeFiles/cis_ray.dir/triangle.cpp.o.provides: CMakeFiles/cis_ray.dir/triangle.
 CMakeFiles/cis_ray.dir/triangle.cpp.o.provides.build: CMakeFiles/cis_ray.dir/triangle.cpp.o
 
 
+CMakeFiles/cis_ray.dir/box.cpp.o: CMakeFiles/cis_ray.dir/flags.make
+CMakeFiles/cis_ray.dir/box.cpp.o: box.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_17) "Building CXX object CMakeFiles/cis_ray.dir/box.cpp.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/cis_ray.dir/box.cpp.o -c "/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/box.cpp"
+
+CMakeFiles/cis_ray.dir/box.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/cis_ray.dir/box.cpp.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/box.cpp" > CMakeFiles/cis_ray.dir/box.cpp.i
+
+CMakeFiles/cis_ray.dir/box.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/cis_ray.dir/box.cpp.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/box.cpp" -o CMakeFiles/cis_ray.dir/box.cpp.s
+
+CMakeFiles/cis_ray.dir/box.cpp.o.requires:
+
+.PHONY : CMakeFiles/cis_ray.dir/box.cpp.o.requires
+
+CMakeFiles/cis_ray.dir/box.cpp.o.provides: CMakeFiles/cis_ray.dir/box.cpp.o.requires
+	$(MAKE) -f CMakeFiles/cis_ray.dir/build.make CMakeFiles/cis_ray.dir/box.cpp.o.provides.build
+.PHONY : CMakeFiles/cis_ray.dir/box.cpp.o.provides
+
+CMakeFiles/cis_ray.dir/box.cpp.o.provides.build: CMakeFiles/cis_ray.dir/box.cpp.o
+
+
+CMakeFiles/cis_ray.dir/cimodel.cpp.o: CMakeFiles/cis_ray.dir/flags.make
+CMakeFiles/cis_ray.dir/cimodel.cpp.o: cimodel.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_18) "Building CXX object CMakeFiles/cis_ray.dir/cimodel.cpp.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/cis_ray.dir/cimodel.cpp.o -c "/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/cimodel.cpp"
+
+CMakeFiles/cis_ray.dir/cimodel.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/cis_ray.dir/cimodel.cpp.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/cimodel.cpp" > CMakeFiles/cis_ray.dir/cimodel.cpp.i
+
+CMakeFiles/cis_ray.dir/cimodel.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/cis_ray.dir/cimodel.cpp.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/cimodel.cpp" -o CMakeFiles/cis_ray.dir/cimodel.cpp.s
+
+CMakeFiles/cis_ray.dir/cimodel.cpp.o.requires:
+
+.PHONY : CMakeFiles/cis_ray.dir/cimodel.cpp.o.requires
+
+CMakeFiles/cis_ray.dir/cimodel.cpp.o.provides: CMakeFiles/cis_ray.dir/cimodel.cpp.o.requires
+	$(MAKE) -f CMakeFiles/cis_ray.dir/build.make CMakeFiles/cis_ray.dir/cimodel.cpp.o.provides.build
+.PHONY : CMakeFiles/cis_ray.dir/cimodel.cpp.o.provides
+
+CMakeFiles/cis_ray.dir/cimodel.cpp.o.provides.build: CMakeFiles/cis_ray.dir/cimodel.cpp.o
+
+
+CMakeFiles/cis_ray.dir/energyBalance.cpp.o: CMakeFiles/cis_ray.dir/flags.make
+CMakeFiles/cis_ray.dir/energyBalance.cpp.o: energyBalance.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_19) "Building CXX object CMakeFiles/cis_ray.dir/energyBalance.cpp.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/cis_ray.dir/energyBalance.cpp.o -c "/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/energyBalance.cpp"
+
+CMakeFiles/cis_ray.dir/energyBalance.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/cis_ray.dir/energyBalance.cpp.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/energyBalance.cpp" > CMakeFiles/cis_ray.dir/energyBalance.cpp.i
+
+CMakeFiles/cis_ray.dir/energyBalance.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/cis_ray.dir/energyBalance.cpp.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/energyBalance.cpp" -o CMakeFiles/cis_ray.dir/energyBalance.cpp.s
+
+CMakeFiles/cis_ray.dir/energyBalance.cpp.o.requires:
+
+.PHONY : CMakeFiles/cis_ray.dir/energyBalance.cpp.o.requires
+
+CMakeFiles/cis_ray.dir/energyBalance.cpp.o.provides: CMakeFiles/cis_ray.dir/energyBalance.cpp.o.requires
+	$(MAKE) -f CMakeFiles/cis_ray.dir/build.make CMakeFiles/cis_ray.dir/energyBalance.cpp.o.provides.build
+.PHONY : CMakeFiles/cis_ray.dir/energyBalance.cpp.o.provides
+
+CMakeFiles/cis_ray.dir/energyBalance.cpp.o.provides.build: CMakeFiles/cis_ray.dir/energyBalance.cpp.o
+
+
+CMakeFiles/cis_ray.dir/parameters.cpp.o: CMakeFiles/cis_ray.dir/flags.make
+CMakeFiles/cis_ray.dir/parameters.cpp.o: parameters.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_20) "Building CXX object CMakeFiles/cis_ray.dir/parameters.cpp.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/cis_ray.dir/parameters.cpp.o -c "/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/parameters.cpp"
+
+CMakeFiles/cis_ray.dir/parameters.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/cis_ray.dir/parameters.cpp.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/parameters.cpp" > CMakeFiles/cis_ray.dir/parameters.cpp.i
+
+CMakeFiles/cis_ray.dir/parameters.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/cis_ray.dir/parameters.cpp.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/parameters.cpp" -o CMakeFiles/cis_ray.dir/parameters.cpp.s
+
+CMakeFiles/cis_ray.dir/parameters.cpp.o.requires:
+
+.PHONY : CMakeFiles/cis_ray.dir/parameters.cpp.o.requires
+
+CMakeFiles/cis_ray.dir/parameters.cpp.o.provides: CMakeFiles/cis_ray.dir/parameters.cpp.o.requires
+	$(MAKE) -f CMakeFiles/cis_ray.dir/build.make CMakeFiles/cis_ray.dir/parameters.cpp.o.provides.build
+.PHONY : CMakeFiles/cis_ray.dir/parameters.cpp.o.provides
+
+CMakeFiles/cis_ray.dir/parameters.cpp.o.provides.build: CMakeFiles/cis_ray.dir/parameters.cpp.o
+
+
+CMakeFiles/cis_ray.dir/point.cpp.o: CMakeFiles/cis_ray.dir/flags.make
+CMakeFiles/cis_ray.dir/point.cpp.o: point.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_21) "Building CXX object CMakeFiles/cis_ray.dir/point.cpp.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/cis_ray.dir/point.cpp.o -c "/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/point.cpp"
+
+CMakeFiles/cis_ray.dir/point.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/cis_ray.dir/point.cpp.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/point.cpp" > CMakeFiles/cis_ray.dir/point.cpp.i
+
+CMakeFiles/cis_ray.dir/point.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/cis_ray.dir/point.cpp.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/point.cpp" -o CMakeFiles/cis_ray.dir/point.cpp.s
+
+CMakeFiles/cis_ray.dir/point.cpp.o.requires:
+
+.PHONY : CMakeFiles/cis_ray.dir/point.cpp.o.requires
+
+CMakeFiles/cis_ray.dir/point.cpp.o.provides: CMakeFiles/cis_ray.dir/point.cpp.o.requires
+	$(MAKE) -f CMakeFiles/cis_ray.dir/build.make CMakeFiles/cis_ray.dir/point.cpp.o.provides.build
+.PHONY : CMakeFiles/cis_ray.dir/point.cpp.o.provides
+
+CMakeFiles/cis_ray.dir/point.cpp.o.provides.build: CMakeFiles/cis_ray.dir/point.cpp.o
+
+
+CMakeFiles/cis_ray.dir/farquharModel.cpp.o: CMakeFiles/cis_ray.dir/flags.make
+CMakeFiles/cis_ray.dir/farquharModel.cpp.o: farquharModel.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_22) "Building CXX object CMakeFiles/cis_ray.dir/farquharModel.cpp.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/cis_ray.dir/farquharModel.cpp.o -c "/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/farquharModel.cpp"
+
+CMakeFiles/cis_ray.dir/farquharModel.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/cis_ray.dir/farquharModel.cpp.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/farquharModel.cpp" > CMakeFiles/cis_ray.dir/farquharModel.cpp.i
+
+CMakeFiles/cis_ray.dir/farquharModel.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/cis_ray.dir/farquharModel.cpp.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/farquharModel.cpp" -o CMakeFiles/cis_ray.dir/farquharModel.cpp.s
+
+CMakeFiles/cis_ray.dir/farquharModel.cpp.o.requires:
+
+.PHONY : CMakeFiles/cis_ray.dir/farquharModel.cpp.o.requires
+
+CMakeFiles/cis_ray.dir/farquharModel.cpp.o.provides: CMakeFiles/cis_ray.dir/farquharModel.cpp.o.requires
+	$(MAKE) -f CMakeFiles/cis_ray.dir/build.make CMakeFiles/cis_ray.dir/farquharModel.cpp.o.provides.build
+.PHONY : CMakeFiles/cis_ray.dir/farquharModel.cpp.o.provides
+
+CMakeFiles/cis_ray.dir/farquharModel.cpp.o.provides.build: CMakeFiles/cis_ray.dir/farquharModel.cpp.o
+
+
 # Object files for target cis_ray
 cis_ray_OBJECTS = \
 "CMakeFiles/cis_ray.dir/main.cpp.o" \
+"CMakeFiles/cis_ray.dir/leaf.cpp.o" \
 "CMakeFiles/cis_ray.dir/io.cpp.o" \
+"CMakeFiles/cis_ray.dir/normal.cpp.o" \
+"CMakeFiles/cis_ray.dir/grid.cpp.o" \
 "CMakeFiles/cis_ray.dir/commandArgs.cpp.o" \
 "CMakeFiles/cis_ray.dir/ray.cpp.o" \
 "CMakeFiles/cis_ray.dir/climate.cpp.o" \
 "CMakeFiles/cis_ray.dir/color.cpp.o" \
 "CMakeFiles/cis_ray.dir/compound.cpp.o" \
 "CMakeFiles/cis_ray.dir/equations.cpp.o" \
-"CMakeFiles/cis_ray.dir/leaf.cpp.o" \
 "CMakeFiles/cis_ray.dir/light.cpp.o" \
 "CMakeFiles/cis_ray.dir/scene.cpp.o" \
 "CMakeFiles/cis_ray.dir/stomata.cpp.o" \
-"CMakeFiles/cis_ray.dir/triangle.cpp.o"
+"CMakeFiles/cis_ray.dir/thermal.cpp.o" \
+"CMakeFiles/cis_ray.dir/triangle.cpp.o" \
+"CMakeFiles/cis_ray.dir/box.cpp.o" \
+"CMakeFiles/cis_ray.dir/cimodel.cpp.o" \
+"CMakeFiles/cis_ray.dir/energyBalance.cpp.o" \
+"CMakeFiles/cis_ray.dir/parameters.cpp.o" \
+"CMakeFiles/cis_ray.dir/point.cpp.o" \
+"CMakeFiles/cis_ray.dir/farquharModel.cpp.o"
 
 # External object files for target cis_ray
 cis_ray_EXTERNAL_OBJECTS =
 
 cis_ray: CMakeFiles/cis_ray.dir/main.cpp.o
+cis_ray: CMakeFiles/cis_ray.dir/leaf.cpp.o
 cis_ray: CMakeFiles/cis_ray.dir/io.cpp.o
+cis_ray: CMakeFiles/cis_ray.dir/normal.cpp.o
+cis_ray: CMakeFiles/cis_ray.dir/grid.cpp.o
 cis_ray: CMakeFiles/cis_ray.dir/commandArgs.cpp.o
 cis_ray: CMakeFiles/cis_ray.dir/ray.cpp.o
 cis_ray: CMakeFiles/cis_ray.dir/climate.cpp.o
 cis_ray: CMakeFiles/cis_ray.dir/color.cpp.o
 cis_ray: CMakeFiles/cis_ray.dir/compound.cpp.o
 cis_ray: CMakeFiles/cis_ray.dir/equations.cpp.o
-cis_ray: CMakeFiles/cis_ray.dir/leaf.cpp.o
 cis_ray: CMakeFiles/cis_ray.dir/light.cpp.o
 cis_ray: CMakeFiles/cis_ray.dir/scene.cpp.o
 cis_ray: CMakeFiles/cis_ray.dir/stomata.cpp.o
+cis_ray: CMakeFiles/cis_ray.dir/thermal.cpp.o
 cis_ray: CMakeFiles/cis_ray.dir/triangle.cpp.o
+cis_ray: CMakeFiles/cis_ray.dir/box.cpp.o
+cis_ray: CMakeFiles/cis_ray.dir/cimodel.cpp.o
+cis_ray: CMakeFiles/cis_ray.dir/energyBalance.cpp.o
+cis_ray: CMakeFiles/cis_ray.dir/parameters.cpp.o
+cis_ray: CMakeFiles/cis_ray.dir/point.cpp.o
+cis_ray: CMakeFiles/cis_ray.dir/farquharModel.cpp.o
 cis_ray: CMakeFiles/cis_ray.dir/build.make
 cis_ray: CMakeFiles/cis_ray.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir="/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_14) "Linking CXX executable cis_ray"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir="/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_23) "Linking CXX executable cis_ray"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/cis_ray.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -415,18 +649,27 @@ CMakeFiles/cis_ray.dir/build: cis_ray
 .PHONY : CMakeFiles/cis_ray.dir/build
 
 CMakeFiles/cis_ray.dir/requires: CMakeFiles/cis_ray.dir/main.cpp.o.requires
+CMakeFiles/cis_ray.dir/requires: CMakeFiles/cis_ray.dir/leaf.cpp.o.requires
 CMakeFiles/cis_ray.dir/requires: CMakeFiles/cis_ray.dir/io.cpp.o.requires
+CMakeFiles/cis_ray.dir/requires: CMakeFiles/cis_ray.dir/normal.cpp.o.requires
+CMakeFiles/cis_ray.dir/requires: CMakeFiles/cis_ray.dir/grid.cpp.o.requires
 CMakeFiles/cis_ray.dir/requires: CMakeFiles/cis_ray.dir/commandArgs.cpp.o.requires
 CMakeFiles/cis_ray.dir/requires: CMakeFiles/cis_ray.dir/ray.cpp.o.requires
 CMakeFiles/cis_ray.dir/requires: CMakeFiles/cis_ray.dir/climate.cpp.o.requires
 CMakeFiles/cis_ray.dir/requires: CMakeFiles/cis_ray.dir/color.cpp.o.requires
 CMakeFiles/cis_ray.dir/requires: CMakeFiles/cis_ray.dir/compound.cpp.o.requires
 CMakeFiles/cis_ray.dir/requires: CMakeFiles/cis_ray.dir/equations.cpp.o.requires
-CMakeFiles/cis_ray.dir/requires: CMakeFiles/cis_ray.dir/leaf.cpp.o.requires
 CMakeFiles/cis_ray.dir/requires: CMakeFiles/cis_ray.dir/light.cpp.o.requires
 CMakeFiles/cis_ray.dir/requires: CMakeFiles/cis_ray.dir/scene.cpp.o.requires
 CMakeFiles/cis_ray.dir/requires: CMakeFiles/cis_ray.dir/stomata.cpp.o.requires
+CMakeFiles/cis_ray.dir/requires: CMakeFiles/cis_ray.dir/thermal.cpp.o.requires
 CMakeFiles/cis_ray.dir/requires: CMakeFiles/cis_ray.dir/triangle.cpp.o.requires
+CMakeFiles/cis_ray.dir/requires: CMakeFiles/cis_ray.dir/box.cpp.o.requires
+CMakeFiles/cis_ray.dir/requires: CMakeFiles/cis_ray.dir/cimodel.cpp.o.requires
+CMakeFiles/cis_ray.dir/requires: CMakeFiles/cis_ray.dir/energyBalance.cpp.o.requires
+CMakeFiles/cis_ray.dir/requires: CMakeFiles/cis_ray.dir/parameters.cpp.o.requires
+CMakeFiles/cis_ray.dir/requires: CMakeFiles/cis_ray.dir/point.cpp.o.requires
+CMakeFiles/cis_ray.dir/requires: CMakeFiles/cis_ray.dir/farquharModel.cpp.o.requires
 
 .PHONY : CMakeFiles/cis_ray.dir/requires
 

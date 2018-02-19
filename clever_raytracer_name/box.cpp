@@ -13,7 +13,7 @@ Box::~Box()
     
 }
 
-bool Box::hit(const Ray& ray) const
+bool Box::hit(const raytrace::Ray& ray) const
 {
     double kEpsilon = 0;
     double x0 = 0;
@@ -23,12 +23,12 @@ bool Box::hit(const Ray& ray) const
     double y1 = 0;
     double z1 = 0;
     
-    double ox = ray.o.x;
-    double oy = ray.o.y;
-    double oz = ray.o.z;
-    double dx = ray.d.x;
-    double dy = ray.d.y;
-    double dz = ray.d.z;
+    double ox = ray.origin.x;
+    double oy = ray.origin.y;
+    double oz = ray.origin.z;
+    double dx = ray.direction.x;
+    double dy = ray.direction.y;
+    double dz = ray.direction.z;
     
     double tx_min;
     double ty_min;
@@ -40,7 +40,7 @@ bool Box::hit(const Ray& ray) const
     double a = 1.0 / dx;
     if(a >= 0)
     {
-        tx_min = (x0 - xo) * a;
+        tx_min = (x0 - ox) * a;
         tx_max = (x1 - ox) * a;
     }
     else
@@ -70,7 +70,7 @@ bool Box::hit(const Ray& ray) const
     else
     {
         tz_min = (z1 - oz) * c;
-        tz_max = (z0 - oz * c;)
+        tz_max = (z0 - oz * c);
     }
     
     double t0;

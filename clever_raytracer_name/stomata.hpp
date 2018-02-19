@@ -1,3 +1,6 @@
+#ifndef __STOMATA__
+#define __STOMATA__
+
 #include "parameters.hpp"
 #include "constants.hpp"
 #include "climate.hpp"
@@ -9,3 +12,5 @@ public:
     Parameters const_gs(Constants cs, Parameters ip);
     
 };
+
+#endif

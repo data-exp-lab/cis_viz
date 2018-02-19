@@ -2,6 +2,7 @@
 #define __PARAMETERS__
 
 #include <cmath>
+#include "constants.hpp"
 
 class Parameters
 {
@@ -30,6 +31,9 @@ public:
     double GS;
     double RD;
     
+    double KC;
+    double KO;
+    
     double PPFDsat;
     
     int isRubiscoLimit;
@@ -37,9 +41,9 @@ public:
     Parameters();
     Parameters(int parameterFlag);
     
-    void prepare(/*INPUT PARAMETERS*/ int leafID, double CLAI, double PPFD1);
+    void prepare(int leafID, double CLAI, double PPFD1);
     
-    void prepare_avgVcmaxJmax(/*INPUT PARAMETERS*/ double PPFD1, double leafT);
+    void prepare_avgVcmaxJmax(double PPFD1, double Tleaf);
 
 };
 

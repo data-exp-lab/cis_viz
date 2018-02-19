@@ -28,8 +28,16 @@ public:
     Normal operator* (const double a) const;
     
     void normalize(void);
+    void normalize(double x, double y, double z);
+    void normalize(Point x, Point y, Point z);
     
 };
+
+Normal operator^(Point& a, Point& b)
+{
+    return (Normal(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x));
+    
+}
 
 inline Normal Normal::operator- (void) const
 {
@@ -50,11 +58,10 @@ inline Normal& Normal::operator+= (const Normal& n)
     return (*this);
 }
 
-inline double Normal::operator* (const raytrace::Vect& v) const
-{
-    return (x * v.x + y * v.y + z * v.z);
-}
 
+
+
+/*
 inline Normal Normal::operator* (const double a) const
 {
     return (Normal(x * a, y * a, z * a));
@@ -76,10 +83,7 @@ inline raytrace::Vect operator+ (const raytrace::Vect& v, const Normal& n)
 
 raytrace::Vect operator- (const raytrace::Vect&, const Normal& n);
 
-inline raytrace::Vect operator- (const raytrace::Vect& v, const Normal& n)
-{
-    return (raytrace::Vect(v.x - n.x, v.y - n.y, v.z - n.z));
-}
+
 
 double operator* (const raytrace::Vect& v, const Normal& n);
 
@@ -88,6 +92,6 @@ inline double operator* (const raytrace::Vect& v, const Normal& n)
     return (v.x * n.x + v.y * n.y + v.z * n.z);
 }
 
-
+*/
 
 #endif
