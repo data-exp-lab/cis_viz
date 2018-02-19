@@ -1,6 +1,7 @@
 #ifndef __POINT__
 #define __POINT__
 
+<<<<<<< HEAD
 //#include "ray.hpp"
 
 namespace raytrace
@@ -8,6 +9,15 @@ namespace raytrace
     template<typename T> class Vector;
     typedef Vector<float> Vect;
 }
+=======
+namespace raytrace {
+  template<typename T> class Vector;
+  typedef Vector<float> Vect;
+}
+
+// We do cross-includes, so we will forward declare a handful of things.
+
+>>>>>>> 397731fc3154517cb058a8f4b5e83c32c7e1a7b3
 
 class Point
 {
@@ -35,6 +45,7 @@ public:
     double distance(const Point& p) const;
 };
 
+<<<<<<< HEAD
 /*inline Point Point::operator- (void) const
 {
     return (Point(-x, -y, -z));
@@ -66,4 +77,6 @@ inline Point operator* (double a, const Point& p)
 }
 */
 
+=======
+>>>>>>> 397731fc3154517cb058a8f4b5e83c32c7e1a7b3
 #endif

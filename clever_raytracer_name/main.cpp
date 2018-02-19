@@ -38,6 +38,7 @@
 
 #include "commandArgs.hpp"
 #include "io.hpp"
+#include "point.hpp"
 #include "ray.hpp"
 #include "reader.hpp"
 //#include "camera.hpp"
