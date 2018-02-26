@@ -35,6 +35,7 @@
 #include <fstream>
 #include <sstream>
 #include <iomanip>
+#include <functional>
 
 #include "commandArgs.hpp"
 #include "io.hpp"
