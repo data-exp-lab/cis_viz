@@ -4,6 +4,8 @@
 #include <vector>
 #include "grid.hpp"
 #include "normal.hpp"
+#include "ray.hpp"
+#include "point.hpp"
 
 using namespace std;
 
@@ -59,8 +61,7 @@ void writeModelFile(string output_model_file_name, int num, double start, double
             if((*it)->v0.x > xMin && (*it)->v0.y > yMin && (*it)->v1.x > xMin && (*it)->v1.y > yMin && (*it)->v2.x > xMin && (*it)->v2.y > yMin &&
                (*it)->v0.x < xMax && (*it)->v0.y < yMax && (*it)->v1.x < xMax && (*it)->v1.y < yMax && (*it)->v2.x < xMax && (*it)->v2.y < yMax)
             {
-                //area = (((*it)->v1 - (*it)->v0) ^ ((*it)->v2 - (*it)->v0)).length() * 0.5;
-                area = 0.5;
+                area = (((*it)->v1 - (*it)->v0) ^ ((*it)->v2 - (*it)->v0)).length() * 0.5;
                 
                 myfile << setprecision(2) << (*it)->v0.x << "\t"
                 << setprecision(2) << (*it)->v0.y << "\t"
@@ -110,6 +111,7 @@ void writeModelFile(string output_model_file_name, int num, double start, double
                 
                 double area_factor = 1 / (area * 1e-4);
                 
+                //it1 = photonFlux_up_dir.begin();
                 it2 = photonFlux_up_diff.begin();
                 it3 = photonFlux_up_scat.begin();
                 it4 = photonFlux_down_dir.begin();
@@ -149,8 +151,72 @@ void writeModelFile(string output_model_file_name, int num, double start, double
     
 };
 
-void writePhotosyntheticFile()
+void writePhotosyntheticFile(string photosynthetic_file_name, Grid* grid)
 {
+    ofstream myfile(photosynthetic_file_name);
+    if(myfile.is_open())
+    {
+        myfile.setf(ios::fixed);
+        
+        double area;
+        
+        int num_triangles = grid->get_triangles().size();
+        vector<Triangle*> v = grid->get_triangles();
+        vector<Triangle*>::iterator it;
+        
+        area = (((*it)->v1 - (*it)->v0) ^ ((*it)->v2 - (*it)->v0)).length() * 0.5;
+        
+        for(it = v.begin(); it != v.end(); it++)
+        {
+            //TITLE
+            myfile << "Photosynthesis Rate" << "\t";
+            
+            vector<double> PPFDsat = (*it)->PPFDSAT;
+            vector<double>::iterator itPPFDsat;
+            
+            vector<double> photonFlux_up_dir = (*it)->photonFlux_up_dir;
+            vector<double> photonFlux_up_diff = (*it)->photonFlux_up_diff;
+            vector<double> photonFlux_up_scat = (*it)->photonFlux_up_scat;
+            vector<double> photonFlux_down_dir = (*it)->photonFlux_down_dir;
+            vector<double> photonFlux_down_diff = (*it)->photonFlux_down_diff;
+            vector<double> photonFlux_down_scat = (*it)->photonFlux_down_scat;
+            
+            vector<double>::iterator it1;
+            vector<double>::iterator it2;
+            vector<double>::iterator it3;
+            vector<double>::iterator it4;
+            vector<double>::iterator it5;
+            vector<double>::iterator it6;
+            
+            double area_factor = 1 / (area * 1e-4);
+            
+            //itPPFDsat = PPFDsat.begin();
+            it1 = photonFlux_up_dir.begin();
+            it2 = photonFlux_up_diff.begin();
+            it3 = photonFlux_up_scat.begin();
+            it4 = photonFlux_down_dir.begin();
+            it5 = photonFlux_down_diff.begin();
+            it6 = photonFlux_down_scat.begin();
+            
+            for(itPPFDsat = PPFDsat.begin(); itPPFDsat != PPFDsat.end(); itPPFDsat++)
+            {
+                //OUTPUT TOTAL PPFD FROM DIRECT, DIFFUSE, AND SCATTERED LIGHT
+                myfile << ((*it1) + (*it2) + (*it3) + (*it4) + (*it5) + (*it6)) * area_factor;
+                
+                it1++;
+                it2++;
+                it3++;
+                it4++;
+                it5++;
+                it6++;
+                itPPFDsat++;
+            }
+
+            myfile << "\n";
+        }
+    }
+    
+    myfile.close();
     
 };
 

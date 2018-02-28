@@ -16,7 +16,7 @@ public:
     double ppfd_diffuse_list[368];
     
     Leaf();
-    virtual ~Leaf();
+    ~Leaf();
     double* runCurves(Constants cs, Parameters ip, char X[], double x_start, double x_end, char Y[], char T[], double[3]);
     
     raytrace::Vect get_reflect_dir(raytrace::Vect L, raytrace::Vect N, Constants cs);

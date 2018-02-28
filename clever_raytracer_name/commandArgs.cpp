@@ -50,7 +50,8 @@ void ParseThreeValues(int values[3], const char *optarg)
     values[2] = atoi(tk);
 }
 
-const char *commandLineOptions = "a:m:s:v:o:f:e:i:r:l:j:h";
+//const char *commandLineOptions = "a:m:s:v:o:f:e:i:r:l:j:h";
+const char *commandLineOptions = "a:o:f:e:i:r:l:j:h";
 
 /********
  * Process command line input
@@ -79,9 +80,9 @@ void ProcessCommandLine(int argc, char *argv[])
             case 'v':
                 cla.vxFile = optarg;
                 break;
-            //case 'o':
-            //    cla.outputFile = optarg;
-            //    break;
+            case 'o':
+                cla.outputFile = optarg;
+                break;
             case 'f':
                 cla.startHour = atof(optarg);
                 break;
@@ -107,7 +108,7 @@ void ProcessCommandLine(int argc, char *argv[])
     }
     
     //check for all required arguments
-    if(cla.threeDModelFile == 0 || cla.meansFile == 0 || cla.stdFile == 0 || cla.vxFile == 0 /*|| cla.outputFile == 0 ||*/ || cla.startHour == 0 || cla.endHour == 0 || cla.intervalHour == 0 || cla.rayDistance == 0|| cla.leafTransmittance == 0 || cla.leafReflectivity == 0)
+    if(cla.threeDModelFile == 0 || /*cla.meansFile == 0 || cla.stdFile == 0 || cla.vxFile == 0 ||*/ cla.outputFile == 0 || cla.startHour == 0 || cla.endHour == 0 || cla.intervalHour == 0 || cla.rayDistance == 0|| cla.leafTransmittance == 0 || cla.leafReflectivity == 0)
     {
         DisplayUsage(argv);
     }

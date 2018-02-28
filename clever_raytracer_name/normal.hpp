@@ -3,6 +3,14 @@
 
 #include "ray.hpp"
 #include "point.hpp"
+#include <vector>
+#include <iostream>
+#include <cmath>
+#include <string>
+#include <sstream>
+#include <fstream>
+
+//class Vector;
 
 class Normal
 {
@@ -13,6 +21,7 @@ public:
     Normal(double _x, double _y, double _z);
     Normal(const Normal& n);
     Normal(const raytrace::Vect& v);
+
     
     ~Normal(void);
     
@@ -31,6 +40,7 @@ public:
     void normalize(double x, double y, double z);
     void normalize(Point x, Point y, Point z);
     
+
 };
 
 Normal operator^(Point& a, Point& b)
@@ -57,7 +67,6 @@ inline Normal& Normal::operator+= (const Normal& n)
     
     return (*this);
 }
-
 
 
 

@@ -16,7 +16,7 @@ public:
     double ignore_Photon_Flux_threshold;
     
     Grid(double ignore_threshold);
-    virtual ~Grid();
+    ~Grid();
     
     void setup_cells(Point p0, Point p1);
     void add_triangle(Triangle* triangle);
@@ -44,13 +44,9 @@ private:
     Point min_coordinates(void);
     Point max_coordinates(void);
     
-    //Leaf* leaf_optics;
     
     
 };
-
-
-
 
 
 

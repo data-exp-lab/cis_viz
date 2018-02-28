@@ -92,6 +92,10 @@ ray.hpp
 vector
 -
 
+/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/constants.cpp
+constants.hpp
+/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/constants.hpp
+
 /Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/constants.hpp
 stdlib.h
 -
@@ -243,6 +247,8 @@ sstream
 -
 iomanip
 -
+functional
+-
 commandArgs.hpp
 /Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/commandArgs.hpp
 io.hpp
@@ -269,6 +275,8 @@ writer.hpp
 /Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/normal.cpp
 normal.hpp
 /Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/normal.hpp
+ray.hpp
+/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/ray.hpp
 math.h
 -
 
@@ -277,6 +285,18 @@ ray.hpp
 /Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/ray.hpp
 point.hpp
 /Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/point.hpp
+vector
+-
+iostream
+-
+cmath
+-
+string
+-
+sstream
+-
+fstream
+-
 
 /Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/parameters.cpp
 parameters.hpp
@@ -295,6 +315,8 @@ math.h
 -
 point.hpp
 /Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/point.hpp
+ray.hpp
+/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/ray.hpp
 
 /Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/point.hpp
 
@@ -367,6 +389,8 @@ constants.hpp
 /Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/triangle.cpp
 triangle.hpp
 /Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/triangle.hpp
+normal.hpp
+/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/normal.hpp
 equations.hpp
 /Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/equations.hpp
 constants.hpp
@@ -390,6 +414,12 @@ box.hpp
 vector
 -
 
+/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/vect.cpp
+ray.hpp
+/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/ray.hpp
+normal.hpp
+/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/normal.hpp
+
 /Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/writer.hpp
 stdlib.h
 -
@@ -403,4 +433,8 @@ grid.hpp
 /Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/grid.hpp
 normal.hpp
 /Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/normal.hpp
+ray.hpp
+/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/ray.hpp
+point.hpp
+/Users/Colleen/Documents/National Center for Supercomputing Applications/Crops in Silico/clever_raytracer_name/point.hpp
 

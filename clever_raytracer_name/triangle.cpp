@@ -1,4 +1,5 @@
 #include "triangle.hpp"
+#include "normal.hpp"
 #include "equations.hpp"
 #include "constants.hpp"
 #include <iostream>

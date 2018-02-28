@@ -51,6 +51,7 @@ void Parameters::prepare(int leafID, double CLAI, double PPFD1)
     JMAX = JMAX * exp(-KN * CLAI);
     
     ip.CI = cs.CA * 0.7;
+    
 }
 
 void Parameters::prepare_avgVcmaxJmax(double PPFD1, double leafT)

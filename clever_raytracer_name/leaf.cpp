@@ -13,6 +13,16 @@
 
 using namespace std;
 
+Leaf::Leaf()
+{
+    
+}
+
+Leaf::~Leaf()
+{
+    
+}
+
 double* Leaf::runCurves(Constants cs, Parameters ip, char X[], double x_start, double x_end, char Y[], char T[], double t[3])
 {
     double *x_ptr = NULL;
@@ -46,15 +56,7 @@ double* Leaf::runCurves(Constants cs, Parameters ip, char X[], double x_start, d
     return y_ptr;
 }
             
-Leaf::Leaf()
-{
-    
-}
 
-Leaf::~Leaf()
-{
-    
-}
             
 raytrace::Vect Leaf::get_reflect_dir(raytrace::Vect L, raytrace::Vect N, Constants cs)
 {
@@ -225,7 +227,7 @@ raytrace::Vect Leaf::vMidLine(raytrace::Vect A, raytrace::Vect B)
 double Leaf::vAngle(raytrace::Vect A, raytrace::Vect B)
 {
     double AB = (A.x * B.x) + (A.y * B.y) + (A.z * B.z);
-    //acos of dot product equals angle
+    //ACOS OF DOT PRODUCT EQUALS ANGLE
     double angle = acos((AB) / (A.length() * B.length()));
     
     //double angle = acos((A * B) / (A.length() * B.length()));

@@ -9,6 +9,7 @@
 #include "box.hpp"
 #include <vector>
 
+
 class Triangle
 {
 public:
@@ -49,10 +50,10 @@ public:
     virtual ~Triangle();
     
     bool hit(const raytrace::Ray& ray, double& tmin, Constants cs);
-    
+    void compute_normal(void);
+
     Box get_bounding_box(void);
     
-    void compute_normal(void);
     
 };
 

@@ -14,6 +14,8 @@ using namespace std;
 class Point;
 class Normal;
 
+//Normal* Normal;
+
 double x, y, z;
 namespace raytrace
 {
@@ -23,12 +25,14 @@ namespace raytrace
     private:
         //T x, y, z;
     public:
+        //class Normal *Normal;
+
         T x, y, z;
         Vector() : x(0.0), y(0.0), z(0.0){}
         Vector(const T &n) : x(n), y(n), z(n){}
         Vector(const T &s, const T &t, const T &u) : x(s), y(t), z(u){}
         Vector(const Vector &vector) : x(vector.x), y(vector.y), z(vector.z){}
-        Vector(const Normal &n) : x(n.x), y(n.y), z(n.z){}
+        Vector(const Normal &n);// : x(n.x), y(n.y), z(n.z){}
         T getX()
         {
             return x;
@@ -88,10 +92,10 @@ namespace raytrace
             z = rhs.z;
             return(*this);
         }
-        /*Vector<T> length(void)
-        {
-            return (sqrt(x * x + y * y + z * z));
-        }*/
+        //Vector<T> length(void)
+        //{
+        //    return (sqrt(x * x + y * y + z * z));
+        //}
         friend std::ostream & operator << (std::ostream &os, const Vector<T> &v)
         {
             os << v.x << " " << v.y << " " << v.z;
@@ -139,6 +143,7 @@ namespace raytrace
        }
         
         typedef Vector<float> Vect;
+        //Vect(const Normal &n) : x(n.x), y(n.y), z(n.z){}
         
         Vect vectAdd(Vect v)
         {
@@ -186,7 +191,6 @@ namespace raytrace
         {
             return (sqrt(x * x + y * y + z * z));
         }
-        
     };
     double operator*(const double a, const raytrace::Vect& v)
     {
@@ -198,9 +202,7 @@ namespace raytrace
         return(a / v.x, a / v.y, a / v.z);
     }
     
-    
-    
-    
+
     
 /*
     class Camera

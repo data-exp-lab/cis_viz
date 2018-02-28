@@ -1,8 +1,10 @@
 #include <math.h>
 #include "point.hpp"
+#include "ray.hpp"
 
-Point::Point():x(0), y(0), z(0)
+Point::Point()
 {
+    
 }
 
 Point::Point(const double a):x(0), y(0), z(0)
@@ -41,40 +43,24 @@ double Point::distance(const Point& p) const
     return (sqrt((x - p.x) * (x - p.x) + (y - p.y) * (y - p.y) + (z - p.z) * (z - p.z)));
 }
 
-<<<<<<< HEAD
-
-=======
-inline Point Point::operator- (void) const
+Point Point::operator^(const Point& p)
 {
-    return (Point(-x, -y, -z));
+    return(Point(y * p.z - z * p.y, z * p.x - x * p.z, x * p.y - y * p.x));
 }
 
-inline raytrace::Vector Point::operator- (const Point& p) const
+double Point::length(void)
 {
-    return (raytrace::Vector(x - p.x, y - p.y, z - p.z));
+    return (sqrt(x * x + y * y + z * z));
 }
 
-inline Point Point::operator- (const raytrace::Vector& v) const
+Point Point::operator- (const Point& p) const
 {
-    //return (Point&(x - v.x, y - v.y, z - v.z));
-    return (Point(x - v.x, y - v.y, z - v.z));
+    return (Point(x - p.x, y - p.y, z - p.z));
 }
 
-inline Point Point::operator* (const double a) const
+Point Point::operator+(const raytrace::Vect& v) const
 {
-    return (Point(x * a, y * a, z * a));
+    return (Point(x + v.x, y + v.y, z + v.z));
 }
 
-inline double Point::d_squared(const Point& p) const
-{
-    return ((x - p.x) * (x - p.x) + (y - p.y) * (y - p.y) + (z - p.z) * (z - p.z));
-}
-
-Point operator*(double a, const Point& p);
-
-inline Point operator* (double a, const Point& p)
-{
-    return (Point(a * p.x, a * p.y, a * p.z));
-}
->>>>>>> 397731fc3154517cb058a8f4b5e83c32c7e1a7b3
 

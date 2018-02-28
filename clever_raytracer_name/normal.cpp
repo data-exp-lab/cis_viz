@@ -1,4 +1,5 @@
 #include "normal.hpp"
+#include "ray.hpp"
 #include <math.h>
 
 Normal::Normal(void) : x(0.0), y(0.0), z(0.0)
@@ -51,12 +52,26 @@ Normal& Normal::operator= (const Point& rhs)
     return (*this);
 }
 
-void normalize(double x, double y, double z)
+void Normal::normalize(void)
+{
+    
+}
+
+void Normal::normalize(double x, double y, double z)
 {
     double length = sqrt(x * x + y * y + z * z);
     x /= length;
     y /= length;
     z /= length;
+}
+
+//FIX
+void Normal::normalize(Point x, Point y, Point z)
+{
+    //double length = sqrt(x * x + y * y + z * z);
+    //x /= length;
+    //y /= length;
+    //z /= length;
 }
 
 inline raytrace::Vect operator- (const raytrace::Vect& v, const Normal& n)
