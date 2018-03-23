@@ -178,9 +178,14 @@ namespace raytrace
             return (Vect(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x));
         }
         
-        Vect operator*(const Vect& v)
+        /*Vect operator*(const Vect& v)
         {
             return(x * v.x + y * v.y + z * v.z);
+        }*/
+        
+        double operator*(const double a, const raytrace::Vect& v)
+        {
+            return(a * v.x, a * v.y, a * v.z);
         }
         
         Vect operator*(const double a)
@@ -192,16 +197,13 @@ namespace raytrace
             return (sqrt(x * x + y * y + z * z));
         }
     };
-    double operator*(const double a, const raytrace::Vect& v)
-    {
-        return(a * v.x, a * v.y, a * v.z);
-    }
     
-    double operator/(const double a, const raytrace::Vect& v)
+    
+    
+    inline double operator/(const double a, const raytrace::Vect& v)
     {
         return(a / v.x, a / v.y, a / v.z);
     }
-    
 
     
 /*

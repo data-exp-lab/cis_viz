@@ -10,8 +10,10 @@
 #include <cmath>
 #include <math.h>
 #include <iostream>
+#include "ray.cpp"
 
 using namespace std;
+
 
 Leaf::Leaf()
 {

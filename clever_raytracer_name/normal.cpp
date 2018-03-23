@@ -74,6 +74,12 @@ void Normal::normalize(Point x, Point y, Point z)
     //z /= length;
 }
 
+Normal operator^(Point& a, Point& b)
+{
+    return (Normal(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x));
+    
+}
+
 inline raytrace::Vect operator- (const raytrace::Vect& v, const Normal& n)
 {
     return (raytrace::Vect(v.x - n.x, v.y - n.y, v.z - n.z));

@@ -43,11 +43,7 @@ public:
 
 };
 
-Normal operator^(Point& a, Point& b)
-{
-    return (Normal(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x));
-    
-}
+
 
 inline Normal Normal::operator- (void) const
 {
