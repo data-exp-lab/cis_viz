@@ -3,7 +3,6 @@
 using namespace std;
 using namespace raytrace;
 
-
 float mix(const float &a, const float &b, const float &mix)
 {
     return b * mix + a * (1 - mix);
@@ -72,7 +71,7 @@ Ray refractExit(Vect const &W, Vect const &pt, float const &eta_in, Shape const 
 
 //INLINE FUNCTIONS
 /*
-inline Vect Vect::operator- (void) const
+inline Vector<T> Vector<T>::operator- (void) const
 {
     return (Vect(-x, -y, -z));
 }
@@ -82,22 +81,22 @@ inline double Vect::len_squared(void)
     return (x * x + y * y + z * z);
 }
 
-inline Vect Vect::operator* (const double a) const
+inline Vector<T> Vector<T>::operator* (const double a) const
 {
     return (Vect(x * a, y * a, z * a));
 }
 
-inline Vect Vect::operator/ (const double a) const
+inline Vector<T> Vector<T>::operator/ (const double a) const
 {
     return (Vect(x / a, y / a, z / a));
 }
 
-inline Vect Vect::operator+ (const Vect& v) const
+inline Vector<T> Vector<T>::operator+ (const Vect& v) const
 {
     return (Vect(x + v.x, y + v.y, z + v.z));
 }
 
-inline Vect Vect::operator- (const Vect& v) const
+inline Vector<T> Vector<T>::operator- (const Vect& v) const
 {
     return (Vect(x - v.x, y - v.y, z - v.z));
 }
@@ -107,7 +106,7 @@ inline double Vect::operator* (const Vect& v) const
     return (x * v.x + y * v.y + z * v.z);
 }
 
-inline raytrace::Vect Vect::operator^ (const Vect& v) const
+inline raytrace::Vector<T> Vector<T>::operator^ (const Vect& v) const
 {
     return (Vect(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x));
 }
@@ -533,5 +532,182 @@ int testFunction()
 
 
 
+        template <typename T> Vector<T>::Vector() : x(0.0), y(0.0), z(0.0){}
+        template <typename T> Vector<T>::Vector(const T &n) : x(n), y(n), z(n){}
+        template <typename T> Vector<T>::Vector(const T &s, const T &t, const T &u) : x(s), y(t), z(u){}
+        template <typename T> Vector<T>::Vector(const Vector &vector) : x(vector.x), y(vector.y), z(vector.z){}
+        template <typename T> Vector<T>::Vector(const Normal &n) : x(n.x), y(n.y), z(n.z){}
+        template <typename T> T Vector<T>::getX()
+        {
+            return x;
+        }
+        template <typename T> T Vector<T>::getY()
+        {
+            return y;
+        }
+        template <typename T> T Vector<T>::getZ()
+        {
+            return z;
+        }
+        template <typename T> Vector<T> Vector<T>::operator + (const T &n) const
+        {
+            return Vector<T>(x+n, y+n, z+n);
+        }
+    template <typename T> Vector<T> Vector<T>::operator + (const Vector<T> &n) const
+        {
+            return Vector<T>(this->x + n.x, this->y + n.y, this->z + n.z);
+        }
+    template <typename T> Vector<T> Vector<T>::operator - (const T &n) const
+        {
+            return Vector<T>(x - n, y - n, z - n);
+        }
+    template <typename T> Vector<T> Vector<T>::operator - (const Vector<T> &n) const
+        {
+            return Vector<T>(x - n.x, y - n.y, z - n.z);
+        }
+    template <typename T> Vector<T> Vector<T>::operator * (const T &n) const
+        {
+            return Vector<T>(x * n, y * n, z * n);
+        }
+    template <typename T> Vector<T> Vector<T>::operator * (const Vector<T> &n) const
+        {
+            return Vector<T>(x * n.x, y * n.y, z * n.z);
+        }
+    template <typename T> Vector<T> Vector<T>::operator / (const T &n) const
+        {
+            return Vector<T>(x / n, y / n,z / n);
+        }
+    template <typename T> Vector<T> Vector<T>::operator / (const Vector<T> &n) const
+        {
+            return Vector<T>(x / n.x, y / n.y, z / n.z);
+        }
+    template <typename T> Vector<T> Vector<T>::operator += (const T &n)
+        {
+            return Vector<T>(x += n, y += n,z += n);
+        }
+    template <typename T> Vector<T> Vector<T>::operator += (const Vector<T> &n)
+        {
+            return Vector<T>(x += n.x, y += n.y, z += n.z);
+        }
+    template <typename T> Vector<T> Vector<T>::operator= (const Point& rhs)
+        {
+            x = rhs.x;
+            y = rhs.y;
+            z = rhs.z;
+            return(*this);
+        }
+        //Vector<T> length(void)
+        //{
+        //    return (sqrt(x * x + y * y + z * z));
+        //}
+template <typename T> std::ostream& operator << (std::ostream &os, const Vector<T> &v)
+{
+    os << v.x << " " << v.y << " " << v.z;
+    return os;
+}
 
 
+template <typename T> T Vector<T>::dotProduct(const Vector<T> &v) const
+{
+    return (x * v.x + y * v.y + z * v.z);
+}
+template <typename T> Vector<T> Vector<T>::crossProduct(const Vector<T> &v) const
+{
+    return Vector<T>((y * v.z) - (z * v.y), (z * v.x) - (x * v.z), (x * v.y) - (y * v.x));
+}
+template <typename T> T Vector<T>::magnitude(void) const
+{
+    return sqrt(x * x + y * y + z * z);
+}
+template <typename T> Vector<T> & Vector<T>::normalize()
+{
+    T magnitude = sqrt(x * x + y * y + z * z);
+    T magInv = 1 / sqrt(x * x + y * y + z * z);
+    x *= magInv;
+    y *= magInv;
+    z *= magInv;
+    return *this;
+}
+template <typename T> T Vector<T>::sum() const
+{
+    return this->x + this->y + this->z;
+}
+                                                           
+template <typename T> T Vector<T>::getVectX()
+{
+   return (T) this->x;
+}
+                                                           
+template <typename T> T Vector<T>::getVectY()
+{
+   return (T) this->y;
+}
+ 
+template <typename T> T Vector<T>::getVectZ()
+{
+   return (T) this->z;
+}
+
+template <typename T> Vector<T> Vector<T>::vectAdd(Vector<T> v)
+{
+    return Vector<T>(this->x + v.getVectX(), this->y + v.getVectY(), this->z + v.getVectZ());
+}
+
+template <typename T> Vector<T> Vector<T>::vectMult(T scalar)
+{
+    return Vect(this->x * scalar, this->y * scalar, this->z * scalar);
+}
+
+template <typename T> Vector<T> Vector<T>::negative()
+{
+    return Vect(-this->x, -this->y, -this->z);
+}
+
+template <typename T> Vector<T> Vector<T>::operator=(const Vector<T> & rhs)
+{
+    if(this == &rhs)
+    {
+        return (*this);
+    }
+    x = rhs.x;
+    y = rhs.y;
+    z = rhs.z;
+    
+    return (*this);
+}
+
+template <typename T> Vector<T> Vector<T>::operator^(const Vector<T> & v)
+{
+    return (Vector<T>(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x));
+}
+
+template <typename T> Vector<T> Vector<T>::operator*(const Vector<T> & v)
+{
+    return((T) x * v.x + (T) y * v.y + (T) z * v.z);
+}
+
+template <typename T> T Vector<T>::length(void)
+{
+    return (sqrt(x * x + y * y + z * z));
+}
+
+template <typename T, typename T2> T operator*(const T2 a, const raytrace::Vector<T> & v)
+{
+    return(a * v.x, a * v.y, a * v.z);
+}
+
+template float operator*(const float a, const raytrace::Vector<float> &v);
+template double operator*(const double a, const raytrace::Vector<double> &v);
+template float operator*(const double a, const raytrace::Vector<float> &v);
+template double operator*(const float a, const raytrace::Vector<double> &v);
+
+
+Point Ray::getOrigin() const
+{
+    return this->origin;
+}
+
+Vect Ray::getDirection() const
+{
+    return this->direction;
+}

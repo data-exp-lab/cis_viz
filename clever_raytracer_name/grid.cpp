@@ -3,7 +3,7 @@
 #include "equations.hpp"
 #include "leaf.hpp"
 #include "box.hpp"
-#include "ray.cpp"
+#include "ray.hpp"
 #include <vector>
 #include <iostream>
 #include <math.h>

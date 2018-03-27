@@ -28,177 +28,58 @@ namespace raytrace
         //class Normal *Normal;
 
         T x, y, z;
-        Vector() : x(0.0), y(0.0), z(0.0){}
-        Vector(const T &n) : x(n), y(n), z(n){}
-        Vector(const T &s, const T &t, const T &u) : x(s), y(t), z(u){}
-        Vector(const Vector &vector) : x(vector.x), y(vector.y), z(vector.z){}
+        Vector();
+        Vector(const T &n);
+        Vector(const T &s, const T &t, const T &u);
+        Vector(const Vector &vector);
         Vector(const Normal &n);// : x(n.x), y(n.y), z(n.z){}
-        T getX()
-        {
-            return x;
-        }
-        T getY()
-        {
-            return y;
-        }
-        T getZ()
-        {
-            return z;
-        }
-        Vector<T> operator + (const T &n) const
-        {
-            return Vector<T>(x+n, y+n, z+n);
-        }
-        Vector<T> operator + (const Vector<T> &n) const
-        {
-            return Vector<T>(x + n.x, y + n.y, z + n.z);
-        }
-        Vector<T> operator - (const T &n) const
-        {
-            return Vector<T>(x - n, y - n, z - n);
-        }
-        Vector<T> operator - (const Vector<T> &n) const
-        {
-            return Vector<T>(x - n.x, y - n.y, z - n.z);
-        }
-        Vector<T> operator * (const T &n) const
-        {
-            return Vector<T>(x * n, y * n, z * n);
-        }
-        Vector<T> operator * (const Vector<T> &n) const
-        {
-            return Vector<T>(x * n.x, y * n.y, z * n.z);
-        }
-        Vector<T> operator / (const T &n) const
-        {
-            return Vector<T>(x / n, y / n,z / n);
-        }
-        Vector<T> operator / (const Vector<T> &n) const
-        {
-            return Vector<T>(x / n.x, y / n.y, z / n.z);
-        }
-        Vector<T> operator += (const T &n)
-        {
-            return Vector<T>(x += n, y += n,z += n);
-        }
-        Vector<T> operator += (const Vector<T> &n)
-        {
-            return Vector<T>(x += n.x, y += n.y, z += n.z);
-        }
-        Vector<T> operator= (const Point& rhs)
-        {
-            x = rhs.x;
-            y = rhs.y;
-            z = rhs.z;
-            return(*this);
-        }
+        T getX();
+        T getY();
+        T getZ();
+        Vector<T> operator + (const T &n) const;
+        Vector<T> operator + (const Vector<T> &n) const;
+        Vector<T> operator - (const T &n) const;
+        Vector<T> operator - (const Vector<T> &n) const;
+        Vector<T> operator * (const T &n) const;
+        Vector<T> operator * (const Vector<T> &n) const;
+        Vector<T> operator / (const T &n) const;
+        Vector<T> operator / (const Vector<T> &n) const;
+        Vector<T> operator += (const T &n);
+        Vector<T> operator += (const Vector<T> &n);
+        Vector<T> operator= (const Point& rhs);
         //Vector<T> length(void)
         //{
         //    return (sqrt(x * x + y * y + z * z));
         //}
-        friend std::ostream & operator << (std::ostream &os, const Vector<T> &v)
-        {
-            os << v.x << " " << v.y << " " << v.z;
-            return os;
-        }
-        T dotProduct(const Vector<T> &v) const
-        {
-            return (x * v.x + y * v.y + z * v.z);
-        }
-        Vector<T> crossProduct(const Vector<T> &v) const
-        {
-            return Vector<T>((y * v.z) - (z * v.y), (z * v.x) - (x * v.z), (x * v.y) - (y * v.x));
-        }
-        T magnitude(void) const
-        {
-            return sqrt(x * x + y * y + z * z);
-        }
-        Vector<T> &normalize()
-        {
-            T magnitude = sqrt(x * x + y * y + z * z);
-            T magInv = 1 / sqrt(x * x + y * y + z * z);
-            x *= magInv;
-            y *= magInv;
-            z *= magInv;
-            return *this;
-        }
-        T sum() const
-        {
-            return x + y + z;
-        }
+        friend std::ostream & operator << (std::ostream &os, const Vector<T> &v);
+        T dotProduct(const Vector<T> &v) const;
+        Vector<T> crossProduct(const Vector<T> &v) const;
+        T magnitude(void) const;
+        Vector<T> &normalize();
+        T sum() const;
                                                                    
-       double getVectX()
-       {
-           return x;
-       }
-                                                                   
-       double getVectY()
-       {
-           return y;
-       }
-         
-       double getVectZ()
-       {
-           return z;
-       }
+       T getVectX();
+       T getVectY();
+       T getVectZ();
         
-        typedef Vector<float> Vect;
         //Vect(const Normal &n) : x(n.x), y(n.y), z(n.z){}
         
-        Vect vectAdd(Vect v)
-        {
-            return Vect(x + v.getVectX(), y + v.getVectY(), z + v.getVectZ());
-        }
+        Vector<T> vectAdd(Vector<T> v);
         
-        Vect vectMult(double scalar)
-        {
-            return Vect(x * scalar, y * scalar, z * scalar);
-        }
+        Vector<T> vectMult(T scalar);
         
-        Vect negative()
-        {
-            return Vect(-x, -y, -z);
-        }
+        Vector<T> negative();
         
-        Vect operator=(const Vect& rhs)
-        {
-            if(this == &rhs)
-            {
-                return (*this);
-            }
-            x = rhs.x;
-            y = rhs.y;
-            z = rhs.z;
-            
-            return (*this);
-        }
+        Vector<T> operator=(const Vector<T>& rhs);
         
-        Vect operator^(const Vect& v)
-        {
-            return (Vect(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x));
-        }
+        Vector operator^(const Vector<T>& v);
         
-        /*Vect operator*(const Vect& v)
-        {
-            return(x * v.x + y * v.y + z * v.z);
-        }*/
+        Vector operator*(const Vector<T>& v);
         
-        double operator*(const double a, const raytrace::Vect& v)
-        {
-            return(a * v.x, a * v.y, a * v.z);
-        }
-        
-        Vect operator*(const double a)
-        {
-            return(Vect(x * a, y * a, z * a));
-        }
-        double length(void)
-        {
-            return (sqrt(x * x + y * y + z * z));
-        }
+        T length(void);
     };
-    
-    
+
+    template class Vector<float>;
     
     inline double operator/(const double a, const raytrace::Vect& v)
     {
@@ -293,7 +174,7 @@ namespace raytrace
         double photonFlux2;
         
         Ray(void);
-        Ray(const Point &ori, const Vect &dir) : origin(ori), direction(dir){}
+        Ray(const Point &ori, const Vect &dir);
         Ray(const Point &origin, const raytrace::Vect& direction, const double pf);
         Ray(const Ray& ray);
         Ray(const Ray* ray_ptr);
@@ -301,14 +182,8 @@ namespace raytrace
         
         ~Ray(void);
         
-        Point getOrigin() const
-        {
-            return origin;
-        }
-        Vect getDirection() const
-        {
-            return direction;
-        }
+        Point getOrigin() const;
+        Vect getDirection() const;
     };
  /*
     class Light
@@ -455,6 +330,9 @@ namespace raytrace
         Vect draw(const Ray &ray, const int &level);
     };
 */}
+
+template <typename T> std::ostream& operator << (std::ostream &os, const raytrace::Vector<T> &v);
+template <typename T, typename T2> T operator*(const T2 a, const raytrace::Vector<T> & v);
 
 #endif
 

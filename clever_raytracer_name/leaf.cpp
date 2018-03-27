@@ -10,7 +10,7 @@
 #include <cmath>
 #include <math.h>
 #include <iostream>
-#include "ray.cpp"
+#include "ray.hpp"
 
 using namespace std;
 
