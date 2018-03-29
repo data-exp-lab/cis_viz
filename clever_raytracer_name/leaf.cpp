@@ -108,7 +108,7 @@ void Leaf::get_reflect_dir_2(raytrace::Ray ray, Triangle* triangle_ptr, vector<r
     
     //TOTAL REFLECT RAYS ENERGY
     double PF = ray.photonFlux2 * triangle_ptr->kLeafReflectance;
-    raytrace::Vect neg_direction = ray.direction * -1;
+    raytrace::Vect neg_direction = ray.direction * -1.0f;
     
     randReflectRayDir(normal_triangle, R1, cs);
     FR1 = getfr(650, R1, neg_direction, normal_triangle, cs);

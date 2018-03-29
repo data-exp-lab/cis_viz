@@ -47,6 +47,8 @@ namespace raytrace
         Vector<T> operator += (const T &n);
         Vector<T> operator += (const Vector<T> &n);
         Vector<T> operator= (const Point& rhs);
+        Vector<T> operator^(const Vector<T>& v);
+        
         //Vector<T> length(void)
         //{
         //    return (sqrt(x * x + y * y + z * z));
@@ -72,15 +74,9 @@ namespace raytrace
         
         Vector<T> operator=(const Vector<T>& rhs);
         
-        Vector operator^(const Vector<T>& v);
-        
-        Vector operator*(const Vector<T>& v);
-        
         T length(void);
     };
 
-    template class Vector<float>;
-    
     inline double operator/(const double a, const raytrace::Vect& v)
     {
         return(a / v.x, a / v.y, a / v.z);

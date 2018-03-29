@@ -681,10 +681,11 @@ template <typename T> Vector<T> Vector<T>::operator^(const Vector<T> & v)
     return (Vector<T>(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x));
 }
 
+/*
 template <typename T> Vector<T> Vector<T>::operator*(const Vector<T> & v)
 {
     return((T) x * v.x + (T) y * v.y + (T) z * v.z);
-}
+}*/
 
 template <typename T> T Vector<T>::length(void)
 {
@@ -711,3 +712,6 @@ Vect Ray::getDirection() const
 {
     return this->direction;
 }
+
+template class raytrace::Vector<float>;
+
