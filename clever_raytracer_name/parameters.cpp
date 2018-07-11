@@ -1,5 +1,5 @@
 #include "parameters.hpp"
-#include "constants.hpp"
+//#include "constants.hpp"
 
 Parameters::Parameters()
 {
@@ -28,28 +28,30 @@ Parameters::Parameters(int parameterFlag)
 
 void Parameters::prepare(int leafID, double CLAI, double PPFD1)
 {
+
     Constants cs;
     Parameters ip;
-    
+
     Tleaf = cs.TAIR;
     PPFD = PPFD1;
     THETA = cs.THETA;
     F = cs.F;
     JMAX = cs.JMAX;
-    
+
     OI = cs.OA;
     GSTAR = cs.GSTAR;
     RD0 = cs.RD;
     KMC = ip.KC;
     KMO = ip.KO;
     VCMAX = cs.VCMAX;
+
+    //VCMAX0 = cs.VCMAX_LIST[leafID - 1];
+    //JMAX0 = cs.JMAX_LIST[leafID - 1];
     
-    VCMAX0 = cs.VCMAX_LIST[leafID - 1];
-    JMAX0 = cs.JMAX_LIST[leafID - 1];
     double KN = cs.KN; 
     VCMAX = VCMAX * exp(-KN * CLAI);
     JMAX = JMAX * exp(-KN * CLAI);
-    
+
     ip.CI = cs.CA * 0.7;
     
 }

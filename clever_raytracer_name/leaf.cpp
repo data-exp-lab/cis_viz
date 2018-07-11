@@ -133,7 +133,7 @@ void Leaf::get_reflect_dir_2(raytrace::Ray ray, Triangle* triangle_ptr, vector<r
     }
 }
 
-void Leaf::randReflectRayDir(raytrace::Vect N, raytrace::Vect & r, Constants cs)
+/*void Leaf::randReflectRayDir(raytrace::Vect N, raytrace::Vect & r, Constants cs)
 {
     while(true)
     {
@@ -157,9 +157,91 @@ void Leaf::randReflectRayDir(raytrace::Vect N, raytrace::Vect & r, Constants cs)
         
         break;
     }
+}*/
+
+void Leaf::randReflectRayDir(raytrace::Vect N, raytrace::Vect & r, Constants cs)
+{
+    // Rotate so that z = 1 points in same hemisphere as N
+    raytrace::Vect a;
+    a.x = 0;
+    a.y = 0;
+    a.z = 1;
+    raytrace::Vect norm;
+    norm.x = N.x;
+    norm.y = N.y;
+    norm.z = N.z;
+    norm.normalize();
+    
+    raytrace::Vect v = a.crossProduct(norm);
+    double s = v.magnitude();
+    double c = a.dotProduct(norm);
+    
+    // langmm: Generate random vector in hemisphere then rotate
+    // vx = [  0, -v3,  v2,
+    //        v3,   0, -v1,
+    //       -v2,  v1,   0]
+    // vx**2 = [-v3**2 + -v2**2, v1*v2          , v1*v3,
+    //          v1*v2          , -v3**2 + -v1**2, v2*v3,
+    //          v1*v3          , v2*v3          , -v2**2 + -v1**2]
+    // I + vx + f*(vx**2) = [
+    // [ 1 - f*(v3**2 + v2**2), -v3 + f*v1*v2        ,  v2 + f*v1*v3,
+    //   v3 + f*v1*v2         , 1 - f*(v3**2 + v1**2), -v1 + f*v2*v3,
+    //   -v2 + f*v1*v3        , v1 + f*v2*v3         , 1 - f*(v2**2 + v1**2)]
+    
+    double x = rand() * cs.invRAND_MAX * 2 - 1;
+    double y = rand() * cs.invRAND_MAX * 2 - 1;
+    double z = rand() * cs.invRAND_MAX;
+    if (c == -1) {
+        // In this case N points in the positive z direction
+        r.x = x;
+        r.y = y;
+        r.z = z;
+    } else {
+        double f = 1.0/(1.0 + c);
+        r.x = (x*(1.0 - f*(pow(v.z, 2) + pow(v.y, 2))) +
+               y*(-v.z + f*v.x*v.y) +
+               z*( v.y + f*v.x*v.z));
+        r.y = (x*( v.z + f*v.x*v.y) +
+               y*(1.0 - f*(pow(v.z, 2) + pow(v.x, 2))) +
+               z*(-v.x + f*v.y*v.z));
+        r.z = (x*(-v.y + f*v.x*v.z) +
+               y*( v.x + f*v.y*v.z) +
+               z*(1.0 - f*(pow(v.y, 2) + pow(v.x, 2))));
+    }
+    r.normalize();
+    // printf("should be positive: %lf (mag = %lf)\n", r.dotProduct(norm), norm.magnitude());
+    
+    /*
+     while(true)
+     {
+     double x = rand() * cs.invRAND_MAX * 2 - 1;
+     double y = rand() * cs.invRAND_MAX * 2 - 1;
+     double z = rand() * cs.invRAND_MAX * 2 - 1;
+     
+     // langmm: Why does this test for a value? It results in infinite loop
+     // since getting random 0 in all three values is almost impossible
+     // if(x * x + y * y + z * z > 1)
+     // {
+     //   printf("Here %lf, %lf, %lf\n", x, y, z);
+     //     continue;
+     // }
+     if(x * N.x + y * N.y + z * N.z <= 0)
+     {
+     printf("Here %lf, %lf, %lf\n", x, y, z);
+     continue;
+     }
+     
+     r.x = x;
+     r.y = y;
+     r.z = z;
+     r.normalize();
+     
+     break;
+     }
+     */
 }
             
-void Leaf::randThroughRayDir(raytrace::Vect N, raytrace::Vect & r, Constants cs)
+/*void Leaf::randThroughRayDir(raytrace::Vect N, raytrace::Vect & r, Constants cs)
 {
     while(true)
     {
@@ -183,6 +265,86 @@ void Leaf::randThroughRayDir(raytrace::Vect N, raytrace::Vect & r, Constants cs)
         
         break;
     }
+}*/
+
+void Leaf::randThroughRayDir(raytrace::Vect N, raytrace::Vect & r, Constants cs)
+{
+    // Rotate so that z = 1 points opposite N
+    raytrace::Vect a;
+    a.x = 0;
+    a.y = 0;
+    a.z = -1;
+    raytrace::Vect norm;
+    norm.x = N.x;
+    norm.y = N.y;
+    norm.z = N.z;
+    norm.normalize();
+    
+    raytrace::Vect v = a.crossProduct(norm);
+    double s = v.magnitude();
+    double c = a.dotProduct(norm);
+    
+    // langmm: Generate random vector in hemisphere then rotate
+    // vx = [  0, -v3,  v2,
+    //        v3,   0, -v1,
+    //       -v2,  v1,   0]
+    // vx**2 = [-v3**2 + -v2**2, v1*v2          , v1*v3,
+    //          v1*v2          , -v3**2 + -v1**2, v2*v3,
+    //          v1*v3          , v2*v3          , -v2**2 + -v1**2]
+    // I + vx + f*(vx**2) = [
+    // [ 1 - f*(v3**2 + v2**2), -v3 + f*v1*v2        ,  v2 + f*v1*v3,
+    //   v3 + f*v1*v2         , 1 - f*(v3**2 + v1**2), -v1 + f*v2*v3,
+    //   -v2 + f*v1*v3        , v1 + f*v2*v3         , 1 - f*(v2**2 + v1**2)]
+    
+    double x = rand() * cs.invRAND_MAX * 2 - 1;
+    double y = rand() * cs.invRAND_MAX * 2 - 1;
+    double z = rand() * cs.invRAND_MAX;
+    if (c == -1) {
+        // In this case N points in the negative z direction
+        r.x = x;
+        r.y = y;
+        r.z = z;
+    } else {
+        double f = 1.0/(1.0 + c);
+        r.x = (x*(1.0 - f*(pow(v.z, 2) + pow(v.y, 2))) +
+               y*(-v.z + f*v.x*v.y) +
+               z*( v.y + f*v.x*v.z));
+        r.y = (x*( v.z + f*v.x*v.y) +
+               y*(1.0 - f*(pow(v.z, 2) + pow(v.x, 2))) +
+               z*(-v.x + f*v.y*v.z));
+        r.z = (x*(-v.y + f*v.x*v.z) +
+               y*( v.x + f*v.y*v.z) +
+               z*(1.0 - f*(pow(v.y, 2) + pow(v.x, 2))));
+    }
+    r.normalize();
+    // printf("should be negative: %lf\n", r.dotProduct(norm));
+    
+    /*
+     while(true)
+     {
+     double x = rand() * cs.invRAND_MAX * 2 - 1;
+     double y = rand() * cs.invRAND_MAX * 2 - 1;
+     double z = rand() * cs.invRAND_MAX * 2 - 1;
+     
+     // langmm: Why does this test for a value? It results in infinite loop
+     // since getting random 0 in all three values is almost impossible
+     // if(x * x + y * y + z * z)
+     // {
+     //     continue;
+     // }
+     if(x * N.x + y * N.y + z * N.z >= 0)
+     {
+     continue;
+     }
+     
+     r.x = x;
+     r.y = y;
+     r.z = z;
+     r.normalize();
+     
+     break;
+     }
+     */
 }
             
 raytrace::Vect Leaf::get_transmit_dir(raytrace::Vect L, raytrace::Vect N, Constants cs)
@@ -203,8 +365,10 @@ double Leaf::getfr(double hv_wave_length, raytrace::Vect V, raytrace::Vect L, ra
     
     raytrace::Vect H = vMidLine(L, V);
     
-    double G1 = TWO * (N * H) * (N * V) / (V * H);
-    double G2 = TWO * (N * H) * (N * L) / (V * H);
+    double G1 = TWO * N.dotProduct(H) * N.dotProduct(V) / V.dotProduct(H);
+    double G2 = TWO * N.dotProduct(H) * N.dotProduct(L) / V.dotProduct(H);
+    //double G1 = TWO * (N * H) * (N * V) / (V * H);
+    //double G2 = TWO * (N * H) * (N * L) / (V * H);
     double G_min = min(G1, G2);
     double G = min(1, G_min);
     
@@ -213,7 +377,8 @@ double Leaf::getfr(double hv_wave_length, raytrace::Vect V, raytrace::Vect L, ra
     double A2 = vAngle(N, L);
     double F = F0 + (1 - F0) * pow(1 - cos(A2), 5);
     
-    double FR = S * F / cs.PI * D * G / ((N * L) * (N * V)) + (1 - S) * RD;
+    double FR = S * F / cs.PI * D * G / (N.dotProduct(L) * N.dotProduct(V)) + (1 - S) * RD;
+    //double FR = S * F / cs.PI * D * G / ((N * L) * (N * V)) + (1 - S) * RD;
     
     return FR;
 }

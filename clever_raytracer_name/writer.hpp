@@ -25,6 +25,7 @@ public:
 //write metabolites
 
 void writeModelFile(string output_model_file_name, int num, double start, double interval, Grid* grid, double xMax, double xMin, double yMax, double yMin, double zMax, double zMin)
+//void writeModelFile(string output_model_file_name, double xMax, double xMin, double yMax, double yMin, double zMax, double zMin)
 {
     
     //OUTPUT FROM LEAF PHOTOSYNTHESIS

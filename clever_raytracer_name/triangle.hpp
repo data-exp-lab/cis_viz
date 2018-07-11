@@ -7,6 +7,8 @@
 #include "climate.hpp"
 #include "normal.hpp"
 #include "box.hpp"
+#include "equations.hpp"
+
 #include <vector>
 
 

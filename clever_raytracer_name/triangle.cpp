@@ -1,7 +1,7 @@
 #include "triangle.hpp"
-#include "normal.hpp"
-#include "equations.hpp"
-#include "constants.hpp"
+//#include "normal.hpp"
+//#include "equations.hpp"
+//#include "constants.hpp"
 #include <iostream>
 
 Triangle::Triangle(double startHour, double endHour, double hourInterval)
@@ -136,6 +136,51 @@ bool Triangle::hit(const raytrace::Ray& ray, double& tmin, Constants cs)
     
     return true;
 }
+
+/*
+ // langmm: Use Möller–Trumbore intersection algorithm implemented in ray.cpp
+ bool Triangle::hit(const raytrace::Ray& ray, double& tmin, Constants cs)
+ {
+ // langmm: Modified to use member names that triangle class has for vertices
+ // Vect E1 = B - A;
+ // Vect E2 = C - A;
+ raytrace::Vect E1;
+ raytrace::Vect E2;
+ E1 = v1 - v0;
+ E2 = v2 - v0;
+ 
+ raytrace::Vect dir = ray.getDirection();
+ raytrace::Vect ori;
+ ori = ray.getOrigin();
+ 
+ raytrace::Vect pVect = dir.crossProduct(E2);
+ double det = E1.dotProduct(pVect);
+ double invDet = 1 / det;
+ 
+ if(det < 0.0000001f)  // langmm: Use cs.kEpsilon (0.0001)?
+ {
+ return false;
+ }
+ 
+ raytrace::Vect tVect = ori - v0;
+ double u = tVect.dotProduct(pVect)*invDet;
+ if(u < 0.0 || u > 1)
+ {
+ return false;
+ }
+ 
+ raytrace::Vect qVect = tVect.crossProduct(E1);
+ double v = dir.dotProduct(qVect) * invDet;
+ 
+ if(v < 0 || u + v > 1)
+ {
+ return false;
+ }
+ tmin = E2.dotProduct(qVect) * invDet;
+ 
+ return true;
+ }
+ */
 
 Box Triangle::get_bounding_box(void)
 {

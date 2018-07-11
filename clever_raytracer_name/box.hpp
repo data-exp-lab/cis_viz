@@ -6,6 +6,8 @@
 class Box
 {
 public:
+    //0 IS MIN POINT
+    //1 IS MAX POINT
     double x0;
     double y0;
     double z0;

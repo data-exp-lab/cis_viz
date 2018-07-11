@@ -16,7 +16,7 @@ Compound::~Compound()
 }
 
 //CALCULATE NEAREST HIT TARGET
-bool Compound::hit(const raytrace::Ray& ray, double& tmin, int& j_hit, int& updown, Constants cs)const
+bool Compound::hit(const raytrace::Ray& ray, double& tmin, int& j_hit, int& updown, Constants cs) const
 {
     double t;
     bool hit = false;

@@ -11,7 +11,7 @@ Point::Point(const double a):x(0), y(0), z(0)
 {
 }
 
-Point::Point(const double a, const double b, const double c):x(0), y(0), z(0)
+Point::Point(const double a, const double b, const double c):x(a), y(b), z(c)
 {
 }
 

@@ -36,7 +36,9 @@ Parameters EnergyBalance::calculateLeafT(Constants cs, Parameters ip, double can
     //VAPOR PRESSURE DEFICITY
     double VPD = EST * (1 - leafRelativeHumidity / 100);
     
+    //UNIT: KJ/KG
     double L = -0.0000614342 * pow(TAIR,3) + 0.00158927 * pow(TAIR,2) - 2.36418 * TAIR + 2500.79;
+    //UNIT: J./KG
     double latentHeatVaporization = L * 10e3;
     
     //WATER VAPOR / DRY AIR
@@ -45,6 +47,7 @@ Parameters EnergyBalance::calculateLeafT(Constants cs, Parameters ip, double can
     double RV = 0;
     RV = RH;
     //STOMATAL RESISTANCE
+    //CONVERT GS TO MMOL.M-2.S-1 to M.S-1
     double RS = 1 / (ip.GS * 1e-3 * 24.39 * 1e-3);
     
     //AIR DENSITY
@@ -53,6 +56,7 @@ Parameters EnergyBalance::calculateLeafT(Constants cs, Parameters ip, double can
     
     double CP = cs.SPECIFIC_HEAT_CAPACITY_AIR;
     
+    //UNIT: KPA/K
     double psychromatric = CP * air_pressure / (latentHeatVaporization * MWRATIO);
     double psychromatric_star = psychromatric * (RV + RS) / RH;
     
@@ -71,10 +75,12 @@ Parameters EnergyBalance::calculateLeafT(Constants cs, Parameters ip, double can
     while(changeInLeafTemp > 0.2 && counter < 500)
     {
         deltaTal_old = deltaTal;
+        
         //RADIATIVE EXCHANGE
         RN = (4 * cs.STEFAN_BOLTZMAN_CONST * pow(273 + TAIR, 3) * deltaTal);
         
         //CALCULATE NET ABSORBED RADIATIVE ENERGY
+        //TOTAL ABSORBED SHOULD BE LESS THAN OR EQUAL TO TOTAL SOLAR RADIATION
         PHIN = JA + RN;
         if(PHIN > JA)
         {

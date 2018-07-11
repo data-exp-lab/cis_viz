@@ -88,7 +88,7 @@ public:
     float END_HOUR = 10;
     float INTERVAL_HOUR = 1;
     float START_DAY = 108;
-    float END_DAY;
+    float END_DAY = 110;
     float INTERVAL_DAY = 1;
     int START_MINUTE = 0;
     int END_MINUTE = 0;

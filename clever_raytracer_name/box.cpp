@@ -70,12 +70,14 @@ bool Box::hit(const raytrace::Ray& ray) const
     else
     {
         tz_min = (z1 - oz) * c;
-        tz_max = (z0 - oz * c);
+        tz_max = (z0 - oz) * c;
     }
     
     double t0;
     double t1;
     
+    
+    //FIND LARGEST ENTERING T VALUE
     if(tx_min > ty_min)
     {
         t0 = tx_min;
@@ -90,6 +92,7 @@ bool Box::hit(const raytrace::Ray& ray) const
         t0 = tz_min;
     }
     
+    //FIND SMALLEST EXITING T VALUE
     if(tx_max < ty_max)
     {
         t1 = tx_max;

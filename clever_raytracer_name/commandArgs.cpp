@@ -30,6 +30,7 @@ inline void DisplayUsage(char *argv[])
             "  help                = -h \n"
             "\n\n",
             argv[0]);
+
     
     exit(1);
 }
@@ -71,7 +72,7 @@ void ProcessCommandLine(int argc, char *argv[])
             case 'a':
                 cla.threeDModelFile = optarg;
                 break;
-            case 'm':
+            /*case 'm':
                 cla.meansFile = optarg;
                 break;
             case 's':
@@ -82,7 +83,7 @@ void ProcessCommandLine(int argc, char *argv[])
                 break;
             case 'o':
                 cla.outputFile = optarg;
-                break;
+                break;*/
             case 'f':
                 cla.startHour = atof(optarg);
                 break;
@@ -108,7 +109,7 @@ void ProcessCommandLine(int argc, char *argv[])
     }
     
     //check for all required arguments
-    if(cla.threeDModelFile == 0 || /*cla.meansFile == 0 || cla.stdFile == 0 || cla.vxFile == 0 ||*/ cla.outputFile == 0 || cla.startHour == 0 || cla.endHour == 0 || cla.intervalHour == 0 || cla.rayDistance == 0|| cla.leafTransmittance == 0 || cla.leafReflectivity == 0)
+    if(cla.threeDModelFile == 0 || /*cla.meansFile == 0 || cla.stdFile == 0 || cla.vxFile == 0 || cla.outputFile == 0 || cla.startHour == 0 ||*/ cla.endHour == 0 || cla.intervalHour == 0 || cla.rayDistance == 0|| cla.leafTransmittance == 0 || cla.leafReflectivity == 0)
     {
         DisplayUsage(argv);
     }

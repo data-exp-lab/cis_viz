@@ -188,9 +188,9 @@ void readMeanFile(string mean_file_name, vector<float>& branch_ID_main, vector<f
 };
 
 //MODEL FILE
-void readModelFile(string model_file_name, vector<float>& x1_main, vector<float>& y1_main, vector<float>& z1_main, vector<float>& x2_main, vector<float>& y2_main, vector<float>& z2_main, vector<float>& x3_main, vector<float>& y3_main, vector<float>& z3_main/*, vector<float>& leafID_main, vector<float>& leafL_main, vector<float>& position_main, vector<float>& chlSPAD_main, vector<float>& kt_main, vector<float>& kr_main, vector<float>& n_per_area_main, vector<float>& facet_area_main, vector<float>& seven_h_main*/)
+void readModelFile(string model_file_name, vector<float>& x1_main, vector<float>& y1_main, vector<float>& z1_main, vector<float>& x2_main, vector<float>& y2_main, vector<float>& z2_main, vector<float>& x3_main, vector<float>& y3_main, vector<float>& z3_main, vector<float>& leafID_main, vector<float>& leafL_main, vector<float>& position_main, vector<float>& chlSPAD_main, vector<float>& kt_main, vector<float>& kr_main, vector<float>& n_per_area_main, vector<float>& facet_area_main, vector<float>& seven_h_main)
 {
-    const int NUM_COLUMNS = 9;
+    const int NUM_COLUMNS = 18;
     
     vector<vector <float> > model_file_data;
     
@@ -225,15 +225,15 @@ void readModelFile(string model_file_name, vector<float>& x1_main, vector<float>
     vector<float> x3;
     vector<float> y3;
     vector<float> z3;
-    //vector<float> leafID;
-    //vector<float> leafL;
-    //vector<float> position;
-    //vector<float> chlSPAD;
-    //vector<float> kt;
-    //vector<float> kr;
-    //vector<float> n_per_area;
-    //vector<float> facet_area;
-    //vector<float> seven_h;
+    vector<float> leafID;
+    vector<float> leafL;
+    vector<float> position;
+    vector<float> chlSPAD;
+    vector<float> kt;
+    vector<float> kr;
+    vector<float> n_per_area;
+    vector<float> facet_area;
+    vector<float> seven_h;
     
     int column_to_input = 1;
     vector<float> column;
@@ -289,7 +289,7 @@ void readModelFile(string model_file_name, vector<float>& x1_main, vector<float>
             z3 = column;
             column.clear();
         }
-        /*if((column_to_input - 1) == 9)
+        if((column_to_input - 1) == 9)
         {
             leafID = column;
             column.clear();
@@ -333,7 +333,7 @@ void readModelFile(string model_file_name, vector<float>& x1_main, vector<float>
         {
             seven_h = column;
             column.clear();
-        }*/
+        }
         
         column_to_input++;
     }
@@ -349,15 +349,15 @@ void readModelFile(string model_file_name, vector<float>& x1_main, vector<float>
     x3_main = x3;
     y3_main = y3;
     z3_main = z3;
-    //leafID_main = leafID;
-    //leafL_main = leafL;
-    //position_main = position;
-    //chlSPAD_main = chlSPAD;
-    //kt_main = kt;
-    //kr_main = kr;
-    //n_per_area_main = n_per_area;
-    //facet_area_main = facet_area;
-    //seven_h_main = seven_h;
+    leafID_main = leafID;
+    leafL_main = leafL;
+    position_main = position;
+    chlSPAD_main = chlSPAD;
+    kt_main = kt;
+    kr_main = kr;
+    n_per_area_main = n_per_area;
+    facet_area_main = facet_area;
+    seven_h_main = seven_h;
 };
 
 //STD FILE

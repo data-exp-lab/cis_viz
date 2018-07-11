@@ -1,4 +1,5 @@
-using namespace std;
+#ifndef __EQUATIONS__
+#define __EQUATIONS__
 
 inline double max(double x0, double x1)
 {
@@ -24,3 +25,5 @@ inline float radToDeg(float d)
 {
     return d * 57.2957795;
 }
+
+#endif

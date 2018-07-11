@@ -167,14 +167,17 @@ namespace raytrace
     public:
         Point origin;
         Vect direction;
+        Vect position;
         double photonFlux2;
         
         Ray(void);
-        Ray(const Point &ori, const Vect &dir);
+        Ray(const Point &ori, const raytrace::Vect &dir);
         Ray(const Point &origin, const raytrace::Vect& direction, const double pf);
         Ray(const Ray& ray);
         Ray(const Ray* ray_ptr);
         Ray& operator= (const Ray& rhs);
+        
+        Ray(const raytrace::Vect &position, const raytrace::Vect &direction);
         
         ~Ray(void);
         

@@ -2,6 +2,8 @@ using namespace std;
 using namespace raytrace;
 
 #include "shape.hpp"
+#include "ray.hpp"
+#include "camera.hpp"
 
 class Scene
 {

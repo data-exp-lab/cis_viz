@@ -1,5 +1,5 @@
 #include "stomata.hpp"
-#include "constants.hpp"
+//#include "constants.hpp"
 #include <cmath>
 
 Parameters Stomata::emperical_model_1(Constants cs, Parameters ip)

@@ -1,35 +1,74 @@
+#ifndef __CAMERA__
+#define __CAMERA__
+
 using namespace std;
 using namespace raytrace;
 
+//CHANGE FROM POS, DIR, RIGHT, AND DOWN TO EYE, LOOKAT, AND UP
 class Camera
 {
 private:
-    Vect eye;
-    Vect lookAt;
-    Vect up;
+    raytrace::Vect eye; //camera position
+    raytrace::Vect lookAt; //camera direction
+    raytrace::Vect up;
     float right;
     float left;
     float top;
     float bottom;
     float focalLength;
+    
 public:
+    ////////
+    raytrace::Vect position;
+    raytrace::Vect direction;
+    raytrace::Vect camera_right;
+    raytrace::Vect camera_down;
+    
     Camera() : right(0.0), left(0.0), top(0.0), bottom(0.0), focalLength(0.0){}
-    Camera(const Vect &e, const Vect &la, const Vect &u, const float &fl) : eye(e), lookAt(la), up(u), right(0.0), left(0.0), top(0.0), bottom(0.0), focalLength(fl){}
-    Vect getEye() const
+    Camera(const raytrace::Vect &e, const raytrace::Vect &la, const raytrace::Vect &u, const float &fl) : eye(e), lookAt(la), up(u), right(0.0), left(0.0), top(0.0), bottom(0.0), focalLength(fl){}
+    Camera(raytrace::Vect pos, raytrace::Vect dir, raytrace::Vect right, raytrace::Vect down)
+    {
+        position = pos;
+        direction = dir;
+        camera_right = right;
+        camera_down = down;
+    }
+    
+    raytrace::Vect getCameraPosition()
+    {
+        return position;
+    }
+    
+    raytrace::Vect getCameraDirection()
+    {
+        return direction;
+    }
+    
+    raytrace::Vect getCameraRight()
+    {
+        return camera_right;
+    }
+    
+    raytrace::Vect getCameraDown()
+    {
+        return camera_down;
+    }
+
+    raytrace::Vect getEye() const
     {
         return eye;
     }
     
     //CAMERA COORDINATES
-    Vect getW() const
+    raytrace::Vect getW() const
     {
         return (eye - lookAt).normalize();
     }
-    Vect getU() const
+    raytrace::Vect getU() const
     {
         return (up.crossProduct(getW())).normalize();
     }
-    Vect getV() const
+    raytrace::Vect getV() const
     {
         return getW().crossProduct(getU());
     }
@@ -71,4 +110,10 @@ public:
     {
         bottom = b;
     }
+    /*float setFocalLength() const
+    {
+        focalLength = f;
+    }*/
 };
+
+#endif

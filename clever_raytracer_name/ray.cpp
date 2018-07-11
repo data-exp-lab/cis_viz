@@ -17,6 +17,9 @@ Ray::Ray(const Point &origin, const Vect &direction, const double pf) : origin(o
 Ray::Ray(const Ray& ray) : origin(ray.origin), direction(ray.direction), photonFlux2(ray.photonFlux2)
 {}
 
+Ray::Ray(const raytrace::Vect &position, const raytrace::Vect &direction) : position(position), direction(direction)
+{}
+
 Ray::Ray(const Ray* ray_ptr) : origin(ray_ptr->origin), direction(ray_ptr->direction), photonFlux2(ray_ptr->photonFlux2)
 {}
 
@@ -532,27 +535,27 @@ int testFunction()
 
 
 
-        template <typename T> Vector<T>::Vector() : x(0.0), y(0.0), z(0.0){}
-        template <typename T> Vector<T>::Vector(const T &n) : x(n), y(n), z(n){}
-        template <typename T> Vector<T>::Vector(const T &s, const T &t, const T &u) : x(s), y(t), z(u){}
-        template <typename T> Vector<T>::Vector(const Vector &vector) : x(vector.x), y(vector.y), z(vector.z){}
-        template <typename T> Vector<T>::Vector(const Normal &n) : x(n.x), y(n.y), z(n.z){}
-        template <typename T> T Vector<T>::getX()
-        {
-            return x;
-        }
-        template <typename T> T Vector<T>::getY()
-        {
-            return y;
-        }
-        template <typename T> T Vector<T>::getZ()
-        {
-            return z;
-        }
-        template <typename T> Vector<T> Vector<T>::operator + (const T &n) const
-        {
-            return Vector<T>(x+n, y+n, z+n);
-        }
+    template <typename T> Vector<T>::Vector() : x(0.0), y(0.0), z(0.0){}
+    template <typename T> Vector<T>::Vector(const T &n) : x(n), y(n), z(n){}
+    template <typename T> Vector<T>::Vector(const T &s, const T &t, const T &u) : x(s), y(t), z(u){}
+    template <typename T> Vector<T>::Vector(const Vector &vector) : x(vector.x), y(vector.y), z(vector.z){}
+    template <typename T> Vector<T>::Vector(const Normal &n) : x(n.x), y(n.y), z(n.z){}
+    template <typename T> T Vector<T>::getX()
+    {
+        return x;
+    }
+    template <typename T> T Vector<T>::getY()
+    {
+        return y;
+    }
+    template <typename T> T Vector<T>::getZ()
+    {
+        return z;
+    }
+    template <typename T> Vector<T> Vector<T>::operator + (const T &n) const
+    {
+        return Vector<T>(x+n, y+n, z+n);
+    }
     template <typename T> Vector<T> Vector<T>::operator + (const Vector<T> &n) const
         {
             return Vector<T>(this->x + n.x, this->y + n.y, this->z + n.z);
@@ -605,7 +608,6 @@ template <typename T> std::ostream& operator << (std::ostream &os, const Vector<
     os << v.x << " " << v.y << " " << v.z;
     return os;
 }
-
 
 template <typename T> T Vector<T>::dotProduct(const Vector<T> &v) const
 {
@@ -680,12 +682,6 @@ template <typename T> Vector<T> Vector<T>::operator^(const Vector<T> & v)
 {
     return (Vector<T>(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x));
 }
-
-/*
-template <typename T> Vector<T> Vector<T>::operator*(const Vector<T> & v)
-{
-    return((T) x * v.x + (T) y * v.y + (T) z * v.z);
-}*/
 
 template <typename T> T Vector<T>::length(void)
 {

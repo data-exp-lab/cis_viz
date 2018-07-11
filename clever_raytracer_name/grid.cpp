@@ -19,6 +19,16 @@ Grid::Grid(double ignore_threshold)
 
 void Grid::setup_cells(Point p0, Point p1)
 {
+    /*//FIND MINIMUM AND MAXIMUM COORDINATES OF THE GRID
+    box.x0 = p0.x - cs.kEpsilon;
+    box.y0 = p0.y - cs.kEpsilon;
+    box.z0 = p0.z - cs.kEpsilon;
+    box.x1 = p1.x + cs.kEpsilon;
+    box.y1 = p1.y + cs.kEpsilon;
+    box.z1 = p1.z + cs.kEpsilon;
+    */
+    box = Box(p0.x, p1.x, p0.y, p1.y, p0.z, p1.z);
+    
     //COMPUTE NUMBER OF CELLS IN THE X, Y, AND Z DIRECTIONS
     int num_triangles = triangles.size();
     float wx = p1.x - p0.x;
@@ -85,8 +95,8 @@ void Grid::setup_cells(Point p0, Point p1)
         {
             for(int iy = iymin; iy <= iymax; iy++)
             {
-                for(int iz = izmin; iz <= izmax; iz++)
-                {
+                //for(int iz = izmin; iz <= izmax; iz++)
+                //{
                     for(int ix = ixmin; ix <= ixmax; ix++)
                     {
                         index = ix + nx * iy + nx * ny * iz;
@@ -100,7 +110,7 @@ void Grid::setup_cells(Point p0, Point p1)
                         cells[index]->add_triangle(triangles[j]);
                         counts[index] += 1;
                     }
-                }
+                //}
             }
         }
     }
@@ -506,7 +516,8 @@ bool Grid::generate_scatter_rays(raytrace::Ray& ray, Triangle* triangle_ptr, con
     double pf = ray.photonFlux2 * triangle_ptr->kLeafReflectance;
     if(pf > ignore_Photon_Flux_threshold)
     {
-        raytrace::Vect L = ray.direction * -1;
+        raytrace::Vect L = ray.direction;// * -1;
+        L.negative();
         raytrace::Vect reflect_d = leaf_optics->get_reflect_dir(L, normal_triangle, cs);
         scatter_rays.push_back(new raytrace::Ray(triangle_ptr->hit_point, reflect_d, pf));
     }
@@ -514,7 +525,8 @@ bool Grid::generate_scatter_rays(raytrace::Ray& ray, Triangle* triangle_ptr, con
     double pf2 = ray.photonFlux2 * triangle_ptr->kLeafTransmittance;
     if(pf2 > ignore_Photon_Flux_threshold)
     {
-        raytrace::Vect L = ray.direction * -1;
+        raytrace::Vect L = ray.direction;// * -1;
+        L.negative();
         raytrace::Vect transmit_d = leaf_optics->get_transmit_dir(L, normal_triangle, cs);
         scatter_rays.push_back(new raytrace::Ray(triangle_ptr->hit_point, transmit_d, pf2));
     }

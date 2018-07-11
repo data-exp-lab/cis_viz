@@ -44,7 +44,7 @@ void Climate::climate_calculation_PPFD(double latitude, double solarTimeNoon, do
     int num = (int)((endHour - startHour) / hourInterval);
     for(int i = 0; i <= num; i++)
     {
-        double hour = startHour + i * hourInterval;
+        double hour = startHour + (i * hourInterval);
         
         double DERTA = -23.45 * cos(2 * cs.PI * (day[i] + 10) / 365) / 180 * cs.PI;
         //LATITUDE
@@ -57,7 +57,7 @@ void Climate::climate_calculation_PPFD(double latitude, double solarTimeNoon, do
         double temp = (float)(sin(DERTA) * cos(PHI) - cos(h) * cos(DERTA) * sin(PHI)) / cos(THETAS);
         
         double PHYS;
-        if(temp >= 1)
+        /*if(temp >= 1)
         {
             PHYS = 0;
         }
@@ -65,14 +65,33 @@ void Climate::climate_calculation_PPFD(double latitude, double solarTimeNoon, do
         {
             if(temp < -1)
             {
-                PHYS = cs.PI - acos(temp);
+                temp = -1;
             }
+            PHYS = cs.PI - acos(temp);
         }
         
         if(h > 0)
         {
             PHYS = -PHYS;
+        }*/
+        if(temp >= 1)
+        {
+            PHYS = 0;
         }
+        else if(temp <= -1)
+        {
+            PHYS = cs.PI;
+        }
+        else
+        {
+            PHYS = acos(temp);
+        }
+        
+        if(h > 0)
+        {
+            PHYS = cs.PI - PHYS;
+        }
+        
         
         double elevationAngle = THETAS;
         double azimuthAngle = PHYS;
@@ -84,7 +103,9 @@ void Climate::climate_calculation_PPFD(double latitude, double solarTimeNoon, do
             v.z = -sin(elevationAngle);
             direct_light_d_list.push_back(v);
             
+            //FOR DIRECT LIGHT
             double PPFD1 = cs.kSOLAR_constant * pow(atmosphericTransmittance, 1 / sin(elevationAngle)) * sin(elevationAngle);
+            //FOR DIFFUSE LIGHT
             double PPFD2 = 0.5 * cs.kSOLAR_constant * (1 - pow(atmosphericTransmittance, 1 / sin(elevationAngle))) * sin(elevationAngle);
             
             ppfd_direct_list.push_back(PPFD1);
@@ -112,7 +133,7 @@ void Climate::climate_calculation_Tair(double latitude, double solarTimeNoon, do
     int num = (int)((endHour - startHour) / hourInterval);
     for(int i = 0; i <= num; i++)
     {
-        double hour = startHour + i * hourInterval;
+        double hour = startHour + (i * hourInterval);
         //DEFAULT RELATIVE HUMIDITY
         RH.push_back(0.7);
         
