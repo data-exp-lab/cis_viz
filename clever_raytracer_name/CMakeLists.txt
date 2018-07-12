@@ -9,8 +9,7 @@ ENDIF(APPLE)
 
 
 
-ADD_EXECUTABLE(cis_ray main.cpp ray.cpp leaf.cpp io.cpp  grid.cpp commandArgs.cpp  climate.cpp color.cpp compound.cpp equations.cpp light.cpp scene.cpp stomata.cpp thermal.cpp triangle.cpp box.cpp cimodel.cpp energyBalance.cpp parameters.cpp normal.cpp point.cpp farquharModel.cpp constants.cpp vect.cpp  )
-
+ADD_EXECUTABLE(cis_ray main.cpp ray.cpp leaf.cpp io.cpp  grid.cpp commandArgs.cpp  climate.cpp color.cpp compound.cpp equations.cpp light.cpp scene.cpp stomata.cpp thermal.cpp triangle.cpp box.cpp cimodel.cpp energyBalance.cpp parameters.cpp normal.cpp point.cpp farquharModel.cpp constants.cpp vect.cpp source.cpp ) 
 
 
 
