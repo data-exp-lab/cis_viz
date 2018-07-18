@@ -36,6 +36,10 @@ public:
     
     Point operator^(const Point& p);
     double length(void);
+    
+    double getX();
+    double getY();
+    double getZ();
 };
 
 /*inline Point Point::operator- (void) const

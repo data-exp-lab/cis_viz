@@ -3,9 +3,10 @@
 
 #include "math.h"
 #include "object.hpp"
+#include "point.hpp"
 
 
-
+class Point;
 
 class Sphere: public Object
 {
@@ -49,21 +50,67 @@ public:
         return normal_vect;
     }
     
+    /*virtual bool intersect(const Ray &ray, float &t0, float &t1)
+    {
+        Vect L = ray.getOrigin();
+        Vect D = ray.getDirection();
+        Vect tv = getPos() - L;
+        float v = tv.dotProduct(D);
+        if(v < 0)
+        {
+            return false;
+        }
+        float dsq = tv.dotProduct(tv) - (v * v);
+        if(dsq > radSqrd)
+        {
+            return false;
+        }
+        float b = sqrt(radSqrd - dsq);
+        t0 = v - b;
+        t1 = v + b;
+        
+        return true;
+    }*/
+    
+   /* virtual bool intersect2(const raytrace::Ray &ray, float &t0, float &t1)
+    {
+        raytrace::Vect L = ray.getOriginVect();
+        raytrace::Vect D = ray.getDirection();
+        
+        raytrace::Vect tv = getPosition() - L;
+        
+        float v = tv.dotProduct(D);
+        if(v < 0)
+        {
+            return false;
+        }
+        float dsq = tv.dotProduct(tv) - (v * v);
+        if(dsq > radSqrd)
+        {
+            return false;
+        }
+        float b = sqrt(radSqrd - dsq);
+        t0 = v - b;
+        t1 = v + b;
+        
+        return true;
+    }*/
+    
     virtual double findIntersection(raytrace::Ray ray)
     {
-        //FIX
-        /*raytrace::Vect ray_origin = ray.getOrigin();
+        //Point ray_origin = ray.getOrigin();
+        raytrace::Vect ray_origin = ray.getOriginVect();
         double ray_origin_x = ray_origin.getX();
         double ray_origin_y = ray_origin.getY();
-        double ray_origin_z = ray_origin.getZ();*/
-        double ray_origin_x, ray_origin_y, ray_origin_z;
+        double ray_origin_z = ray_origin.getZ();
+        //double ray_origin_x, ray_origin_y, ray_origin_z;
     
         //FIX
-        /*raytrace::Vect ray_direction = ray_direction.getDirection();
+        raytrace::Vect ray_direction = ray.getDirection();
         double ray_direction_x = ray_direction.getX();
         double ray_direction_y = ray_direction.getY();
-        double ray_direction_z = ray_direction.getZ();*/
-        double ray_direction_x, ray_direction_y, ray_direction_z;
+        double ray_direction_z = ray_direction.getZ();
+        //double ray_direction_x, ray_direction_y, ray_direction_z;
         
         raytrace::Vect sphere_center = center;
         double sphere_center_x = sphere_center.getX();
@@ -161,13 +208,88 @@ public:
         else
         {
             //FIX
-            double b = 1;
+            double b = 10;
             //double b = normal.dotProduct(ray.getOrigin().vectAdd(normal.vectMult(distance).negative()));
             return -1 * b / a;
         }
         
     }
 };
+
+class Triangle2 : public Object
+{
+private:
+    raytrace::Vect A;
+    raytrace::Vect B;
+    raytrace::Vect C;
+    raytrace::Vect surfaceNorm;
+    Color color;
+    
+public:
+    Triangle2(){}
+    Triangle2(const raytrace::Vect &a, const raytrace::Vect &b, const raytrace::Vect &c, Color col/*, const raytrace::Vect &sn*/)
+    {
+        color = col;
+    }
+    
+    raytrace::Vect getSideA() const
+    {
+        return A;
+    }
+    
+    raytrace::Vect getSideB() const
+    {
+        return B;
+    }
+    
+    raytrace::Vect getSideC() const
+    {
+        return C;
+    }
+    
+    bool intersect(const raytrace::Ray &ray, float &t0, float &t1)
+    {
+        raytrace::Vect E1 = B - A;
+        raytrace::Vect E2 = C - A;
+        
+        raytrace::Vect dir = ray.getDirection();
+        raytrace::Vect ori = ray.getOriginVect();
+        
+        raytrace::Vect pVect = dir.crossProduct(E2);
+        float det = E1.dotProduct(pVect);
+        float invDet = 1 / det;
+        
+        if(det < 0.0000001f)
+        {
+            return false;
+        }
+        
+        raytrace::Vect tVect = ori - A;
+        float u = tVect.dotProduct(pVect)*invDet;
+        if(u < 0.0 || u > 1)
+        {
+            return false;
+        }
+        
+        raytrace::Vect qVect = tVect.crossProduct(E1);
+        float v = dir.dotProduct(qVect) * invDet;
+        
+        if(v < 0 || u + v > 1)
+        {
+            return false;
+        }
+        t0 = E2.dotProduct(qVect) * invDet;
+        
+        return true;
+    }
+
+    
+    
+};
+
+
+
+
 
 #endif
 

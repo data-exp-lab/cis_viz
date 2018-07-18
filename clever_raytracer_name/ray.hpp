@@ -170,6 +170,9 @@ namespace raytrace
         Vect position;
         double photonFlux2;
         
+        Vect origin_vect;
+        Vect direction_vect;
+        
         Ray(void);
         Ray(const Point &ori, const raytrace::Vect &dir);
         Ray(const Point &origin, const raytrace::Vect& direction, const double pf);
@@ -182,6 +185,7 @@ namespace raytrace
         ~Ray(void);
         
         Point getOrigin() const;
+        Vect getOriginVect() const;
         Vect getDirection() const;
     };
  /*

@@ -53,6 +53,21 @@ double Point::length(void)
     return (sqrt(x * x + y * y + z * z));
 }
 
+double Point::getX()
+{
+    return x;
+}
+
+double Point::getY()
+{
+    return y;
+}
+
+double Point::getZ()
+{
+    return z;
+}
+
 Point Point::operator- (const Point& p) const
 {
     return (Point(x - p.x, y - p.y, z - p.z));

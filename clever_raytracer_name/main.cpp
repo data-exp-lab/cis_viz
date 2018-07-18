@@ -165,7 +165,7 @@
 #include "color.hpp"
 //#include "compound.hpp"
 //#include "equations.hpp"
-#include "constants.hpp"
+//#include "constants.hpp"
 #include "leaf.hpp"
 #include "light.hpp"
 //#include "scene.hpp"
@@ -531,9 +531,10 @@ int main(int argc, char *argv[])
         
     //TEST SPHERE
         //EVERYTHING HERE IS FOR TESTING PURPOSES
-        raytrace::Vect newSphere(1.75, -.25, 0);
+        raytrace::Vect newSphere(1.75, 0, 0);
+        //raytrace::Vect newSphere(0, 0, 0);
         
-        raytrace::Vect cameraPosition(0, 0, 0);
+        raytrace::Vect cameraPosition(-3, 1.5, -4);
         
         raytrace::Vect lookAt(0, 0, 0);
         raytrace::Vect differenceBetweenCameraAndLookAt(cameraPosition.getVectX() - lookAt.getVectX(), cameraPosition.getVectY() - lookAt.getVectY(), cameraPosition.getVectZ() - lookAt.getVectZ());
@@ -556,16 +557,23 @@ int main(int argc, char *argv[])
         vector<Source*> lightSources;
         lightSources.push_back(dynamic_cast<Source*>(&sceneLight));
         
+        raytrace::Vect A(4.528552, 0.063698, -0.076053);
+        raytrace::Vect B(4.401397, 0.491405, -0.060543);
+        raytrace::Vect C(4.065627, 0.801094, -0.045114);
+        
         //SCENE OBJECTS
         Sphere sceneSphere(origin, 1, greenLight);
-        Sphere sceneSphere2(newSphere, 0.5, blueLight);
+        Sphere sceneSphere2(newSphere, .5, blueLight);
+        Triangle2 sceneTriangle(A, B, C, greenLight);
         
         Plane scenePlane(Y, -1, redLight);
         
         //GATHER ALL OBJECTS INTO A VECTOR
         vector<Object*> sceneObjects;
-        sceneObjects.push_back(dynamic_cast<Object*>(&sceneSphere));
-        sceneObjects.push_back(dynamic_cast<Object*>(&sceneSphere2));
+        sceneObjects.push_back(dynamic_cast<Object*>(&sceneTriangle));
+
+        //sceneObjects.push_back(dynamic_cast<Object*>(&sceneSphere));
+        //sceneObjects.push_back(dynamic_cast<Object*>(&sceneSphere2));
         sceneObjects.push_back(dynamic_cast<Object*>(&scenePlane));
         
         int current;

@@ -527,14 +527,6 @@ int testFunction()
     return 0;
 }*/
 
-
-
-
-
-
-
-
-
     template <typename T> Vector<T>::Vector() : x(0.0), y(0.0), z(0.0){}
     template <typename T> Vector<T>::Vector(const T &n) : x(n), y(n), z(n){}
     template <typename T> Vector<T>::Vector(const T &s, const T &t, const T &u) : x(s), y(t), z(u){}
@@ -707,6 +699,10 @@ Point Ray::getOrigin() const
 Vect Ray::getDirection() const
 {
     return this->direction;
+}
+Vect Ray::getOriginVect() const
+{
+    return this->origin_vect;
 }
 
 template class raytrace::Vector<float>;
