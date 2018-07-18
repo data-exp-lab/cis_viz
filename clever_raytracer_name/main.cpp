@@ -572,8 +572,8 @@ int main(int argc, char *argv[])
         vector<Object*> sceneObjects;
         sceneObjects.push_back(dynamic_cast<Object*>(&sceneTriangle));
 
-        //sceneObjects.push_back(dynamic_cast<Object*>(&sceneSphere));
-        //sceneObjects.push_back(dynamic_cast<Object*>(&sceneSphere2));
+        sceneObjects.push_back(dynamic_cast<Object*>(&sceneSphere));
+        sceneObjects.push_back(dynamic_cast<Object*>(&sceneSphere2));
         sceneObjects.push_back(dynamic_cast<Object*>(&scenePlane));
         
         int current;
