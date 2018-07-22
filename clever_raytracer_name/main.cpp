@@ -176,6 +176,7 @@
 #include "shape.hpp"
 #include "writer.hpp"
 #include "object.hpp"
+#include "shape.hpp"
 
 using namespace std;
 using namespace raytrace;
@@ -322,6 +323,32 @@ Color getColorAt(raytrace::Vect intersection_position, raytrace::Vect intersecti
     Color closestObjectColor = scene_objects.at(closestObject)->getColor();
     raytrace::Vect closestObjectNormal = scene_objects.at(closestObject)->getNormalAt(intersection_position);
     Color final_color = closestObjectColor.colorScalar(ambientLight);
+    float t0 = INFINITY;
+    float t1 = INFINITY;
+    
+    //REFLECTIONS
+    if(closestObjectColor.getColorSpecial() > 0 && closestObjectColor.getColorSpecial() <= 1)
+    {
+        //REFLECT OFF OF OBJECTS WITH SPECTRAL VALUES
+        double dot1 = closestObjectNormal.dotProduct(intersection_ray_direction.negative());
+        raytrace::Vect scalar1 = closestObjectNormal.vectMult(dot1);
+        raytrace::Vect add1 = scalar1.vectAdd(intersection_ray_direction);
+        raytrace::Vect scalar2 = add1.vectMult(2);
+        raytrace::Vect add2 = intersection_ray_direction.negative().vectAdd(scalar2);
+        raytrace::Vect reflection_direction = add2.normalize();
+        
+        raytrace::Ray reflection_ray(intersection_position, reflection_direction);
+        
+        //DETERMINE WHAT THE RAY INTERSECTS WITH
+        vector<double> reflection_intersections;
+        
+        for(int reflection_ind = 0; reflection_ind < scene_objects.size(); reflection_ind++)
+        {
+            reflection_intersections.push_back(scene_objects.at(reflection_ind)->intersectShape(reflection_ray, t0, t1));
+        }
+        
+        
+    }
     
     for(int i = 0; i < light_sources.size(); i++)
     {
@@ -530,6 +557,11 @@ int main(int argc, char *argv[])
     
     //TEST SPHERE
     //EVERYTHING HERE IS FOR TESTING PURPOSES
+        clock_t t1;
+        clock_t t2;
+        
+        t1 = clock();
+        
         raytrace::Vect origin(0, 0, 0);
         raytrace::Vect X(1, 0, 0);
         raytrace::Vect Y(0, 1, 0);
@@ -566,7 +598,7 @@ int main(int argc, char *argv[])
         raytrace::Vect C(4.065627, 0.801094, -0.045114);
         
         //SCENE OBJECTS
-        Sphere2 testSphere(origin, 1, greenLight);
+        //Sphere2 testSphere(origin, 1, greenLight);
         //Sphere sceneSphere(origin, 1, greenLight);
         //Sphere sceneSphere2(newSphere, .5, blueLight);
         //Triangle2 sceneTriangle(A, B, C, greenLight);
@@ -657,6 +689,11 @@ int main(int argc, char *argv[])
         
         savebmp("test.bmp", width, height, DPI, pixels);
         
+        delete pixels;
+        t2 = clock();
+        float time_diff = ((float)t2 - t1) / 1000;
+        
+        std::cout << time_diff << " seconds" << std::endl;
         
     ///////
     Parameters ps;
