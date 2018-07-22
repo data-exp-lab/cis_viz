@@ -8,6 +8,89 @@
 
 class Point;
 
+class Shape
+{
+public:
+    raytrace::Vect center;
+    raytrace::Vect position;
+    Color color;
+    //std::vector<Light> lights;
+    
+    Shape(){}
+    virtual ~Shape(){}
+    
+    virtual bool intersectShape(const raytrace::Ray &ray, float &t0, float &t1);
+    
+    virtual Color getColor()
+    {
+        return Color(1.0, 1.0, 1.0, 1.0);
+    }
+    
+    virtual raytrace::Vect getNormalAt(raytrace::Vect intersection_position)
+    {
+        return raytrace::Vect(0, 0, 0);
+    }
+    
+    raytrace::Vect getPosition() const
+    {
+        return position;
+    }
+};
+
+class Sphere2 : public Shape
+{
+public:
+    float radius;
+    float radiusSquared;
+    
+    Sphere2() : radius(0.0), radiusSquared(0.0){}
+    Sphere2(const raytrace::Vect &pos, const float &r, /*const std::vector<Light> &lights,*/ Color color) : radius(r), radiusSquared(r * r)
+    {
+        Shape::position = pos;
+        Shape::color = color;
+    }
+    
+    bool intersectShape(const raytrace::Ray &ray, float &t0, float &t1);
+    
+};
+
+class Triangle3 : public Shape
+{
+    raytrace::Vect A;
+    raytrace::Vect B;
+    raytrace::Vect C;
+    raytrace::Vect surfaceNormal;
+    
+    Triangle3(){}
+    Triangle3(const raytrace::Vect &a, const raytrace::Vect &b, const raytrace::Vect &c, const raytrace::Vect &sn, const Color &col/*, const std::vector<Light> &lights*/) : A(a), B(b), C(c), surfaceNormal(sn)
+    {
+        Shape::color = col;
+        //Shape::lights = lights;
+    }
+    
+    bool intersectShape(const raytrace::Ray &ray, float &t0, float &t1);
+    
+    raytrace::Vect getSideA() const
+    {
+        return A;
+    }
+    
+    raytrace::Vect getSideB() const
+    {
+        return B;
+    }
+    
+    raytrace::Vect getSideC() const
+    {
+        return C;
+    }
+    
+};
+
+
+
+/////////////
+
 class Sphere: public Object
 {
     raytrace::Vect center;

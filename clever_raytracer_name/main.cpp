@@ -317,7 +317,7 @@ int closestObjectIndex(vector<double> intersections)
     
 }
 
-Color getColorAt(raytrace::Vect intersection_position, raytrace::Vect intersection_ray_direction, vector<Object*> scene_objects, int closestObject, vector<Source*> light_sources, double accuracy, double ambientLight)
+Color getColorAt(raytrace::Vect intersection_position, raytrace::Vect intersection_ray_direction, vector<Shape*> scene_objects, int closestObject, vector<Source*> light_sources, double accuracy, double ambientLight)
 {
     Color closestObjectColor = scene_objects.at(closestObject)->getColor();
     raytrace::Vect closestObjectNormal = scene_objects.at(closestObject)->getNormalAt(intersection_position);
@@ -331,6 +331,9 @@ Color getColorAt(raytrace::Vect intersection_position, raytrace::Vect intersecti
         
         if(cosine_angle > 0)
         {
+            float t0 = INFINITY;
+            float t1 = INFINITY;
+            
             //TEST FOR SHADOWS
             bool shadowed = false;
             
@@ -345,7 +348,8 @@ Color getColorAt(raytrace::Vect intersection_position, raytrace::Vect intersecti
             {
                 if(shadowed == false)
                 {
-                    secondary_intersections.push_back(scene_objects.at(o)->findIntersection(shadow_ray));
+                    //secondary_intersections.push_back(scene_objects.at(o)->findIntersection(shadow_ray));
+                    secondary_intersections.push_back(scene_objects.at(o)->intersectShape(shadow_ray, t0, t1));
                 }
                 
             }
@@ -523,14 +527,14 @@ int main(int argc, char *argv[])
     
     double ambientLight = 0.2;
     double accuracy = 0.000001;
-        
-    raytrace::Vect origin(0, 0, 0);
-    raytrace::Vect X(1, 0, 0);
-    raytrace::Vect Y(0, 1, 0);
-    raytrace::Vect Z(0, 0, 1);
-        
+    
     //TEST SPHERE
-        //EVERYTHING HERE IS FOR TESTING PURPOSES
+    //EVERYTHING HERE IS FOR TESTING PURPOSES
+        raytrace::Vect origin(0, 0, 0);
+        raytrace::Vect X(1, 0, 0);
+        raytrace::Vect Y(0, 1, 0);
+        raytrace::Vect Z(0, 0, 1);
+        
         raytrace::Vect newSphere(1.75, 0, 0);
         //raytrace::Vect newSphere(0, 0, 0);
         
@@ -562,19 +566,20 @@ int main(int argc, char *argv[])
         raytrace::Vect C(4.065627, 0.801094, -0.045114);
         
         //SCENE OBJECTS
-        Sphere sceneSphere(origin, 1, greenLight);
-        Sphere sceneSphere2(newSphere, .5, blueLight);
-        Triangle2 sceneTriangle(A, B, C, greenLight);
+        Sphere2 testSphere(origin, 1, greenLight);
+        //Sphere sceneSphere(origin, 1, greenLight);
+        //Sphere sceneSphere2(newSphere, .5, blueLight);
+        //Triangle2 sceneTriangle(A, B, C, greenLight);
         
-        Plane scenePlane(Y, -1, redLight);
+        //Plane scenePlane(Y, -1, redLight);
         
         //GATHER ALL OBJECTS INTO A VECTOR
-        vector<Object*> sceneObjects;
-        sceneObjects.push_back(dynamic_cast<Object*>(&sceneTriangle));
-
-        sceneObjects.push_back(dynamic_cast<Object*>(&sceneSphere));
-        sceneObjects.push_back(dynamic_cast<Object*>(&sceneSphere2));
-        sceneObjects.push_back(dynamic_cast<Object*>(&scenePlane));
+        vector<Shape*> sceneObjects;
+        //sceneObjects.push_back(dynamic_cast<Object*>(&sceneTriangle));
+        //sceneObjects.push_back(dynamic_cast<Shape*>(&testSphere));
+        //sceneObjects.push_back(dynamic_cast<Object*>(&sceneSphere));
+        //sceneObjects.push_back(dynamic_cast<Object*>(&sceneSphere2));
+        //sceneObjects.push_back(dynamic_cast<Shape*>(&scenePlane));
         
         int current;
         double xAmount;
@@ -584,6 +589,8 @@ int main(int argc, char *argv[])
         {
             for(int y = 0; y < height; y++)
             {
+                float t0 = INFINITY;
+                float t1 = INFINITY;
                 current = y * width + x;
                 
                 //START WITH NO ANTI-ALIASING
@@ -614,7 +621,8 @@ int main(int argc, char *argv[])
                 vector<double> intersections;
                 for(int index = 0; index < sceneObjects.size(); index++)
                 {
-                    intersections.push_back(sceneObjects.at(index)->findIntersection(cameraRay));
+                    //intersections.push_back(sceneObjects.at(index)->findIntersection(cameraRay));
+                    intersections.push_back(sceneObjects.at(index)->intersectShape(cameraRay, t0, t1));
                 }
                 int closestObject = closestObjectIndex(intersections);
                 if(closestObject == -1)
@@ -646,8 +654,6 @@ int main(int argc, char *argv[])
                 
             }
         }
-        
-        
         
         savebmp("test.bmp", width, height, DPI, pixels);
         

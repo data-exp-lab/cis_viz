@@ -12,6 +12,9 @@ public:
         
     }
     
+    raytrace::Vect position;
+    //std::vector<Light> lights;
+    
     virtual Color getColor()
     {
         //ARBITRARY VALUE
@@ -26,6 +29,7 @@ public:
     {
         return 0;
     }
+
     
 };
 
