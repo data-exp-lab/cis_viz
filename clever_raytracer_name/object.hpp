@@ -25,10 +25,10 @@ public:
         return raytrace::Vect(0, 0, 0);
     }
     
-    virtual double findIntersection(raytrace::Ray ray)
+    /*virtual double findIntersection(raytrace::Ray ray)
     {
         return 0;
-    }
+    }*/
 
     
 };

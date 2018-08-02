@@ -19,7 +19,10 @@ public:
     Shape(){}
     virtual ~Shape(){}
     
-    virtual bool intersectShape(const raytrace::Ray &ray, float &t0, float &t1);
+    //virtual bool intersectShape(const raytrace::Ray &ray, float &t0, float &t1);
+    
+    virtual double findIntersection(raytrace::Ray ray) = 0;
+
     
     virtual Color getColor()
     {
@@ -54,37 +57,73 @@ public:
     
 };
 
-class Triangle3 : public Shape
+//class Triangle3 : public Shape
+//{
+//    raytrace::Vect A;
+//    raytrace::Vect B;
+//    raytrace::Vect C;
+//    raytrace::Vect surfaceNormal;
+    
+//    Triangle3(){}
+//    Triangle3(const raytrace::Vect &a, const raytrace::Vect &b, const raytrace::Vect &c, const raytrace::Vect &sn, const Color &col/*, const std::vector<Light> &lights*/) : A(a), B(b), C(c), surfaceNormal(sn)
+//    {
+//        Shape::color = col;
+        //Shape::lights = lights;
+//    }
+    
+//    bool intersectShape(const raytrace::Ray &ray, float &t0, float &t1);
+    
+//    raytrace::Vect getSideA() const
+//    {
+//        return A;
+//    }
+    
+//    raytrace::Vect getSideB() const
+//    {
+//        return B;
+//    }
+    
+//    raytrace::Vect getSideC() const
+//    {
+//        return C;
+//    }
+    
+//};
+
+//////////
+/////////
+//////////
+
+class Triangle4 : public Shape
 {
     raytrace::Vect A;
     raytrace::Vect B;
     raytrace::Vect C;
-    raytrace::Vect surfaceNormal;
+    raytrace::Vect normal;
     
-    Triangle3(){}
-    Triangle3(const raytrace::Vect &a, const raytrace::Vect &b, const raytrace::Vect &c, const raytrace::Vect &sn, const Color &col/*, const std::vector<Light> &lights*/) : A(a), B(b), C(c), surfaceNormal(sn)
-    {
-        Shape::color = col;
-        //Shape::lights = lights;
-    }
+    double distance;
+    Color color;
     
-    bool intersectShape(const raytrace::Ray &ray, float &t0, float &t1);
+public:
+    Triangle4();
     
-    raytrace::Vect getSideA() const
-    {
-        return A;
-    }
+    Triangle4(raytrace::Vect, raytrace::Vect, raytrace::Vect, Color);
     
-    raytrace::Vect getSideB() const
-    {
-        return B;
-    }
+    raytrace::Vect getTriangleNormal();
     
-    raytrace::Vect getSideC() const
-    {
-        return C;
-    }
+    double getTriangleDistance();
     
+    virtual Color getColor();
+    
+    virtual raytrace::Vect getNormalAt(raytrace::Vect point);
+    
+    raytrace::Vect getSideA() const;
+    
+    raytrace::Vect getSideB() const;
+    
+    raytrace::Vect getSideC() const;
+    
+    virtual double findIntersection(raytrace::Ray ray);
 };
 
 

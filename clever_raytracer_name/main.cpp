@@ -344,10 +344,26 @@ Color getColorAt(raytrace::Vect intersection_position, raytrace::Vect intersecti
         
         for(int reflection_ind = 0; reflection_ind < scene_objects.size(); reflection_ind++)
         {
-            reflection_intersections.push_back(scene_objects.at(reflection_ind)->intersectShape(reflection_ray, t0, t1));
+            reflection_intersections.push_back(scene_objects.at(reflection_ind)->findIntersection(reflection_ray));
+            //reflection_intersections.push_back(scene_objects.at(reflection_ind)->intersectShape(reflection_ray, t0, t1));
         }
         
+        int closestObjectIndex_withReflection = closestObjectIndex(reflection_intersections);
         
+        if(closestObjectIndex_withReflection != -1)
+        {
+            //REFLECTION RAY MISSED EVERYTHING
+            if(reflection_intersections.at(closestObjectIndex_withReflection) > accuracy)
+            {
+                //DETERMINE POSITION AND DIRECTION AT POINT OF INTERSECTION WITH REFLECTION RAY
+                raytrace::Vect reflection_intersection_position = intersection_position.vectAdd(reflection_direction.vectMult(reflection_intersections.at(closestObjectIndex_withReflection)));
+                raytrace::Vect reflection_intersection_ray_direction = reflection_direction;
+                
+                Color reflection_intersection_color = getColorAt(reflection_intersection_position, reflection_intersection_ray_direction, scene_objects, closestObjectIndex_withReflection, light_sources, accuracy, ambientLight);
+                
+                final_color = final_color.colorAdd(reflection_intersection_color.colorScalar(closestObjectColor.getColorSpecial()));
+            }
+        }
     }
     
     for(int i = 0; i < light_sources.size(); i++)
@@ -375,8 +391,8 @@ Color getColorAt(raytrace::Vect intersection_position, raytrace::Vect intersecti
             {
                 if(shadowed == false)
                 {
-                    //secondary_intersections.push_back(scene_objects.at(o)->findIntersection(shadow_ray));
-                    secondary_intersections.push_back(scene_objects.at(o)->intersectShape(shadow_ray, t0, t1));
+                    secondary_intersections.push_back(scene_objects.at(o)->findIntersection(shadow_ray));
+                    //secondary_intersections.push_back(scene_objects.at(o)->intersectShape(shadow_ray, t0, t1));
                 }
                 
             }
@@ -389,8 +405,8 @@ Color getColorAt(raytrace::Vect intersection_position, raytrace::Vect intersecti
                     {
                         shadowed = true;
                     }
+                    break;
                 }
-                break;
             }
             if(shadowed == false)
             {
@@ -584,6 +600,7 @@ int main(int argc, char *argv[])
         Color greenLight(0.5, 1.0, 0.5, 0);
         Color blueLight(0.0, 0.0, 1.0, 0);
         Color redLight(1.0, 0.0, 0.0, 0);
+        Color orangeLight(0.94, 0.75, 0.31, 0);
         
         //ARBITRARY LIGHT POSITION
         raytrace::Vect lightPosition(-7, 10, -10);
@@ -601,18 +618,23 @@ int main(int argc, char *argv[])
         //Sphere2 testSphere(origin, 1, greenLight);
         //Sphere sceneSphere(origin, 1, greenLight);
         //Sphere sceneSphere2(newSphere, .5, blueLight);
-        //Triangle2 sceneTriangle(A, B, C, greenLight);
+        Triangle4 sceneTriangle(A, B, C, greenLight);
         
-        //Plane scenePlane(Y, -1, redLight);
+        Triangle4 scene_triangle(raytrace::Vect(3, 0, 0), raytrace::Vect(0, 3, 0), raytrace::Vect(0, 0, 3), orangeLight);
         
+        Plane scenePlane(Y, -1, redLight);
+        cout << "Before adding shapes to sceneObjects" << endl;
         //GATHER ALL OBJECTS INTO A VECTOR
         vector<Shape*> sceneObjects;
-        //sceneObjects.push_back(dynamic_cast<Object*>(&sceneTriangle));
+        sceneObjects.push_back(dynamic_cast<Shape*>(&sceneTriangle));
         //sceneObjects.push_back(dynamic_cast<Shape*>(&testSphere));
         //sceneObjects.push_back(dynamic_cast<Object*>(&sceneSphere));
         //sceneObjects.push_back(dynamic_cast<Object*>(&sceneSphere2));
-        //sceneObjects.push_back(dynamic_cast<Shape*>(&scenePlane));
+        sceneObjects.push_back(dynamic_cast<Shape*>(&scenePlane));
         
+        sceneObjects.push_back(dynamic_cast<Shape*>(&scene_triangle));
+        cout << "After adding shapes to sceneObjects" << endl;
+
         int current;
         double xAmount;
         double yAmount;
@@ -621,8 +643,6 @@ int main(int argc, char *argv[])
         {
             for(int y = 0; y < height; y++)
             {
-                float t0 = INFINITY;
-                float t1 = INFINITY;
                 current = y * width + x;
                 
                 //START WITH NO ANTI-ALIASING
@@ -653,9 +673,11 @@ int main(int argc, char *argv[])
                 vector<double> intersections;
                 for(int index = 0; index < sceneObjects.size(); index++)
                 {
-                    //intersections.push_back(sceneObjects.at(index)->findIntersection(cameraRay));
-                    intersections.push_back(sceneObjects.at(index)->intersectShape(cameraRay, t0, t1));
+                    intersections.push_back(sceneObjects.at(index)->findIntersection(cameraRay));
+                    //intersections.push_back(sceneObjects.at(index)->intersectShape(cameraRay, t0, t1));
                 }
+                cout << "TEST" << endl;
+
                 int closestObject = closestObjectIndex(intersections);
                 if(closestObject == -1)
                 {
@@ -673,6 +695,7 @@ int main(int argc, char *argv[])
                     pixels[current].b = thisColor.getColorBlue();
                 }
                 
+                
                 //IF INDEX CORRESPONDS TO OBJECT IN SCENE
                 if(intersections.at(closestObject) > accuracy)
                 {
@@ -689,7 +712,7 @@ int main(int argc, char *argv[])
         
         savebmp("test.bmp", width, height, DPI, pixels);
         
-        delete pixels;
+        //delete pixels;
         t2 = clock();
         float time_diff = ((float)t2 - t1) / 1000;
         
