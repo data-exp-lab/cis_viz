@@ -130,7 +130,7 @@ public:
 
 /////////////
 
-class Sphere: public Object
+class Sphere: public Shape
 {
     raytrace::Vect center;
     double radius;
@@ -274,7 +274,7 @@ public:
     
 };
 
-class Plane : public Object
+class Plane : public Shape
 {
 public:
     
@@ -338,7 +338,7 @@ public:
     }
 };
 
-class Triangle2 : public Object
+class Triangle2 : public Shape
 {
 private:
     raytrace::Vect A;
