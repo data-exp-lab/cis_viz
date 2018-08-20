@@ -7,12 +7,4 @@ ELSE(APPLE)
 	ADD_DEFINITIONS(-pipe -std=gnu++1y -Wall)
 ENDIF(APPLE)
 
-
-
-ADD_EXECUTABLE(cis_ray main.cpp ray.cpp leaf.cpp io.cpp  grid.cpp commandArgs.cpp  climate.cpp compound.cpp equations.cpp light.cpp stomata.cpp thermal.cpp triangle.cpp box.cpp cimodel.cpp energyBalance.cpp parameters.cpp normal.cpp point.cpp farquharModel.cpp constants.cpp vect.cpp source.cpp shape.cpp)
-
-
-
-
-
-
+ADD_EXECUTABLE(cis_ray main.cpp)
