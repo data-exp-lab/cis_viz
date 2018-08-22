@@ -23,9 +23,6 @@ public:
     {
         return direction;
     }
-    
-    
-    
 };
 
 Ray::Ray()

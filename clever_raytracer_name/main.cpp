@@ -106,20 +106,20 @@ void savebmp(const char *filename, int w, int h, int dpi, RGB_Type *data)
     
 }
 
-int closestShapeIndex(vector<double> intersections)
+int closestShapeIndex(vector<double> shape_intersections)
 {
     //RETURN INDEX OF WINNING OBJECT INTERSECTION
     int index_of_minimum_intersection;
     
-    if(intersections.size() == 0)
+    if(shape_intersections.size() == 0)
     {
         //NO INTERSECTIONS
         return -1;
     }
-    else if(intersections.size() == 1)
+    else if(shape_intersections.size() == 1)
     {
         //ONLY 1 INTERSECTION
-        if(intersections.at(0) > 0)
+        if(shape_intersections.at(0) > 0)
         {
             //INTERSECTION IS GREATER THAN 0, IS INDEX OF MINIMUM INTERSECTION
             //INDEX IN VECTOR ARRAY --> STARTING AT 0
@@ -138,11 +138,11 @@ int closestShapeIndex(vector<double> intersections)
         
         //FIND MAX VALUE IN VECTOR
         double max = 0;
-        for(int i = 0; i < intersections.size(); i++)
+        for(int i = 0; i < shape_intersections.size(); i++)
         {
-            if(max < intersections.at(i))
+            if(max < shape_intersections.at(i))
             {
-                max = intersections.at(i);
+                max = shape_intersections.at(i);
             }
         }
         
@@ -150,11 +150,11 @@ int closestShapeIndex(vector<double> intersections)
         if(max > 0)
         {
             //ONLY WANT POSITIVE INTERSECTIONS
-            for(int index = 0; index < intersections.size(); index++)
+            for(int index = 0; index < shape_intersections.size(); index++)
             {
-                if(intersections.at(index) > 0 && intersections.at(index) <= max)
+                if(shape_intersections.at(index) > 0 && shape_intersections.at(index) <= max)
                 {
-                    max = intersections.at(index);
+                    max = shape_intersections.at(index);
                     index_of_minimum_intersection = index;
                 }
             }
@@ -162,6 +162,7 @@ int closestShapeIndex(vector<double> intersections)
         }
         else
         {
+            //ALL INTERSECTIONS NEGATIVE
             return -1;
         }
     }
@@ -235,7 +236,7 @@ Color getColorAt(Vect intersection_ray_position, Vect intersection_ray_direction
             
             vector<double> intersections_for_shadows;
             
-            for(int o = 0; o < scene_shapes.size(); o++)
+            for(int o = 0; o < scene_shapes.size() && shadowed == false; o++)
             {
                 intersections_for_shadows.push_back(scene_shapes.at(o)->findIntersection(shadow_ray));
             }
@@ -248,8 +249,8 @@ Color getColorAt(Vect intersection_ray_position, Vect intersection_ray_direction
                     {
                         shadowed = true;
                     }
-                    break;
                 }
+                break;
             }
          
             if(shadowed == false)
@@ -282,8 +283,8 @@ Color getColorAt(Vect intersection_ray_position, Vect intersection_ray_direction
         }
     }
 
-    return final_color;
-    //return final_color.clip();
+    //return final_color;
+    return final_color.clip();
 }
 
 
@@ -312,8 +313,8 @@ int main(int argc, char *argvp[])
     Vect Y(0, 1, 0);
     Vect Z(0, 0, 1);
     
-    //Vect camera_position(-3, 1.5, -4);
-    Vect camera_position(-5, 5, -4);
+    Vect camera_position(3, 1.5, -12);
+    //Vect camera_position(-120, 5, -4);
     //Vect camera_position(100, 1.5, -12);
     Vect lookAt(0, 0, 0);
     Vect difference_between(camera_position.getVectX() - lookAt.getVectX(), camera_position.getVectY() - lookAt.getVectY(), camera_position.getVectZ() - lookAt.getVectZ());
@@ -329,15 +330,15 @@ int main(int argc, char *argvp[])
     Color red_light(1.0, 0.0, 0.0, 0);
     Color gray_light(0.5, 0.5, 0.5, 0);
     Color black_light(0.0, 0.0, 0.0, 0);
-    Color orange_light(0.9, 0.75, 0.3,0);
+    Color orange_light(0.9, 0.75, 0.3, 0);
     Color blue_light(0.0, 0.0, 1, 0);
     
     //FIX: Calculate position of sun, becomes new light
     Vect light_position(-7, 10, -10);
-    Light scene_light(light_position, white_light);
+    Light scene_light1(light_position, white_light);
     
     vector<Source*> scene_lights;
-    scene_lights.push_back(dynamic_cast<Source*>(&scene_light));
+    scene_lights.push_back(dynamic_cast<Source*>(&scene_light1));
     
     //slightly to left and right of direction camera is pointing
     //without anti-aliasing
@@ -349,10 +350,10 @@ int main(int argc, char *argvp[])
     //SCENE OBJECTS
     Sphere scene_sphere1(origin, 1, green_light);
     Plane scene_plane1(Y, -1, red_light);
-    Triangle scene_triangle1(Vect(1, 0, 0), Vect(0, 1, 0), Vect(0, 0, 1), blue_light);
+    Triangle scene_triangle1(Vect(5, 0, 0), Vect(0, -3, 0), Vect(0, 0, -5), green_light);
     
     vector<Shape*> scene_shapes;
-    scene_shapes.push_back(dynamic_cast<Shape*>(&scene_sphere1));
+    //scene_shapes.push_back(dynamic_cast<Shape*>(&scene_sphere1));
     //scene_shapes.push_back(dynamic_cast<Shape*>(&scene_plane1));
     scene_shapes.push_back(dynamic_cast<Shape*>(&scene_triangle1));
     
@@ -397,7 +398,7 @@ int main(int argc, char *argvp[])
             
             int index_of_closest_shape = closestShapeIndex(intersections);
             
-            //cout << "intersection[" << x << "][" << y << "]: " << index_of_closest_shape << endl;
+            cout << "intersection[" << x << "][" << y << "]: " << index_of_closest_shape << endl;
             
             //FIX: make this only enabled when doing testing
             //Test that color changes
@@ -418,13 +419,14 @@ int main(int argc, char *argvp[])
                 if(intersections.at(index_of_closest_shape) > accuracy)
                 {
                     //DETERMINE POSITION AND DIRECTION VECTORS AT POINT OF INTERSECTION
+                    //Vect intersection_ray_position = camera_ray_origin.vectAdd(camera_ray_direction.vectMult(intersections.at(index_of_closest_shape)));
+                    Vect intersection_position = camera_ray_origin.vectAdd(camera_ray_direction.vectMult(intersections.at(index_of_closest_shape)));
                     
-                    Vect intersection_ray_position = camera_ray_origin.vectAdd(camera_ray_direction.vectMult(intersections.at(index_of_closest_shape)));
                     Vect intersection_ray_direction = camera_ray_direction;
                     
                     //if(shadowed == true)
                    // {
-                        //Color intersection_color = getColorAt(intersection_ray_position, intersection_ray_direction, scene_shapes, index_of_closest_shape, scene_lights, accuracy, ambient_light);
+                        //Color intersection_color = getColorAt(intersection_position, intersection_ray_direction, scene_shapes, index_of_closest_shape, scene_lights, accuracy, ambient_light);
                         Color intersection_color = scene_shapes.at(index_of_closest_shape)->getColor();
                     
                         pixels[current_pixel].r = intersection_color.getColorRed();
@@ -446,9 +448,12 @@ int main(int argc, char *argvp[])
             }
             
         }
+        
     }
     
     savebmp("test.bmp", width, height, dpi, pixels);
+    
+    delete[] pixels;
     
     
     return 0;
