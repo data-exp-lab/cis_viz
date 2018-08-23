@@ -24,6 +24,9 @@
 #include "triangle.hpp"
 #include "shape.hpp"
 
+//DO MORE COMPREHENSIVE/ACCURATE TIMINGS THIS WAY
+#include "timing.hpp"
+
 
 
 using namespace std;
@@ -168,6 +171,7 @@ int closestShapeIndex(vector<double> shape_intersections)
     }
 }
 
+//FIX
 Color getColorAt(Vect intersection_ray_position, Vect intersection_ray_direction, vector<Shape*> scene_shapes, int index_of_closest_shape, vector<Source*> scene_lights, double accuracy, double ambient_light)
 {
     Color closest_shape_color = scene_shapes.at(index_of_closest_shape)->getColor();
@@ -287,12 +291,18 @@ Color getColorAt(Vect intersection_ray_position, Vect intersection_ray_direction
     return final_color.clip();
 }
 
-
-
 int current_pixel;
 
 int main(int argc, char *argvp[])
 {
+    clock_t total_time_begin;
+    clock_t total_time_end;
+    
+    total_time_begin = clock();
+    
+    initTimer(1, 18000000, 100);
+    startTimer( totalTimer );
+    
     int dpi = 72;
     
     int width = 640;
@@ -314,8 +324,6 @@ int main(int argc, char *argvp[])
     Vect Z(0, 0, 1);
     
     Vect camera_position(3, 1.5, -12);
-    //Vect camera_position(-120, 5, -4);
-    //Vect camera_position(100, 1.5, -12);
     Vect lookAt(0, 0, 0);
     Vect difference_between(camera_position.getVectX() - lookAt.getVectX(), camera_position.getVectY() - lookAt.getVectY(), camera_position.getVectZ() - lookAt.getVectZ());
     
@@ -334,7 +342,7 @@ int main(int argc, char *argvp[])
     Color blue_light(0.0, 0.0, 1, 0);
     
     //FIX: Calculate position of sun, becomes new light
-    Vect light_position(-7, 10, -10);
+    Vect light_position(3, 1.5, -12);
     Light scene_light1(light_position, white_light);
     
     vector<Source*> scene_lights;
@@ -347,14 +355,16 @@ int main(int argc, char *argvp[])
     
     //FIX: Replace with scene files of triangle/leaf geometry
     
+    
+    
     //SCENE OBJECTS
-    Sphere scene_sphere1(origin, 1, green_light);
-    Plane scene_plane1(Y, -1, red_light);
+    Sphere scene_sphere1(origin, 1, blue_light);
+    Plane scene_plane1(Y, -3, red_light);
     Triangle scene_triangle1(Vect(5, 0, 0), Vect(0, -3, 0), Vect(0, 0, -5), green_light);
     
     vector<Shape*> scene_shapes;
-    //scene_shapes.push_back(dynamic_cast<Shape*>(&scene_sphere1));
-    //scene_shapes.push_back(dynamic_cast<Shape*>(&scene_plane1));
+    scene_shapes.push_back(dynamic_cast<Shape*>(&scene_sphere1));
+    scene_shapes.push_back(dynamic_cast<Shape*>(&scene_plane1));
     scene_shapes.push_back(dynamic_cast<Shape*>(&scene_triangle1));
     
     //return color
@@ -398,7 +408,7 @@ int main(int argc, char *argvp[])
             
             int index_of_closest_shape = closestShapeIndex(intersections);
             
-            cout << "intersection[" << x << "][" << y << "]: " << index_of_closest_shape << endl;
+            //cout << "intersection[" << x << "][" << y << "]: " << index_of_closest_shape << endl;
             
             //FIX: make this only enabled when doing testing
             //Test that color changes
@@ -419,21 +429,19 @@ int main(int argc, char *argvp[])
                 if(intersections.at(index_of_closest_shape) > accuracy)
                 {
                     //DETERMINE POSITION AND DIRECTION VECTORS AT POINT OF INTERSECTION
-                    //Vect intersection_ray_position = camera_ray_origin.vectAdd(camera_ray_direction.vectMult(intersections.at(index_of_closest_shape)));
-                    Vect intersection_position = camera_ray_origin.vectAdd(camera_ray_direction.vectMult(intersections.at(index_of_closest_shape)));
+                    Vect intersection_ray_position = camera_ray_origin.vectAdd(camera_ray_direction.vectMult(intersections.at(index_of_closest_shape)));
                     
                     Vect intersection_ray_direction = camera_ray_direction;
                     
-                    //if(shadowed == true)
-                   // {
-                        //Color intersection_color = getColorAt(intersection_position, intersection_ray_direction, scene_shapes, index_of_closest_shape, scene_lights, accuracy, ambient_light);
-                        Color intersection_color = scene_shapes.at(index_of_closest_shape)->getColor();
+                    if(shadowed == true)
+                    {
+                        Color intersection_color = getColorAt(intersection_ray_position, intersection_ray_direction, scene_shapes, index_of_closest_shape, scene_lights, accuracy, ambient_light);
                     
                         pixels[current_pixel].r = intersection_color.getColorRed();
                         pixels[current_pixel].g = intersection_color.getColorGreen();
                         pixels[current_pixel].b = intersection_color.getColorBlue();
-                    //}
-                    /*else
+                    }
+                    else
                     {
                     
                         Color current_color = scene_shapes.at(index_of_closest_shape)->getColor();
@@ -441,7 +449,7 @@ int main(int argc, char *argvp[])
                         pixels[current_pixel].r = current_color.getColorRed();
                         pixels[current_pixel].g = current_color.getColorGreen();
                         pixels[current_pixel].b = current_color.getColorBlue();
-                    }*/
+                    }
                     
                 }
                 
@@ -455,6 +463,16 @@ int main(int argc, char *argvp[])
     
     delete[] pixels;
     
+    total_time_end = clock();
+    
+    float total_time = ((float)total_time_end - (float)total_time_begin) / 1000000;
+    cout << "Total time: " << total_time << " seconds" << endl;
+    
+    endTimer(0, totalTimer, 1, "main");
+
+    //SAVE TIMINGS TO FILE
+    const char *filename = "test.txt";
+    saveTimers(filename);
     
     return 0;
 }

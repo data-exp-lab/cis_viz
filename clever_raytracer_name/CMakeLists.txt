@@ -7,4 +7,6 @@ ELSE(APPLE)
 	ADD_DEFINITIONS(-pipe -std=gnu++1y -Wall)
 ENDIF(APPLE)
 
-ADD_EXECUTABLE(cis_ray main.cpp)
+ADD_DEFINITIONS(-DTIMER_SUMMARY)
+
+ADD_EXECUTABLE(cis_ray main.cpp timing.cpp)
