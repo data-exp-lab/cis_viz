@@ -26,6 +26,7 @@
 
 //DO MORE COMPREHENSIVE/ACCURATE TIMINGS THIS WAY
 #include "timing.hpp"
+#include "debug.hpp"
 
 
 
@@ -146,6 +147,7 @@ int closestShapeIndex(vector<double> shape_intersections)
             if(max < shape_intersections.at(i))
             {
                 max = shape_intersections.at(i);
+                debug("max: %d", max);
             }
         }
         
@@ -159,6 +161,8 @@ int closestShapeIndex(vector<double> shape_intersections)
                 {
                     max = shape_intersections.at(index);
                     index_of_minimum_intersection = index;
+                    debug("max: %d", max);
+                    debug("index_of_minimum_intersection: %d", index_of_minimum_intersection);
                 }
             }
             return index_of_minimum_intersection;
@@ -300,6 +304,8 @@ int main(int argc, char *argvp[])
     
     total_time_begin = clock();
     
+    debug("Beginning totalTimer");
+    
     initTimer(1, 18000000, 100);
     startTimer( totalTimer );
     
@@ -308,11 +314,15 @@ int main(int argc, char *argvp[])
     int width = 640;
     int height = 480;
     
+    debug("Width: %d\nHeight: %d", width, height);
+    
     double aspect_ratio = (double)width / (double)height;
     double ambient_light = 0.25;
     double accuracy = 0.000001;
     
     bool shadowed = false;
+    
+    debug("Shadowed = %d", shadowed);
     
     int num_pixels = width * height;
     
@@ -367,12 +377,15 @@ int main(int argc, char *argvp[])
     scene_shapes.push_back(dynamic_cast<Shape*>(&scene_plane1));
     scene_shapes.push_back(dynamic_cast<Shape*>(&scene_triangle1));
     
+    debug("Number of shapes in scene: %d", scene_shapes.size());
+    
     //return color
     for(int x = 0; x < width; x++)
     {
         for(int y = 0; y < height; y++)
         {
             current_pixel = y * width + x;
+            debug("current_pixel: %d", current_pixel);
             
             if(width > height)
             {
@@ -404,9 +417,11 @@ int main(int argc, char *argvp[])
             for(int index = 0; index < scene_shapes.size(); index++)
             {
                 intersections.push_back(scene_shapes.at(index)->findIntersection(camera_ray));
+                debug("intersections: %d", intersections[index]);
             }
             
             int index_of_closest_shape = closestShapeIndex(intersections);
+            debug("index_of_closest_shape: %d", index_of_closest_shape);
             
             //cout << "intersection[" << x << "][" << y << "]: " << index_of_closest_shape << endl;
             
@@ -422,12 +437,14 @@ int main(int argc, char *argvp[])
                 pixels[current_pixel].r = 0;
                 pixels[current_pixel].g = 0;
                 pixels[current_pixel].b = 0;
+                debug("Set pixels[%d] to black", pixels[current_pixel]);
             }
             else
             {
                 //INDEX CORRESPONDS TO SHAPE IN SCENE
                 if(intersections.at(index_of_closest_shape) > accuracy)
                 {
+                    debug("intersections[%d] > accuracy", intersections.at(index_of_closest_shape));
                     //DETERMINE POSITION AND DIRECTION VECTORS AT POINT OF INTERSECTION
                     Vect intersection_ray_position = camera_ray_origin.vectAdd(camera_ray_direction.vectMult(intersections.at(index_of_closest_shape)));
                     
@@ -440,6 +457,7 @@ int main(int argc, char *argvp[])
                         pixels[current_pixel].r = intersection_color.getColorRed();
                         pixels[current_pixel].g = intersection_color.getColorGreen();
                         pixels[current_pixel].b = intersection_color.getColorBlue();
+                        debug("color of pixel[%d] is: [%d][%d][%d]", pixels[current_pixel], intersection_color.getColorRed(), intersection_color.getColorGreen(), intersection_color.getColorBlue());
                     }
                     else
                     {
@@ -449,6 +467,7 @@ int main(int argc, char *argvp[])
                         pixels[current_pixel].r = current_color.getColorRed();
                         pixels[current_pixel].g = current_color.getColorGreen();
                         pixels[current_pixel].b = current_color.getColorBlue();
+                        debug("color of pixel[%d] is: [%d][%d][%d]", pixels[current_pixel], current_color.getColorRed(), current_color.getColorGreen(), current_color.getColorBlue());
                     }
                     
                 }
@@ -460,6 +479,7 @@ int main(int argc, char *argvp[])
     }
     
     savebmp("test.bmp", width, height, dpi, pixels);
+    debug("saved image");
     
     delete[] pixels;
     
@@ -473,6 +493,8 @@ int main(int argc, char *argvp[])
     //SAVE TIMINGS TO FILE
     const char *filename = "test.txt";
     saveTimers(filename);
+    
+    debug("end totalTimer");
     
     return 0;
 }
