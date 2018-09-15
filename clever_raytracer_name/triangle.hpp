@@ -6,8 +6,15 @@
 #include "color.hpp"
 #include "ray.hpp"
 
+#include "climate.hpp"
+#include "equations.hpp"
+#include "normal.hpp"
+
+#include <vector>
+
 class Triangle : public Shape
 {
+public:
     Vect A;
     Vect B;
     Vect C;
@@ -15,12 +22,47 @@ class Triangle : public Shape
     Vect normal;
     
     double distance;
+    double area;
     Color color;
     
-public:
+    vector<Triangle*> triangles;
+    
+    //FOR PPFD CALCULATIONS
+    vector<double> photonFlux_up_dir;
+    vector<double> photonFlux_up_diff;
+    vector<double> photonFlux_up_scat;
+    vector<double> photonFlux_down_dir;
+    vector<double> photonFlux_down_diff;
+    vector<double> photonFlux_down_scat;
+    
+    vector<double> LEAFT;
+    vector<double> GS;
+    vector<double> CI;
+    vector<double> PPFDSAT;
+    
+    vector<int> isRubiscoLimit;
+    
+    int leID;
+    double CLAI;
+    double leL;
+    double pos;
+    double chlSPA;
+    double kLeafReflectance;
+    double kLeafTransmittance;
+    double nitrogenPerA;
+    
+    vector<double> a;
+    
     Triangle();
     
     Triangle(Vect, Vect, Vect, Color);
+    
+    Triangle(double startHour, double endHour, double intervalHour);
+    
+    Triangle(const Vect& A, const Vect& B, const Vect& C, const int leafID, const double leafL, const double position, const double CLAI1, const double KT, double KR, const double nitrogenPerArea, double startHour, double endHour, double hourInterval);
+    
+    //ADDING IN COLOR (?)
+    Triangle(const Vect& A, const Vect& B, const Vect& C, const int leafID, const double leafL, const double position, const double KT, double KR, const double nitrogenPerArea, double startHour, double endHour, double hourInterval, Color color);
     
     Vect getTriangleNormal()
     {
@@ -106,7 +148,6 @@ public:
             }
         }
     }
-    
 };
 
 Triangle::Triangle()
@@ -126,9 +167,67 @@ Triangle::Triangle(Vect pointA, Vect pointB, Vect pointC, Color colorValue)
     color = colorValue;
 }
 
+Triangle::Triangle(double startHour, double endHour, double hourInterval)
+{
+    //CALCUALTE NUMBER OF TIMESTEPS
+    int num = (int)((endHour - startHour) / hourInterval);
+    
+    for(int i = 0; i <= num; i++)
+    {
+        photonFlux_up_dir.push_back(0.0);
+        photonFlux_up_diff.push_back(0.0);
+        photonFlux_up_scat.push_back(0.0);
+        photonFlux_down_dir.push_back(0.0);
+        photonFlux_down_diff.push_back(0.0);
+        photonFlux_down_scat.push_back(0.0);
+        
+        a.push_back(0.0);
+        GS.push_back(0.0);
+        CI.push_back(0.0);
+        LEAFT.push_back(0.0);
+        PPFDSAT.push_back(0.0);
+        isRubiscoLimit.push_back(0.0);
+    }
+}
 
-
-
+Triangle::Triangle(const Vect& A, const Vect& B, const Vect& C, const int leafID, const double leafL, const double position, const double CLAI1, const double KT, double KR, const double nitrogenPerArea, double startHour, double endHour, double hourInterval)
+{
+    Vect v0 = A;
+    Vect v1 = B;
+    Vect v2 = C;
+    
+    //RIGHT HAND RULE
+    normal = (v1 - v0) ^ (v2 - v0);
+    normal.normalize();
+    
+    area = ((v1 -v0) ^ (v2 - v0)).length() * 0.5;
+    int num = (int)((endHour - startHour) / hourInterval);
+    
+    for(int i = 0; i <= num; i++)
+    {
+        photonFlux_up_dir.push_back(0.0);
+        photonFlux_up_diff.push_back(0.0);
+        photonFlux_up_scat.push_back(0.0);
+        photonFlux_down_dir.push_back(0.0);
+        photonFlux_down_diff.push_back(0.0);
+        photonFlux_down_scat.push_back(0.0);
+        
+        a.push_back(0.0);
+        GS.push_back(0.0);
+        CI.push_back(0.0);
+        LEAFT.push_back(0.0);
+        PPFDSAT.push_back(0.0);
+        isRubiscoLimit.push_back(0.0);
+    }
+    
+    nitrogenPerA = nitrogenPerArea;
+    leID = leafID;
+    leL = leafL;
+    pos = position;
+    CLAI = CLAI1;
+    kLeafTransmittance = KT;
+    kLeafReflectance = KR;
+}
 
 
 #endif

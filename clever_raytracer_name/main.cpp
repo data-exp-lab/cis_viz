@@ -28,6 +28,16 @@
 #include "timing.hpp"
 #include "debug.hpp"
 
+#include "commandArgs.hpp"
+#include "reader.hpp"
+#include "writer.hpp"
+#include "constants.hpp"
+#include "parameters.hpp"
+#include "equations.hpp"
+#include "normal.hpp"
+
+#include "climate.hpp"
+
 
 
 using namespace std;
@@ -99,9 +109,7 @@ void savebmp(const char *filename, int w, int h, int dpi, RGB_Type *data)
         double green = (data[i].g) * 255;
         double blue = (data[i].b) * 255;
         
-        //unsigned char color[3] = {(int)floor(blue), (int)floor(green), (int)floor(red)};
         unsigned char color[3] = {static_cast<unsigned char>(floor(blue)), static_cast<unsigned char>(floor(green)), static_cast<unsigned char>(floor(red))};
-        //unsigned char color[3] = {static_cast<unsigned char>(int)(floor(blue)), static_cast<unsigned char>(int)(floor(green)), static_cast<unsigned char>(int)(floor(red))};
         
         fwrite(color, 1, 3, f);
     }
@@ -180,13 +188,12 @@ Color getColorAt(Vect intersection_ray_position, Vect intersection_ray_direction
 {
     Color closest_shape_color = scene_shapes.at(index_of_closest_shape)->getColor();
     Vect closest_shape_normal = scene_shapes.at(index_of_closest_shape)->getNormalAt(intersection_ray_position);
-    
-    
+
     Color final_color = closest_shape_color.colorScalar(ambient_light);
     
     //REFLECTION
     //ALPHA [2]
-    /*if(closest_shape_color.getColorAlpha() > 0 && closest_shape_color.getColorAlpha() <= 1)
+    if(closest_shape_color.getColorAlpha() > 0 && closest_shape_color.getColorAlpha() <= 1)
     {
         //REFLECTION OFF OBJECTS WITH SPECTRAL VALUES
         double dot1 = closest_shape_normal.dotProduct(intersection_ray_direction.negative());
@@ -221,9 +228,7 @@ Color getColorAt(Vect intersection_ray_position, Vect intersection_ray_direction
                 final_color = final_color.colorAdd(reflection_intersection_color.colorScalar(closest_shape_color.getColorAlpha()));
             }
         }
-        
-        
-    }*/
+    }
     
     for(int light = 0; light < scene_lights.size(); light++)
     {
@@ -291,13 +296,12 @@ Color getColorAt(Vect intersection_ray_position, Vect intersection_ray_direction
         }
     }
 
-    //return final_color;
     return final_color.clip();
 }
 
 int current_pixel;
 
-int main(int argc, char *argvp[])
+int main(int argc, char *argv[])
 {
     clock_t total_time_begin;
     clock_t total_time_end;
@@ -308,6 +312,10 @@ int main(int argc, char *argvp[])
     
     initTimer(1, 18000000, 100);
     startTimer( totalTimer );
+    
+    extern commandLineArgs cla;
+    
+    ProcessCommandLine(argc, argv);
     
     int dpi = 72;
     
@@ -320,13 +328,111 @@ int main(int argc, char *argvp[])
     double ambient_light = 0.25;
     double accuracy = 0.000001;
     
-    bool shadowed = false;
+    bool shadowed = true;
+    bool PLY = false;
     
     debug("Shadowed = %d", shadowed);
     
     int num_pixels = width * height;
     
     RGB_Type *pixels = new RGB_Type[num_pixels];
+    
+    //GEOMETRY FILE
+    vector<float> x1_main;
+    vector<float> y1_main;
+    vector<float> z1_main;
+    vector<float> x2_main;
+    vector<float> y2_main;
+    vector<float> z2_main;
+    vector<float> x3_main;
+    vector<float> y3_main;
+    vector<float> z3_main;
+    
+    double startHour = cla.startHour;
+    double endHour = cla.endHour;
+    double intervalHour = cla.intervalHour;
+    double leafTransmittance = cla.leafTransmittance;
+    double leafReflectivity = cla.leafReflectivity;
+    double leafAbsorbed;
+    
+    vector<float> DOY_main;
+    
+    if(leafTransmittance + leafReflectivity > 1)
+    {
+        cout << "Transmittance and Reflectivity cannot be greater than 1" << endl;
+        debug("Transmittance and Reflectivity cannot be greater than 1");
+        debug("Transmittance: %d", leafTransmittance);
+        debug("Reflectivity: %d", leafReflectivity);
+        return 0;
+    }
+    else
+    {
+        leafAbsorbed = 1 - leafTransmittance - leafReflectivity;
+        debug("Transmittance: %d", leafTransmittance);
+        debug("Reflectivity: %d", leafReflectivity);
+        debug("Absorbed: %d", leafAbsorbed);
+    }
+    
+    //FOR PLY FILES
+    vector<float> x_main;
+    vector<float> y_main;
+    vector<float> z_main;
+    vector<float> red_main;
+    vector<float> green_main;
+    vector<float> blue_main;
+    
+    //FOR PLY FILES --> CONNECTIVITY
+    vector<float> num_vertices_to_connect_main;
+    vector<float> vertex1_main;
+    vector<float> vertex2_main;
+    vector<float> vertex3_main;
+    
+    if(PLY == true)
+    {
+        //READ IN THE GEOMETRY OF THE PLANT FROM PLY FILE
+        readGeometryFilePLY(cla.geometryFile, ref(x_main), ref(y_main), ref(z_main), ref(red_main), ref(green_main), ref(blue_main), ref(num_vertices_to_connect_main), ref(vertex1_main), ref(vertex2_main), ref(vertex3_main));
+    }
+    else
+    {
+        //READ IN THE GEOMETRY OF THE PLANT FROM TXT FILE
+        readGeometryFileTXT(cla.geometryFile, ref(x1_main), ref(y1_main), ref(z1_main), ref(x2_main), ref(y2_main), ref(z2_main), ref(x3_main), ref(y3_main), ref(z3_main));
+    }
+    
+    Parameters ps;
+    Constants cs;
+    //cs.NEAREST_RAY_DISTANCE = rayDistance;
+    
+    //CLIMATE INFO
+    Climate climate;
+    double stn = cs.TIME_SOLAR_NOON;
+    double start = startHour + cs.START_MINUTE / 60;
+    double end = endHour + cs.END_MINUTE / 60;
+    double interval = intervalHour + cs.INTERVAL_MINUTE / 60;
+    
+    int leafID = 1;
+    double CLAI = 0.1;
+    double PPFD = 1000;
+    ps.prepare(leafID, CLAI, PPFD);
+    
+    //FIX: MAKE DOY VALUE VARIABLE, NOT CONSTANT AT 150
+    float DOY_val = 150;
+    //FIX: TOTAL GUESS HERE
+    float leafL = 1;
+    //FIX: TOTAL GUESS HERE
+    float n_per_area = 1;
+    
+    float position = 0.0;
+    
+    //FOR EVERY TIME STEP CALCULATED
+    //FIX: DOUBLE CHECK THAT THIS IS CORRECT
+    int num = (int)((end - start) / interval);
+    for(int i = 0; i <= num; i++)
+    {
+        DOY_main.push_back(DOY_val);
+    }
+    
+    //CALCULATE PPFD FROM ATMOSPHERIC TRANSMITTANCE
+    climate.climate_calculation_PPFD(cs.LATITUDE, stn, cs.ATMOSPHERIC_TRANSMITTANCE, DOY_main, start, end, interval, ps, cs);
     
     Vect origin(0, 0, 0);
     Vect X(1, 0, 0);
@@ -352,7 +458,7 @@ int main(int argc, char *argvp[])
     Color blue_light(0.0, 0.0, 1, 0);
     
     //FIX: Calculate position of sun, becomes new light
-    Vect light_position(3, 1.5, -12);
+    Vect light_position(-7, 10, -10);
     Light scene_light1(light_position, white_light);
     
     vector<Source*> scene_lights;
@@ -362,126 +468,252 @@ int main(int argc, char *argvp[])
     //without anti-aliasing
     double x_amount;
     double y_amount;
-    
-    //FIX: Replace with scene files of triangle/leaf geometry
-    
-    
-    
+
     //SCENE OBJECTS
     Sphere scene_sphere1(origin, 1, blue_light);
-    Plane scene_plane1(Y, -3, red_light);
+    Plane scene_plane1(Y, -1, red_light);
     Triangle scene_triangle1(Vect(5, 0, 0), Vect(0, -3, 0), Vect(0, 0, -5), green_light);
+    //Triangle scene_triangle1(Vect(-1.25, 0, 7.78), Vect(-1.45, 0, 7.63), Vect(-1.28, 0, 7.07), green_light);
     
     vector<Shape*> scene_shapes;
     scene_shapes.push_back(dynamic_cast<Shape*>(&scene_sphere1));
     scene_shapes.push_back(dynamic_cast<Shape*>(&scene_plane1));
     scene_shapes.push_back(dynamic_cast<Shape*>(&scene_triangle1));
+    //scene_shapes.push_back(dynamic_cast<Shape*>(&plant_triangle1));
     
-    debug("Number of shapes in scene: %d", scene_shapes.size());
-    
-    //return color
-    for(int x = 0; x < width; x++)
+    if(PLY == true)
     {
-        for(int y = 0; y < height; y++)
+        //SET UP CONNECTIVITY OF POINTS INTO TRIANGLES
+        int num_vertices;
+        int vertex1_index;
+        int vertex2_index;
+        int vertex3_index;
+        
+        float x_for_point1;
+        float y_for_point1;
+        float z_for_point1;
+        float x_for_point2;
+        float y_for_point2;
+        float z_for_point2;
+        float x_for_point3;
+        float y_for_point3;
+        float z_for_point3;
+        
+        cout << "x_main.size(): " << x_main.size() << endl;
+        for(int i = 0; i < x_main.size(); i++)
         {
-            current_pixel = y * width + x;
-            debug("current_pixel: %d", current_pixel);
-            
-            if(width > height)
+            cout << "x_main[" << i << "]: " << x_main[i] << endl;
+        }
+        
+        for(int i = 0; i < x_main.size(); i++)
+        {
+            num_vertices = num_vertices_to_connect_main[i];
+            if(num_vertices == 3)
             {
-                //IMAGE IS WIDER THAN IT IS TALL
-                x_amount = ((x + 0.5) / width) * aspect_ratio - (((width - height) / (double)height) / 2);
-                y_amount = ((height - y) + 0.5) / height;
-            }
-            else if(height > width)
-            {
-                //IMAGE IS TALLER THAN IT IS WIDE
-                x_amount = (x + 0.5) / width;
-                y_amount = (((height - y) + 0.5) / height) / aspect_ratio - (((height - width) / (double)width) / 2);
-            }
-            else
-            {
-                //IMAGE IS SQUARE
-                x_amount = (x + 0.5) / width;
-                y_amount = ((height - y) + 0.5) / height;
-            }
-            
-            Vect camera_ray_origin = scene_camera.getCameraPosition();
-            Vect camera_ray_direction = camera_direction.vectAdd(camera_right.vectMult(x_amount - 0.5).vectAdd(camera_down.vectMult(y_amount - 0.5))).normalize();
-            
-            Ray camera_ray(camera_ray_origin, camera_ray_direction);
-            
-            vector<double> intersections;
-            
-            //LOOP THROUGH OBJECTS IN SCENE, FIND INTERSECTION WITH CAMERA RAY, PUSH VALUE INTO INTERSECTIONS ARRAY
-            for(int index = 0; index < scene_shapes.size(); index++)
-            {
-                intersections.push_back(scene_shapes.at(index)->findIntersection(camera_ray));
-                debug("intersections: %d", intersections[index]);
-            }
-            
-            int index_of_closest_shape = closestShapeIndex(intersections);
-            debug("index_of_closest_shape: %d", index_of_closest_shape);
-            
-            //cout << "intersection[" << x << "][" << y << "]: " << index_of_closest_shape << endl;
-            
-            //FIX: make this only enabled when doing testing
-            //Test that color changes
-            /*pixels[current_pixel].r = 23;
-            pixels[current_pixel].g = 250;
-            pixels[current_pixel].b = 50;*/
-            
-            if(index_of_closest_shape == -1)
-            {
-                //SET BACKGROUND OF IMAGE
-                pixels[current_pixel].r = 0;
-                pixels[current_pixel].g = 0;
-                pixels[current_pixel].b = 0;
-                debug("Set pixels[%d] to black", pixels[current_pixel]);
-            }
-            else
-            {
-                //INDEX CORRESPONDS TO SHAPE IN SCENE
-                if(intersections.at(index_of_closest_shape) > accuracy)
-                {
-                    debug("intersections[%d] > accuracy", intersections.at(index_of_closest_shape));
-                    //DETERMINE POSITION AND DIRECTION VECTORS AT POINT OF INTERSECTION
-                    Vect intersection_ray_position = camera_ray_origin.vectAdd(camera_ray_direction.vectMult(intersections.at(index_of_closest_shape)));
-                    
-                    Vect intersection_ray_direction = camera_ray_direction;
-                    
-                    if(shadowed == true)
-                    {
-                        Color intersection_color = getColorAt(intersection_ray_position, intersection_ray_direction, scene_shapes, index_of_closest_shape, scene_lights, accuracy, ambient_light);
-                    
-                        pixels[current_pixel].r = intersection_color.getColorRed();
-                        pixels[current_pixel].g = intersection_color.getColorGreen();
-                        pixels[current_pixel].b = intersection_color.getColorBlue();
-                        debug("color of pixel[%d] is: [%d][%d][%d]", pixels[current_pixel], intersection_color.getColorRed(), intersection_color.getColorGreen(), intersection_color.getColorBlue());
-                    }
-                    else
-                    {
-                    
-                        Color current_color = scene_shapes.at(index_of_closest_shape)->getColor();
-                        
-                        pixels[current_pixel].r = current_color.getColorRed();
-                        pixels[current_pixel].g = current_color.getColorGreen();
-                        pixels[current_pixel].b = current_color.getColorBlue();
-                        debug("color of pixel[%d] is: [%d][%d][%d]", pixels[current_pixel], current_color.getColorRed(), current_color.getColorGreen(), current_color.getColorBlue());
-                    }
-                    
-                }
+                vertex1_index = vertex1_main[i];
+                vertex2_index = vertex2_main[i];
+                vertex3_index = vertex3_main[i];
+
+                Vect point1(x_main[vertex1_index], y_main[vertex1_index], z_main[vertex1_index]);
+                Vect point2(x_main[vertex2_index], y_main[vertex2_index], z_main[vertex2_index]);
+                Vect point3(x_main[vertex3_index], y_main[vertex3_index], z_main[vertex3_index]);
                 
+                cout << "point1: " << point1.getVectX() << " " << point1.getVectY() << " " << point1.getVectZ() << endl;
+                Triangle newTri(point1, point2, point3, leafID, leafL, position, CLAI, leafTransmittance, leafReflectivity, n_per_area, start, end, intervalHour);
+                
+                scene_shapes.push_back(dynamic_cast<Shape*>(&newTri));
             }
-            
+            //FIX: change once set up to do things other than triangles (if necessary)
+            else
+            {
+                printf("Cannot construct a triangle from given information");
+                return 0;
+            }
         }
         
     }
+    else
+    {
+        //FIX: IF USING TXT FILE FOR GEOMETRY
+        for(int i = 0; i < x1_main.size(); i++)
+        {
+            Vect point1(x1_main[i], y1_main[i], z1_main[i]);
+            Vect point2(x2_main[i], y2_main[i], z2_main[i]);
+            Vect point3(x3_main[i], y3_main[i], z3_main[i]);
+            
+            cout << "point1: " << point1.getVectX() << " " << point1.getVectY() << " " << point1.getVectZ() << endl;
+            Triangle newTri(point1, point2, point3, leafID, leafL, position, CLAI, leafTransmittance, leafReflectivity, n_per_area, start, end, intervalHour);
+
+            scene_shapes.push_back(dynamic_cast<Shape*>(&newTri));
+        }
+    }
+    cout << "scene_shapes.size(): " << scene_shapes.size() << endl;
     
+    debug("Number of shapes in scene: %d", scene_shapes.size());
+    
+    vector<double> area_total;
+    vector<double> PPFD_total;
+    
+    
+    //FIX: DO THIS FOR EVERY TIMESTEP
+    //RETURN COLOR PER PIXEL
+    for(int timestep = 0; timestep <= num; timestep++)
+    {
+        cout << "timestep = " << timestep << endl;
+        debug("timestep: %d", timestep);
+        
+        double hour = start + timestep * interval;
+        cout << "hour = " << hour << endl;
+        debug("hour: %d", hour);
+        
+        area_total.clear();
+        PPFD_total.clear();
+        
+        double light_d_x = climate.direct_light_d_list[timestep].x;
+        double light_d_y = climate.direct_light_d_list[timestep].y;
+        double light_d_z = climate.direct_light_d_list[timestep].z;
+        
+        double direct_light_ppfd = climate.ppfd_direct_light[timestep];
+        //FIX: MAKE DIFFUSE STUFF WORK
+        //double diffuse_light_ppfd = climate.ppfd_diffuse_light[timestep];
+        
+        double dir_pf = direct_light_ppfd * 1e-4; //ADD IN LIGHT_NEAREST_DISTANCE
+        //double dif_pf = diffuse_light_ppfd * 1e-4; //ADD IN LIGHT_NEAREST_DISTANCE
+        
+        //TRIANGLES ARE IN SCENE_SHAPES ALREADY
+        /*vector<Triangle*>::iterator it;
+        for(int j = 0; j < scene_shapes.size(); j++)
+        {
+            double triangle_area = (((*it)->B - (*it)->A) ^ ((*it)->C - (*it)->A)).length() * 0.5;
+            double area_factor = 1 / (triangle_area * 1e-4);
+            
+            vector<double> photonFlux_up_dir = (*it)->photonFlux_up_dir;
+            vector<double> photonFlux_up_diff = (*it)->photonFlux_up_diff;
+            vector<double> photonFlux_up_scat = (*it)->photonFlux_up_scat;
+            vector<double> photonFlux_down_dir = (*it)->photonFlux_down_dir;
+            vector<double> photonFlux_down_diff = (*it)->photonFlux_down_diff;
+            vector<double> photonFlux_down_scat = (*it)->photonFlux_down_scat;
+            
+            //SELECT PPFD FOR GIVEN TIME
+            double it1 = photonFlux_up_dir[timestep];
+            double it2 = photonFlux_up_diff[timestep];
+            double it3 = photonFlux_up_scat[timestep];
+            double it4 = photonFlux_down_dir[timestep];
+            double it5 = photonFlux_down_diff[timestep];
+            double it6 = photonFlux_down_scat[timestep];
+            
+            // TOTAL PPFD FROM DIRECT, DIFFUSE, AND SCATTERED LIGHT
+            double PPFD_tot = (it1 + it2 + it3 + it4 + it5 + it6) * area_factor;
+            
+            area_total.push_back(triangle_area);
+            PPFD_total.push_back(PPFD_tot);
+        }*/
+        
+        for(int x = 0; x < width; x++)
+        {
+            for(int y = 0; y < height; y++)
+            {
+                current_pixel = y * width + x;
+                debug("current_pixel: %d", current_pixel);
+                
+                if(width > height)
+                {
+                    //IMAGE IS WIDER THAN IT IS TALL
+                    x_amount = ((x + 0.5) / width) * aspect_ratio - (((width - height) / (double)height) / 2);
+                    y_amount = ((height - y) + 0.5) / height;
+                }
+                else if(height > width)
+                {
+                    //IMAGE IS TALLER THAN IT IS WIDE
+                    x_amount = (x + 0.5) / width;
+                    y_amount = (((height - y) + 0.5) / height) / aspect_ratio - (((height - width) / (double)width) / 2);
+                }
+                else
+                {
+                    //IMAGE IS SQUARE
+                    x_amount = (x + 0.5) / width;
+                    y_amount = ((height - y) + 0.5) / height;
+                }
+                
+                Vect camera_ray_origin = scene_camera.getCameraPosition();
+                Vect camera_ray_direction = camera_direction.vectAdd(camera_right.vectMult(x_amount - 0.5).vectAdd(camera_down.vectMult(y_amount - 0.5))).normalize();
+                
+                Ray camera_ray(camera_ray_origin, camera_ray_direction);
+                
+                vector<double> intersections;
+                
+                //LOOP THROUGH OBJECTS IN SCENE, FIND INTERSECTION WITH CAMERA RAY, PUSH VALUE INTO INTERSECTIONS ARRAY
+                for(int index = 0; index < scene_shapes.size(); index++)
+                {
+                    intersections.push_back(scene_shapes.at(index)->findIntersection(camera_ray));
+                    debug("intersections: %d", intersections[index]);
+                }
+                
+                int index_of_closest_shape = closestShapeIndex(intersections);
+                debug("index_of_closest_shape: %d", index_of_closest_shape);
+                
+                //cout << "intersection[" << x << "][" << y << "]: " << index_of_closest_shape << endl;
+                
+                //FIX: make this only enabled when doing testing
+                //Test that color changes
+                /*pixels[current_pixel].r = 23;
+                pixels[current_pixel].g = 250;
+                pixels[current_pixel].b = 50;*/
+                
+                if(index_of_closest_shape == -1)
+                {
+                    //SET BACKGROUND OF IMAGE
+                    pixels[current_pixel].r = 0;
+                    pixels[current_pixel].g = 0;
+                    pixels[current_pixel].b = 0;
+                    debug("Set pixels[%d] to black", pixels[current_pixel]);
+                }
+                else
+                {
+                    //INDEX CORRESPONDS TO SHAPE IN SCENE
+                    if(intersections.at(index_of_closest_shape) > accuracy)
+                    {
+                        debug("intersections[%d] > accuracy", intersections.at(index_of_closest_shape));
+                        //DETERMINE POSITION AND DIRECTION VECTORS AT POINT OF INTERSECTION
+                        Vect intersection_ray_position = camera_ray_origin.vectAdd(camera_ray_direction.vectMult(intersections.at(index_of_closest_shape)));
+                        
+                        Vect intersection_ray_direction = camera_ray_direction;
+                        
+                        if(shadowed == true)
+                        {
+                            Color intersection_color = getColorAt(intersection_ray_position, intersection_ray_direction, scene_shapes, index_of_closest_shape, scene_lights, accuracy, ambient_light);
+                        
+                            pixels[current_pixel].r = intersection_color.getColorRed();
+                            pixels[current_pixel].g = intersection_color.getColorGreen();
+                            pixels[current_pixel].b = intersection_color.getColorBlue();
+                            debug("color of pixel[%d] is: [%d][%d][%d]", pixels[current_pixel], intersection_color.getColorRed(), intersection_color.getColorGreen(), intersection_color.getColorBlue());
+                        }
+                        else
+                        {
+                            Color current_color = scene_shapes.at(index_of_closest_shape)->getColor();
+                            
+                            pixels[current_pixel].r = current_color.getColorRed();
+                            pixels[current_pixel].g = current_color.getColorGreen();
+                            pixels[current_pixel].b = current_color.getColorBlue();
+                            debug("color of pixel[%d] is: [%d][%d][%d]", pixels[current_pixel], current_color.getColorRed(), current_color.getColorGreen(), current_color.getColorBlue());
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     savebmp("test.bmp", width, height, dpi, pixels);
     debug("saved image");
     
     delete[] pixels;
+    
+    //OUTPUT FILE
+    const char *output_file_name = cla.outputFile;
+    //cout << "output_file: " << output_file_name << endl;
+    
+    writePPFDFile(output_file_name, area_total, PPFD_total, num);
+    
     
     total_time_end = clock();
     
@@ -491,26 +723,13 @@ int main(int argc, char *argvp[])
     endTimer(0, totalTimer, 1, "main");
 
     //SAVE TIMINGS TO FILE
-    const char *filename = "test.txt";
+    const char *filename = "timing.txt";
     saveTimers(filename);
     
     debug("end totalTimer");
     
+    cout << "EXIT SUCCESSFUL" << endl;
     return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 

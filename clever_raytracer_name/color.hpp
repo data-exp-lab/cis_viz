@@ -61,7 +61,7 @@ public:
     
     Color colorScalar(double scalar)
     {
-        return Color(red * scalar, green * scalar, blue * scalar, alpha);
+        return Color((red * scalar), (green * scalar), (blue * scalar), alpha);
     }
     
     Color colorAdd(Color color)
@@ -71,7 +71,7 @@ public:
     
     Color colorMultiply(Color color)
     {
-        return Color(red * color.getColorRed(), green * color.getColorGreen(), blue * color.getColorBlue(), alpha);
+        return Color((red * color.getColorRed()), (green * color.getColorGreen()), (blue * color.getColorBlue()), alpha);
     }
     
     Color colorAverage(Color color)

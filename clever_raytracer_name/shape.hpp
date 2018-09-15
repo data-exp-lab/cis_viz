@@ -5,11 +5,15 @@
 #include "vect.hpp"
 #include "color.hpp"
 
+#include <vector>
+
 class Shape
 {
     
 public:
     Shape();
+    
+    std::vector<Shape*> shapes;
     
     virtual Color getColor()
     {
@@ -24,6 +28,11 @@ public:
     virtual double findIntersection(Ray ray)
     {
         return 0;
+    }
+    
+    virtual std::vector<Shape*> get_shapes()
+    {
+        return shapes;
     }
     
 };

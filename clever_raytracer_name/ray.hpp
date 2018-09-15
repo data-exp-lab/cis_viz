@@ -5,10 +5,10 @@
 
 class Ray
 {
+public:
     Vect origin;
     Vect direction;
-    
-public:
+    double photonFlux;
     
     Ray();
     

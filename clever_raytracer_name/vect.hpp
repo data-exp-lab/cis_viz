@@ -1,19 +1,26 @@
 #ifndef __VECT__
 #define __VECT__
 
+#include <iostream>
+#include <vector>
+#include <cmath>
+#include <string>
+#include <sstream>
+#include <fstream>
+
+//template<typename T>
 class Vect
 {
+public:
     double x;
     double y;
     double z;
-    
-public:
     
     Vect ();
     
     Vect (double, double, double);
     
-    // method functions
+    //METHOD FUNCTIONS
     double getVectX()
     {
         return x;
@@ -65,6 +72,37 @@ public:
     {
         return (Vect(x * scalar, y * scalar, z * scalar));
     }
+    
+    Vect operator - (const Vect &n) const
+    {
+        return Vect(x - n.x, y - n.y, z - n.z);
+    }
+    
+    Vect operator + (const Vect& v) const
+    {
+        return (Vect(x + v.x, y + v.y, z + v.z));
+    }
+    
+    Vect operator = (const Vect& n)
+    {
+        x = n.x;
+        y = n.y;
+        z = n.z;
+        
+        return(*this);
+    }
+    
+    Vect operator^(const Vect& p)
+    {
+        return(Vect(y * p.z - z * p.y, z * p.x - x * p.z, x * p.y - y * p.x));
+    }
+
+    double length(void)
+    {
+        return (sqrt(x * x + y * y + z * z));
+    }
+    
+    
 };
 
 Vect::Vect ()
