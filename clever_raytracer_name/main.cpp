@@ -321,6 +321,8 @@ int main(int argc, char *argv[])
     
     int width = 640;
     int height = 480;
+    int anti_aliasing_depth = 3;
+    double anti_aliasing_threshold = 0.1;
     
     debug("Width: %d\nHeight: %d", width, height);
     
@@ -463,9 +465,7 @@ int main(int argc, char *argv[])
     
     vector<Source*> scene_lights;
     scene_lights.push_back(dynamic_cast<Source*>(&scene_light1));
-    
-    //slightly to left and right of direction camera is pointing
-    //without anti-aliasing
+
     double x_amount;
     double y_amount;
 
@@ -554,7 +554,6 @@ int main(int argc, char *argv[])
     vector<double> area_total;
     vector<double> PPFD_total;
     
-    
     //FIX: DO THIS FOR EVERY TIMESTEP
     //RETURN COLOR PER PIXEL
     for(int timestep = 0; timestep <= num; timestep++)
@@ -581,8 +580,8 @@ int main(int argc, char *argv[])
         //double dif_pf = diffuse_light_ppfd * 1e-4; //ADD IN LIGHT_NEAREST_DISTANCE
         
         //TRIANGLES ARE IN SCENE_SHAPES ALREADY
-        /*vector<Triangle*>::iterator it;
-        for(int j = 0; j < scene_shapes.size(); j++)
+        vector<Triangle*>::iterator it;
+        /*for(int j = 0; j < scene_shapes.size(); j++)
         {
             double triangle_area = (((*it)->B - (*it)->A) ^ ((*it)->C - (*it)->A)).length() * 0.5;
             double area_factor = 1 / (triangle_area * 1e-4);
@@ -609,6 +608,11 @@ int main(int argc, char *argv[])
             PPFD_total.push_back(PPFD_tot);
         }*/
         
+        int anti_aliasing_index;
+        double tempRed;
+        double tempGreen;
+        double tempBlue;
+        
         for(int x = 0; x < width; x++)
         {
             for(int y = 0; y < height; y++)
@@ -616,88 +620,164 @@ int main(int argc, char *argv[])
                 current_pixel = y * width + x;
                 debug("current_pixel: %d", current_pixel);
                 
-                if(width > height)
+                //STARTING WITH A BLANK PIXEL
+                double tempRed[anti_aliasing_depth * anti_aliasing_depth];
+                double tempGreen[anti_aliasing_depth * anti_aliasing_depth];
+                double tempBlue[anti_aliasing_depth * anti_aliasing_depth];
+                
+                for(int anti_aliasing_x = 0; anti_aliasing_x < anti_aliasing_depth; anti_aliasing_x++)
                 {
-                    //IMAGE IS WIDER THAN IT IS TALL
-                    x_amount = ((x + 0.5) / width) * aspect_ratio - (((width - height) / (double)height) / 2);
-                    y_amount = ((height - y) + 0.5) / height;
-                }
-                else if(height > width)
-                {
-                    //IMAGE IS TALLER THAN IT IS WIDE
-                    x_amount = (x + 0.5) / width;
-                    y_amount = (((height - y) + 0.5) / height) / aspect_ratio - (((height - width) / (double)width) / 2);
-                }
-                else
-                {
-                    //IMAGE IS SQUARE
-                    x_amount = (x + 0.5) / width;
-                    y_amount = ((height - y) + 0.5) / height;
-                }
-                
-                Vect camera_ray_origin = scene_camera.getCameraPosition();
-                Vect camera_ray_direction = camera_direction.vectAdd(camera_right.vectMult(x_amount - 0.5).vectAdd(camera_down.vectMult(y_amount - 0.5))).normalize();
-                
-                Ray camera_ray(camera_ray_origin, camera_ray_direction);
-                
-                vector<double> intersections;
-                
-                //LOOP THROUGH OBJECTS IN SCENE, FIND INTERSECTION WITH CAMERA RAY, PUSH VALUE INTO INTERSECTIONS ARRAY
-                for(int index = 0; index < scene_shapes.size(); index++)
-                {
-                    intersections.push_back(scene_shapes.at(index)->findIntersection(camera_ray));
-                    debug("intersections: %d", intersections[index]);
-                }
-                
-                int index_of_closest_shape = closestShapeIndex(intersections);
-                debug("index_of_closest_shape: %d", index_of_closest_shape);
-                
-                //cout << "intersection[" << x << "][" << y << "]: " << index_of_closest_shape << endl;
-                
-                //FIX: make this only enabled when doing testing
-                //Test that color changes
-                /*pixels[current_pixel].r = 23;
-                pixels[current_pixel].g = 250;
-                pixels[current_pixel].b = 50;*/
-                
-                if(index_of_closest_shape == -1)
-                {
-                    //SET BACKGROUND OF IMAGE
-                    pixels[current_pixel].r = 0;
-                    pixels[current_pixel].g = 0;
-                    pixels[current_pixel].b = 0;
-                    debug("Set pixels[%d] to black", pixels[current_pixel]);
-                }
-                else
-                {
-                    //INDEX CORRESPONDS TO SHAPE IN SCENE
-                    if(intersections.at(index_of_closest_shape) > accuracy)
+                    for(int anti_aliasing_y = 0; anti_aliasing_y < anti_aliasing_depth; anti_aliasing_y++)
                     {
-                        debug("intersections[%d] > accuracy", intersections.at(index_of_closest_shape));
-                        //DETERMINE POSITION AND DIRECTION VECTORS AT POINT OF INTERSECTION
-                        Vect intersection_ray_position = camera_ray_origin.vectAdd(camera_ray_direction.vectMult(intersections.at(index_of_closest_shape)));
+                        anti_aliasing_index = anti_aliasing_y * anti_aliasing_depth + anti_aliasing_x;
                         
-                        Vect intersection_ray_direction = camera_ray_direction;
-                        
-                        if(shadowed == true)
+                        //CREATE RAY FROM CAMERA TO CURRENT PIXEL
+                        if(anti_aliasing_depth == 1)
                         {
-                            Color intersection_color = getColorAt(intersection_ray_position, intersection_ray_direction, scene_shapes, index_of_closest_shape, scene_lights, accuracy, ambient_light);
-                        
-                            pixels[current_pixel].r = intersection_color.getColorRed();
-                            pixels[current_pixel].g = intersection_color.getColorGreen();
-                            pixels[current_pixel].b = intersection_color.getColorBlue();
-                            debug("color of pixel[%d] is: [%d][%d][%d]", pixels[current_pixel], intersection_color.getColorRed(), intersection_color.getColorGreen(), intersection_color.getColorBlue());
+                            //NO ANTI-ALIASING
+                            if(width > height)
+                            {
+                                //IMAGE IS WIDER THAN IT IS TALL
+                                x_amount = ((x + 0.5) / width) * aspect_ratio - (((width - height) / (double)height) / 2);
+                                y_amount = ((height - y) + 0.5) / height;
+                            }
+                            else if(height > width)
+                            {
+                                //IMAGE IS TALLER THAN IT IS WIDE
+                                x_amount = (x + 0.5) / width;
+                                y_amount = (((height - y) + 0.5) / height) / aspect_ratio - (((height - width) / (double)width) / 2);
+                            }
+                            else
+                            {
+                                //IMAGE IS SQUARE
+                                x_amount = (x + 0.5) / width;
+                                y_amount = ((height - y) + 0.5) / height;
+                            }
                         }
                         else
                         {
-                            Color current_color = scene_shapes.at(index_of_closest_shape)->getColor();
-                            
-                            pixels[current_pixel].r = current_color.getColorRed();
-                            pixels[current_pixel].g = current_color.getColorGreen();
-                            pixels[current_pixel].b = current_color.getColorBlue();
-                            debug("color of pixel[%d] is: [%d][%d][%d]", pixels[current_pixel], current_color.getColorRed(), current_color.getColorGreen(), current_color.getColorBlue());
+                            //ANTI-ALIASING
+                            if(width > height)
+                            {
+                                //IMAGE IS WIDER THAN IT IS TALL
+                                x_amount = ((x + (double)anti_aliasing_x / ((double) anti_aliasing_depth - 1)) / width) * aspect_ratio - (((width - height) / (double)height) / 2);
+                                y_amount = ((height - y) + (double)anti_aliasing_x / ((double)anti_aliasing_depth - 1)) / height;
+                            }
+                            else if(height > width)
+                            {
+                                //IMAGE IS TALLER THAN IT IS WIDE
+                                x_amount = (x + (double)anti_aliasing_x / ((double) anti_aliasing_depth - 1)) / width;
+                                y_amount = (((height - y) + (double)anti_aliasing_x / ((double)anti_aliasing_depth - 1)) / height) / aspect_ratio - (((height - width) / (double)width) / 2);
+                            }
+                            else
+                            {
+                                //IMAGE IS SQUARE
+                                x_amount = (x + (double)anti_aliasing_x / ((double)anti_aliasing_depth - 1)) / width;
+                                y_amount = ((height - y) + (double)anti_aliasing_x / ((double)anti_aliasing_depth - 1)) / height;
+                            }
+                        }
+
+                        Vect camera_ray_origin = scene_camera.getCameraPosition();
+                        Vect camera_ray_direction = camera_direction.vectAdd(camera_right.vectMult(x_amount - 0.5).vectAdd(camera_down.vectMult(y_amount - 0.5))).normalize();
+                        
+                        Ray camera_ray(camera_ray_origin, camera_ray_direction);
+                        
+                        vector<double> intersections;
+                        
+                        //LOOP THROUGH OBJECTS IN SCENE, FIND INTERSECTION WITH CAMERA RAY, PUSH VALUE INTO INTERSECTIONS ARRAY
+                        for(int index = 0; index < scene_shapes.size(); index++)
+                        {
+                            intersections.push_back(scene_shapes.at(index)->findIntersection(camera_ray));
+                            debug("intersections: %d", intersections[index]);
+                        }
+                        
+                        int index_of_closest_shape = closestShapeIndex(intersections);
+                        debug("index_of_closest_shape: %d", index_of_closest_shape);
+                        
+                        //cout << "intersection[" << x << "][" << y << "]: " << index_of_closest_shape << endl;
+                        
+                        //FIX: make this only enabled when doing testing
+                        //Test that color changes
+                        /*pixels[current_pixel].r = 23;
+                         pixels[current_pixel].g = 250;
+                         pixels[current_pixel].b = 50;*/
+                        
+                        if(index_of_closest_shape == -1)
+                        {
+                            //SET BACKGROUND OF IMAGE
+                            /*pixels[current_pixel].r = 0;
+                            pixels[current_pixel].g = 0;
+                            pixels[current_pixel].b = 0;*/
+                            tempRed[anti_aliasing_index] = 0;
+                            tempGreen[anti_aliasing_index] = 0;
+                            tempBlue[anti_aliasing_index] = 0;
+                            debug("Set pixels[%d] to black", pixels[current_pixel]);
+                        }
+                        else
+                        {
+                            //INDEX CORRESPONDS TO SHAPE IN SCENE
+                            if(intersections.at(index_of_closest_shape) > accuracy)
+                            {
+                                debug("intersections[%d] > accuracy", intersections.at(index_of_closest_shape));
+                                //DETERMINE POSITION AND DIRECTION VECTORS AT POINT OF INTERSECTION
+                                Vect intersection_ray_position = camera_ray_origin.vectAdd(camera_ray_direction.vectMult(intersections.at(index_of_closest_shape)));
+                                
+                                Vect intersection_ray_direction = camera_ray_direction;
+                                
+                                if(shadowed == true)
+                                {
+                                    Color intersection_color = getColorAt(intersection_ray_position, intersection_ray_direction, scene_shapes, index_of_closest_shape, scene_lights, accuracy, ambient_light);
+                                    
+                                    //pixels[current_pixel].r = intersection_color.getColorRed();
+                                    //pixels[current_pixel].g = intersection_color.getColorGreen();
+                                    //pixels[current_pixel].b = intersection_color.getColorBlue();
+                                    tempRed[anti_aliasing_index] = intersection_color.getColorRed();
+                                    tempGreen[anti_aliasing_index] = intersection_color.getColorGreen();
+                                    tempBlue[anti_aliasing_index] = intersection_color.getColorBlue();
+                                    debug("color of pixel[%d] is: [%d][%d][%d]", pixels[current_pixel], intersection_color.getColorRed(), intersection_color.getColorGreen(), intersection_color.getColorBlue());
+                                }
+                                else
+                                {
+                                    Color current_color = scene_shapes.at(index_of_closest_shape)->getColor();
+                                    
+                                    //pixels[current_pixel].r = current_color.getColorRed();
+                                    //pixels[current_pixel].g = current_color.getColorGreen();
+                                    //pixels[current_pixel].b = current_color.getColorBlue();
+                                    tempRed[anti_aliasing_index] = current_color.getColorRed();
+                                    tempGreen[anti_aliasing_index] = current_color.getColorGreen();
+                                    tempBlue[anti_aliasing_index] = current_color.getColorBlue();
+                                    debug("color of pixel[%d] is: [%d][%d][%d]", pixels[current_pixel], current_color.getColorRed(), current_color.getColorGreen(), current_color.getColorBlue());
+                                }
+                            }
                         }
                     }
+                    
+                    //AVERAGE PIXEL COLORS
+                    double totalRed = 0;
+                    double totalGreen = 0;
+                    double totalBlue = 0;
+                    
+                    for(int iRed = 0; iRed < anti_aliasing_depth * anti_aliasing_depth; iRed++)
+                    {
+                        totalRed = totalRed + tempRed[iRed];
+                    }
+                    for(int iGreen = 0; iGreen < anti_aliasing_depth * anti_aliasing_depth; iGreen++)
+                    {
+                        totalGreen = totalGreen + tempGreen[iGreen];
+                    }
+                    for(int iBlue = 0; iBlue < anti_aliasing_depth * anti_aliasing_depth; iBlue++)
+                    {
+                        totalBlue = totalBlue + tempBlue[iBlue];
+                    }
+                    
+                    double avgRed = totalRed / (anti_aliasing_depth * anti_aliasing_depth);
+                    double avgGreen = totalGreen / (anti_aliasing_depth * anti_aliasing_depth);
+                    double avgBlue = totalBlue / (anti_aliasing_depth * anti_aliasing_depth);
+                    
+                    pixels[current_pixel].r = avgRed;
+                    pixels[current_pixel].g = avgGreen;
+                    pixels[current_pixel].b = avgBlue;
+                    
                 }
             }
         }
