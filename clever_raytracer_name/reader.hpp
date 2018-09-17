@@ -2,6 +2,8 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <sstream>
+#include <string>
 #include <string.h>
 
 using namespace std;
@@ -15,10 +17,64 @@ private:
     Reader(string file_name) : name(file_name) {};
 };
 
+void readGeometryFilePLY2(string geometry_file_name, vector<float>& x_main, vector<float>& y_main, vector<float>& z_main, vector<float>& red_main, vector<float>& green_main, vector<float>& blue_main, vector<float>& num_vertices_to_connect_main, vector<float>& vertex1_main, vector<float>& vertex2_main, vector<float>& vertex3_main)
+{
+    
+    //Read in line of data
+    //Determine how many pieces of data there are in the line (either 6 or 4)
+        //Max number will be either 6 or 4
+        //Should be 6 until hitting connectivity section and the number drops to 4
+    //If max number is 6, push line of data into geometry_file_x_y_z_r_g_b
+    //Determine size of geometry_file_x_y_z_r_g_b --> equals number of lines with 6 pieces of data
+    
+    string current_line;
+    float number;
+    vector<string> tokens;
+    
+    ifstream geometry_file(geometry_file_name);
+    
+    if(!geometry_file.is_open())
+    {
+        cout << "Error opening input file" << endl;
+        exit (1);
+    }
+    
+    //FIX: BYPASS THE HEADER OF PLY FILE
+    
+    //while(!geometry_file.eof())
+    while(geometry_file >> number)
+    {
+        //PULL IN NEXT LINE OF DATA
+        //getline(geometry_file, current_line);
+        //geometry_file >> number;
+        cout << "number: " << number << endl;
+        
+        
+        
+        /*//SPLIT CURRENT_LINE INTO INDIVIDUAL PIECES OF DATA
+        stringstream line_to_split(current_line);
+        string temp;
+        
+        while(getline(line_to_split, temp, '\t'))
+        {
+            tokens.push_back(temp);
+            
+            
+        }
+
+        tokens.clear();
+    */}
+    
+    
+}
+
 void readGeometryFilePLY(string geometry_file_name, vector<float>& x_main, vector<float>& y_main, vector<float>& z_main, vector<float>& red_main, vector<float>& green_main, vector<float>& blue_main, vector<float>& num_vertices_to_connect_main, vector<float>& vertex1_main, vector<float>& vertex2_main, vector<float>& vertex3_main)
 {
     const int NUM_COLUMNS_X_Y_Z_R_G_B = 6;
     const int NUM_COLUMNS_CONNECTIVITY = 4;
+    
+    int nums_previous_line = 0;
+    int nums_current_line = 0;
     
     vector<vector <float> > geometry_file_x_y_z_r_g_b;
     vector<vector <float> > geometry_file_connectivity;
@@ -35,6 +91,10 @@ void readGeometryFilePLY(string geometry_file_name, vector<float>& x_main, vecto
         {
             numbers_in_line.push_back(num);
             cout << "numbers_in_line.size(): " << numbers_in_line.size() << endl;
+            for(int i = 0; i < numbers_in_line.size(); i++)
+            {
+                cout << "numbers_in_line[" << i << "]: " << numbers_in_line[i] << endl;
+            }
             
             if(numbers_in_line.size() == NUM_COLUMNS_X_Y_Z_R_G_B)
             {
@@ -71,7 +131,7 @@ void readGeometryFilePLY(string geometry_file_name, vector<float>& x_main, vecto
     
     //X, Y, Z, R, G, B VALUES
     //FIX: convert r, g, b values to range [0, 1]
-    for(int j = 0; j < NUM_COLUMNS_X_Y_Z_R_G_B; j++)
+    /*for(int j = 0; j < NUM_COLUMNS_X_Y_Z_R_G_B; j++)
     {
         for(int i = 0; i < geometry_file_x_y_z_r_g_b.size(); i++)
         {
@@ -110,7 +170,7 @@ void readGeometryFilePLY(string geometry_file_name, vector<float>& x_main, vecto
         }
         
         column_to_input++;
-    }
+    }*/
     
     /*for(int k = 0; k < NUM_COLUMNS_CONNECTIVITY; k++)
     {
@@ -158,7 +218,7 @@ void readGeometryFilePLY(string geometry_file_name, vector<float>& x_main, vecto
 
 void readGeometryFileTXT(string geometry_file_name, vector<float>& x1_main, vector<float>& y1_main, vector<float>& z1_main, vector<float>& x2_main, vector<float>& y2_main, vector<float>& z2_main, vector<float>& x3_main, vector<float>& y3_main, vector<float>& z3_main)
 {
-    const int NUM_COLUMNS = 9;
+    const int NUM_COLUMNS = 18;
     
     vector<vector <float> > geometry_file_data;
     ifstream geometry_file(geometry_file_name);

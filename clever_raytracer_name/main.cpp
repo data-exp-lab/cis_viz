@@ -321,7 +321,7 @@ int main(int argc, char *argv[])
     
     int width = 640;
     int height = 480;
-    int anti_aliasing_depth = 3;
+    int anti_aliasing_depth = cla.antiAliasingDepth;
     double anti_aliasing_threshold = 0.1;
     
     debug("Width: %d\nHeight: %d", width, height);
@@ -329,6 +329,8 @@ int main(int argc, char *argv[])
     double aspect_ratio = (double)width / (double)height;
     double ambient_light = 0.25;
     double accuracy = 0.000001;
+    
+    string fileType = ".txt";
     
     bool shadowed = true;
     bool PLY = false;
@@ -781,19 +783,24 @@ int main(int argc, char *argv[])
                 }
             }
         }
+        
+        savebmp("test.bmp", width, height, dpi, pixels);
+        debug("saved image");
+        
+        //OUTPUT FILE
+        //const char *output_file_name = cla.outputFile;
+        std::ostringstream output_string;
+        output_string<<cla.outputFile<<"_"<<hour<<"_hour"<<fileType;
+        string output_file_name = output_string.str();
+        
+        cout << "output_file: " << output_file_name << endl;
+        
+        writePPFDFile(output_file_name, area_total, PPFD_total, num);
+        
+        pixels.clear();
     }
-
-    savebmp("test.bmp", width, height, dpi, pixels);
-    debug("saved image");
     
     delete[] pixels;
-    
-    //OUTPUT FILE
-    const char *output_file_name = cla.outputFile;
-    //cout << "output_file: " << output_file_name << endl;
-    
-    writePPFDFile(output_file_name, area_total, PPFD_total, num);
-    
     
     total_time_end = clock();
     

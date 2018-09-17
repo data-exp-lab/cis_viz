@@ -10,6 +10,7 @@ typedef struct
     //double rayDistance;           //distance between rays
     double leafTransmittance;       //how much light is let through the leaf
     double leafReflectivity;        //how much light is reflected off the leaf
+    int antiAliasingDepth;          //factor for anti aliasing
 } commandLineArgs;
 
 void ProcessCommandLine(int arc, char *argv[]);
