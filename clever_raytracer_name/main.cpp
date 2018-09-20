@@ -333,7 +333,7 @@ int main(int argc, char *argv[])
     string fileType = ".txt";
     
     bool shadowed = true;
-    bool PLY = false;
+    bool PLY = true;
     
     debug("Shadowed = %d", shadowed);
     
@@ -394,7 +394,7 @@ int main(int argc, char *argv[])
     if(PLY == true)
     {
         //READ IN THE GEOMETRY OF THE PLANT FROM PLY FILE
-        readGeometryFilePLY(cla.geometryFile, ref(x_main), ref(y_main), ref(z_main), ref(red_main), ref(green_main), ref(blue_main), ref(num_vertices_to_connect_main), ref(vertex1_main), ref(vertex2_main), ref(vertex3_main));
+        readGeometryFilePLY2(cla.geometryFile, ref(x_main), ref(y_main), ref(z_main), ref(red_main), ref(green_main), ref(blue_main), ref(num_vertices_to_connect_main), ref(vertex1_main), ref(vertex2_main), ref(vertex3_main));
     }
     else
     {
@@ -475,13 +475,11 @@ int main(int argc, char *argv[])
     Sphere scene_sphere1(origin, 1, blue_light);
     Plane scene_plane1(Y, -1, red_light);
     Triangle scene_triangle1(Vect(5, 0, 0), Vect(0, -3, 0), Vect(0, 0, -5), green_light);
-    //Triangle scene_triangle1(Vect(-1.25, 0, 7.78), Vect(-1.45, 0, 7.63), Vect(-1.28, 0, 7.07), green_light);
     
     vector<Shape*> scene_shapes;
     scene_shapes.push_back(dynamic_cast<Shape*>(&scene_sphere1));
     scene_shapes.push_back(dynamic_cast<Shape*>(&scene_plane1));
     scene_shapes.push_back(dynamic_cast<Shape*>(&scene_triangle1));
-    //scene_shapes.push_back(dynamic_cast<Shape*>(&plant_triangle1));
     
     if(PLY == true)
     {
@@ -521,6 +519,8 @@ int main(int argc, char *argv[])
                 Vect point3(x_main[vertex3_index], y_main[vertex3_index], z_main[vertex3_index]);
                 
                 cout << "point1: " << point1.getVectX() << " " << point1.getVectY() << " " << point1.getVectZ() << endl;
+                cout << "point2: " << point2.getVectX() << " " << point2.getVectY() << " " << point2.getVectZ() << endl;
+                cout << "point3: " << point3.getVectX() << " " << point3.getVectY() << " " << point3.getVectZ() << endl;
                 Triangle newTri(point1, point2, point3, leafID, leafL, position, CLAI, leafTransmittance, leafReflectivity, n_per_area, start, end, intervalHour);
                 
                 scene_shapes.push_back(dynamic_cast<Shape*>(&newTri));
@@ -533,10 +533,13 @@ int main(int argc, char *argv[])
             }
         }
         
+        //COLORS [R, G, B]
+        
+        
     }
     else
     {
-        //FIX: IF USING TXT FILE FOR GEOMETRY
+        //TXT FILES
         for(int i = 0; i < x1_main.size(); i++)
         {
             Vect point1(x1_main[i], y1_main[i], z1_main[i]);
@@ -788,7 +791,6 @@ int main(int argc, char *argv[])
         debug("saved image");
         
         //OUTPUT FILE
-        //const char *output_file_name = cla.outputFile;
         std::ostringstream output_string;
         output_string<<cla.outputFile<<"_"<<hour<<"_hour"<<fileType;
         string output_file_name = output_string.str();
@@ -796,8 +798,6 @@ int main(int argc, char *argv[])
         cout << "output_file: " << output_file_name << endl;
         
         writePPFDFile(output_file_name, area_total, PPFD_total, num);
-        
-        pixels.clear();
     }
     
     delete[] pixels;
