@@ -1,0 +1,22 @@
+before_install:
+
+#enable C++ support
+language: cpp
+
+#compiler
+compiler:
+	- gcc
+
+#find cmake to compile
+addons:
+	apt:
+		packages:
+			- cmake
+#install:
+
+script:
+	- cmake . && make
+
+
+
+

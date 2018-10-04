@@ -18,7 +18,7 @@ private:
     Reader(string file_name) : name(file_name) {};
 };
 
-void readGeometryFilePLY2(string geometry_file_name, vector<float>& x_main, vector<float>& y_main, vector<float>& z_main, vector<float>& red_main, vector<float>& green_main, vector<float>& blue_main, vector<float>& num_vertices_to_connect_main, vector<float>& vertex1_main, vector<float>& vertex2_main, vector<float>& vertex3_main)
+void readGeometryFilePLY(string geometry_file_name, vector<float>& x_main, vector<float>& y_main, vector<float>& z_main, vector<float>& red_main, vector<float>& green_main, vector<float>& blue_main, vector<float>& num_vertices_to_connect_main, vector<float>& vertex1_main, vector<float>& vertex2_main, vector<float>& vertex3_main, float& min_x, float& max_x, float& min_y, float& max_y, float& min_z, float& max_z)
 {
     /*
      *  Read through header -> set vertices to number of vertices
@@ -37,6 +37,15 @@ void readGeometryFilePLY2(string geometry_file_name, vector<float>& x_main, vect
      *          -Put number vertices, vertex1, vertex2, vertex3 in respective vectors to be passed
                     back to the main function
     */
+    
+    float temp_min_x;
+    float temp_max_x;
+    float temp_min_y;
+    float temp_max_y;
+    float temp_min_z;
+    float temp_max_z;
+    float temp_min = 0;
+    float temp_max = 0;
     
     int num_lines_vertices;
     int num_lines_triangles;
@@ -186,16 +195,64 @@ void readGeometryFilePLY2(string geometry_file_name, vector<float>& x_main, vect
             {
                 x = column;
                 column.clear();
+                
+                temp_min_x = x[0];
+                temp_max_x = x[0];
+                for(int i = 0; i < x.size(); i++)
+                {
+                    if(x[i] > temp_max_x)
+                    {
+                        temp_max_x = x[i];
+                    }
+                    else if(x[i] < temp_min_x)
+                    {
+                        temp_min_x = x[i];
+                    }
+                }
+                cout << "temp_max_x: " << temp_max_x << endl;
+                cout << "temp_min_x: " << temp_min_x << endl;
             }
             if((column_to_input - 1) == 1)
             {
                 y = column;
                 column.clear();
+                
+                temp_min_y = y[0];
+                temp_max_y = y[0];
+                for(int i = 0; i < y.size(); i++)
+                {
+                    if(y[i] > temp_max_y)
+                    {
+                        temp_max_y = y[i];
+                    }
+                    else if(y[i] < temp_min_y)
+                    {
+                        temp_min_y = y[i];
+                    }
+                }
+                cout << "temp_max_y: " << temp_max_y << endl;
+                cout << "temp_min_y: " << temp_min_y << endl;
             }
             if((column_to_input - 1) == 2)
             {
                 z = column;
                 column.clear();
+                
+                temp_min_z = z[0];
+                temp_max_z = z[0];
+                for(int i = 0; i < z.size(); i++)
+                {
+                    if(z[i] > temp_max_z)
+                    {
+                        temp_max_z = z[i];
+                    }
+                    else if(z[i] < temp_min_z)
+                    {
+                        temp_min_z = z[i];
+                    }
+                }
+                cout << "temp_max_z: " << temp_max_z << endl;
+                cout << "temp_min_z: " << temp_min_z << endl;
             }
             if((column_to_input - 1) == 3)
             {
@@ -263,9 +320,16 @@ void readGeometryFilePLY2(string geometry_file_name, vector<float>& x_main, vect
     vertex2_main = vertex2;
     vertex3_main = vertex3;
     
+    min_x = temp_min_x;
+    max_x = temp_max_x;
+    min_y = temp_min_y;
+    max_y = temp_max_y;
+    min_z = temp_min_z;
+    max_z = temp_max_z;
+    
 }
 
-void readGeometryFilePLY(string geometry_file_name, vector<float>& x_main, vector<float>& y_main, vector<float>& z_main, vector<float>& red_main, vector<float>& green_main, vector<float>& blue_main, vector<float>& num_vertices_to_connect_main, vector<float>& vertex1_main, vector<float>& vertex2_main, vector<float>& vertex3_main)
+void readGeometryFilePLY2(string geometry_file_name, vector<float>& x_main, vector<float>& y_main, vector<float>& z_main, vector<float>& red_main, vector<float>& green_main, vector<float>& blue_main, vector<float>& num_vertices_to_connect_main, vector<float>& vertex1_main, vector<float>& vertex2_main, vector<float>& vertex3_main)
 {
     const int NUM_COLUMNS_X_Y_Z_R_G_B = 6;
     const int NUM_COLUMNS_CONNECTIVITY = 4;

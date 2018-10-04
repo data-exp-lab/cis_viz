@@ -183,7 +183,6 @@ int closestShapeIndex(vector<double> shape_intersections)
     }
 }
 
-//FIX
 Color getColorAt(Vect intersection_ray_position, Vect intersection_ray_direction, vector<Shape*> scene_shapes, int index_of_closest_shape, vector<Source*> scene_lights, double accuracy, double ambient_light)
 {
     Color closest_shape_color = scene_shapes.at(index_of_closest_shape)->getColor();
@@ -391,15 +390,50 @@ int main(int argc, char *argv[])
     vector<float> vertex2_main;
     vector<float> vertex3_main;
     
+    //SET UP FIELD WITH MIN AND MAX FOR X, Y, Z DIRECTIONS
+    float min_x = 0;
+    float max_x = 0;
+    float min_y = 0;
+    float max_y = 0;
+    float min_z = 0;
+    float max_z = 0;
+    
+    float buffer = 200.0;
+    
+    float min_x_with_buffer;
+    float max_x_with_buffer;
+    float min_y_with_buffer;
+    float max_y_with_buffer;
+    float min_z_with_buffer;
+    float max_z_with_buffer;
+    
     if(PLY == true)
     {
         //READ IN THE GEOMETRY OF THE PLANT FROM PLY FILE
-        readGeometryFilePLY2(cla.geometryFile, ref(x_main), ref(y_main), ref(z_main), ref(red_main), ref(green_main), ref(blue_main), ref(num_vertices_to_connect_main), ref(vertex1_main), ref(vertex2_main), ref(vertex3_main));
+        readGeometryFilePLY(cla.geometryFile, ref(x_main), ref(y_main), ref(z_main), ref(red_main), ref(green_main), ref(blue_main), ref(num_vertices_to_connect_main), ref(vertex1_main), ref(vertex2_main), ref(vertex3_main), ref(min_x), ref(max_x), ref(min_y), ref(max_y), ref(min_z), ref(max_z));
     }
     else
     {
         //READ IN THE GEOMETRY OF THE PLANT FROM TXT FILE
         readGeometryFileTXT(cla.geometryFile, ref(x1_main), ref(y1_main), ref(z1_main), ref(x2_main), ref(y2_main), ref(z2_main), ref(x3_main), ref(y3_main), ref(z3_main));
+    }
+    
+    if(PLY == true)
+    {
+        min_x_with_buffer = min_x - buffer;
+        max_x_with_buffer = max_x + buffer;
+        min_y_with_buffer = min_y - buffer;
+        max_y_with_buffer = max_y + buffer;
+        min_z_with_buffer = min_z - buffer;
+        max_z_with_buffer = max_z + buffer;
+        
+        cout << "min_x_with_buffer: " << min_x_with_buffer << endl;
+        cout << "max_x_with_buffer: " << max_x_with_buffer << endl;
+        cout << "min_y_with_buffer: " << min_y_with_buffer << endl;
+        cout << "max_y_with_buffer: " << max_y_with_buffer << endl;
+        cout << "min_z_with_buffer: " << min_z_with_buffer << endl;
+        cout << "max_z_with_buffer: " << max_z_with_buffer << endl;
+        
     }
     
     Parameters ps;
@@ -442,8 +476,8 @@ int main(int argc, char *argv[])
     Vect X(1, 0, 0);
     Vect Y(0, 1, 0);
     Vect Z(0, 0, 1);
-    
-    Vect camera_position(3, 1.5, -12);
+    //3, 1.5, -12
+    Vect camera_position(-2, 0, 0);
     Vect lookAt(0, 0, 0);
     Vect difference_between(camera_position.getVectX() - lookAt.getVectX(), camera_position.getVectY() - lookAt.getVectY(), camera_position.getVectZ() - lookAt.getVectZ());
     
@@ -462,7 +496,8 @@ int main(int argc, char *argv[])
     Color blue_light(0.0, 0.0, 1, 0);
     
     //FIX: Calculate position of sun, becomes new light
-    Vect light_position(-7, 10, -10);
+    Vect light_position(-2, 0, 0);
+   // Vect light_position(-7, 10, -10);
     Light scene_light1(light_position, white_light);
     
     vector<Source*> scene_lights;
@@ -477,9 +512,9 @@ int main(int argc, char *argv[])
     Triangle scene_triangle1(Vect(5, 0, 0), Vect(0, -3, 0), Vect(0, 0, -5), green_light);
     
     vector<Shape*> scene_shapes;
-    scene_shapes.push_back(dynamic_cast<Shape*>(&scene_sphere1));
-    scene_shapes.push_back(dynamic_cast<Shape*>(&scene_plane1));
-    scene_shapes.push_back(dynamic_cast<Shape*>(&scene_triangle1));
+    //scene_shapes.push_back(dynamic_cast<Shape*>(&scene_sphere1));
+    //scene_shapes.push_back(dynamic_cast<Shape*>(&scene_plane1));
+    //scene_shapes.push_back(dynamic_cast<Shape*>(&scene_triangle1));
     
     if(PLY == true)
     {
@@ -499,6 +534,15 @@ int main(int argc, char *argv[])
         float y_for_point3;
         float z_for_point3;
         
+        Color point1_set_color;
+        Color point2_set_color;
+        Color point3_set_color;
+        Color triangle_color;
+        
+        int red_color_index;
+        int green_color_index;
+        int blue_color_index;
+        
         cout << "x_main.size(): " << x_main.size() << endl;
         for(int i = 0; i < x_main.size(); i++)
         {
@@ -513,7 +557,7 @@ int main(int argc, char *argv[])
                 vertex1_index = vertex1_main[i];
                 vertex2_index = vertex2_main[i];
                 vertex3_index = vertex3_main[i];
-
+                
                 Vect point1(x_main[vertex1_index], y_main[vertex1_index], z_main[vertex1_index]);
                 Vect point2(x_main[vertex2_index], y_main[vertex2_index], z_main[vertex2_index]);
                 Vect point3(x_main[vertex3_index], y_main[vertex3_index], z_main[vertex3_index]);
@@ -521,9 +565,32 @@ int main(int argc, char *argv[])
                 cout << "point1: " << point1.getVectX() << " " << point1.getVectY() << " " << point1.getVectZ() << endl;
                 cout << "point2: " << point2.getVectX() << " " << point2.getVectY() << " " << point2.getVectZ() << endl;
                 cout << "point3: " << point3.getVectX() << " " << point3.getVectY() << " " << point3.getVectZ() << endl;
-                Triangle newTri(point1, point2, point3, leafID, leafL, position, CLAI, leafTransmittance, leafReflectivity, n_per_area, start, end, intervalHour);
                 
-                scene_shapes.push_back(dynamic_cast<Shape*>(&newTri));
+                //COLOR
+                point1_set_color.setColorRed(red_main[vertex1_index]);
+                point1_set_color.setColorGreen(green_main[vertex1_index]);
+                point1_set_color.setColorBlue(blue_main[vertex1_index]);
+                point2_set_color.setColorRed(red_main[vertex2_index]);
+                point2_set_color.setColorGreen(green_main[vertex2_index]);
+                point2_set_color.setColorBlue(blue_main[vertex2_index]);
+                point3_set_color.setColorRed(red_main[vertex3_index]);
+                point3_set_color.setColorGreen(green_main[vertex3_index]);
+                point3_set_color.setColorBlue(blue_main[vertex3_index]);
+                
+                cout << "point1_set_color.setColorRed: " << point1_set_color.getColorRed() << endl;
+                cout << "point1_set_color.setColorGreen: " << point1_set_color.getColorGreen() << endl;
+                cout << "point1_set_color.setColorblue: " << point1_set_color.getColorBlue() << endl;
+                
+                //FIX: Check that this works
+                triangle_color = point1_set_color.colorAverage(point2_set_color.colorAverage(point3_set_color));
+                cout << "triangle_color.getColorRed(): " << triangle_color.getColorRed() << endl;
+                cout << "triangle_color.getColorGreen(): " << triangle_color.getColorGreen() << endl;
+                cout << "triangle_color.getColorBlue(): " << triangle_color.getColorBlue() << endl;
+                
+                Triangle* newTri = new Triangle(point1, point2, point3, leafID, leafL, position, CLAI, leafTransmittance, leafReflectivity, n_per_area, start, end, intervalHour, triangle_color);
+                
+                //scene_shapes.push_back(dynamic_cast<Shape*>(&newTri));
+                
             }
             //FIX: change once set up to do things other than triangles (if necessary)
             else
@@ -532,10 +599,6 @@ int main(int argc, char *argv[])
                 return 0;
             }
         }
-        
-        //COLORS [R, G, B]
-        
-        
     }
     else
     {

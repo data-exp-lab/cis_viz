@@ -61,8 +61,7 @@ public:
     
     Triangle(const Vect& A, const Vect& B, const Vect& C, const int leafID, const double leafL, const double position, const double CLAI1, const double KT, double KR, const double nitrogenPerArea, double startHour, double endHour, double hourInterval);
     
-    //ADDING IN COLOR (?)
-    Triangle(const Vect& A, const Vect& B, const Vect& C, const int leafID, const double leafL, const double position, const double KT, double KR, const double nitrogenPerArea, double startHour, double endHour, double hourInterval, Color color);
+    Triangle(const Vect& A, const Vect& B, const Vect& C, const int leafID, const double leafL, const double position, const double CLAI1, const double KT, double KR, const double nitrogenPerArea, double startHour, double endHour, double hourInterval, Color color);
     
     Vect getTriangleNormal()
     {
@@ -202,6 +201,47 @@ Triangle::Triangle(const Vect& A, const Vect& B, const Vect& C, const int leafID
     
     area = ((v1 -v0) ^ (v2 - v0)).length() * 0.5;
     int num = (int)((endHour - startHour) / hourInterval);
+    
+    for(int i = 0; i <= num; i++)
+    {
+        photonFlux_up_dir.push_back(0.0);
+        photonFlux_up_diff.push_back(0.0);
+        photonFlux_up_scat.push_back(0.0);
+        photonFlux_down_dir.push_back(0.0);
+        photonFlux_down_diff.push_back(0.0);
+        photonFlux_down_scat.push_back(0.0);
+        
+        a.push_back(0.0);
+        GS.push_back(0.0);
+        CI.push_back(0.0);
+        LEAFT.push_back(0.0);
+        PPFDSAT.push_back(0.0);
+        isRubiscoLimit.push_back(0.0);
+    }
+    
+    nitrogenPerA = nitrogenPerArea;
+    leID = leafID;
+    leL = leafL;
+    pos = position;
+    CLAI = CLAI1;
+    kLeafTransmittance = KT;
+    kLeafReflectance = KR;
+}
+
+//INCLUDES COLOR
+Triangle::Triangle(const Vect& A, const Vect& B, const Vect& C, const int leafID, const double leafL, const double position, const double CLAI1, const double KT, double KR, const double nitrogenPerArea, double startHour, double endHour, double hourInterval, Color color)
+{
+    Vect v0 = A;
+    Vect v1 = B;
+    Vect v2 = C;
+    
+    //RIGHT HAND RULE
+    normal = (v1 - v0) ^ (v2 - v0);
+    normal.normalize();
+    
+    area = ((v1 -v0) ^ (v2 - v0)).length() * 0.5;
+    int num = (int)((endHour - startHour) / hourInterval);
+    cout << "area: " << area << endl;
     
     for(int i = 0; i <= num; i++)
     {
