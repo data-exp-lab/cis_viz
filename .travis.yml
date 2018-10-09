@@ -15,8 +15,5 @@ addons:
 #install:
 
 script:
-    - cmake . && make
-
-
-
-
+    - cmake clever_raytracer_name
+    - make
