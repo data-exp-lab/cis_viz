@@ -5,17 +5,17 @@ language: cpp
 
 #compiler
 compiler:
-	- gcc
+    - gcc
 
 #find cmake to compile
 addons:
-	apt:
-		packages:
-			- cmake
+    apt:
+        packages:
+            - cmake
 #install:
 
 script:
-	- cmake . && make
+    - cmake . && make
 
 
 
