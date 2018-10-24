@@ -27,6 +27,7 @@
 //DO MORE COMPREHENSIVE/ACCURATE TIMINGS THIS WAY
 #include "timing.hpp"
 #include "debug.hpp"
+#include "tests.hpp"
 
 #include "commandArgs.hpp"
 #include "reader.hpp"
@@ -183,7 +184,7 @@ int closestShapeIndex(vector<double> shape_intersections)
     }
 }
 
-Color getColorAt(Vect intersection_ray_position, Vect intersection_ray_direction, vector<Shape*> scene_shapes, int index_of_closest_shape, vector<Source*> scene_lights, double accuracy, double ambient_light)
+Color getColorAt(Vect intersection_ray_position, Vect intersection_ray_direction, vector<Shape*> scene_shapes, int index_of_closest_shape, vector<Source*> scene_lights, double accuracy, double ambient_light, bool shadowed)
 {
     Color closest_shape_color = scene_shapes.at(index_of_closest_shape)->getColor();
     Vect closest_shape_normal = scene_shapes.at(index_of_closest_shape)->getNormalAt(intersection_ray_position);
@@ -222,7 +223,7 @@ Color getColorAt(Vect intersection_ray_position, Vect intersection_ray_direction
                 Vect reflection_intersection_position = intersection_ray_position.vectAdd(reflection_direction.vectMult(reflection_intersections.at(index_of_closest_shape_with_reflection)));
                 Vect reflection_intersection_ray_direction = reflection_direction;
                 
-                Color reflection_intersection_color = getColorAt(reflection_intersection_position, reflection_intersection_ray_direction, scene_shapes, index_of_closest_shape_with_reflection, scene_lights, accuracy, ambient_light);
+                Color reflection_intersection_color = getColorAt(reflection_intersection_position, reflection_intersection_ray_direction, scene_shapes, index_of_closest_shape_with_reflection, scene_lights, accuracy, ambient_light, shadowed);
                 
                 final_color = final_color.colorAdd(reflection_intersection_color.colorScalar(closest_shape_color.getColorAlpha()));
             }
@@ -293,6 +294,7 @@ Color getColorAt(Vect intersection_ray_position, Vect intersection_ray_direction
             }
             
         }
+    
     }
 
     return final_color.clip();
@@ -330,6 +332,7 @@ int main(int argc, char *argv[])
     double accuracy = 0.000001;
     
     string fileType = ".txt";
+    string inputFileName = cla.geometryFile;
     
     bool shadowed = true;
     bool PLY = true;
@@ -350,6 +353,9 @@ int main(int argc, char *argv[])
     vector<float> x3_main;
     vector<float> y3_main;
     vector<float> z3_main;
+    
+    int num_element_vertex;
+    int num_element_face;
     
     double startHour = cla.startHour;
     double endHour = cla.endHour;
@@ -410,13 +416,14 @@ int main(int argc, char *argv[])
     if(PLY == true)
     {
         //READ IN THE GEOMETRY OF THE PLANT FROM PLY FILE
-        readGeometryFilePLY(cla.geometryFile, ref(x_main), ref(y_main), ref(z_main), ref(red_main), ref(green_main), ref(blue_main), ref(num_vertices_to_connect_main), ref(vertex1_main), ref(vertex2_main), ref(vertex3_main), ref(min_x), ref(max_x), ref(min_y), ref(max_y), ref(min_z), ref(max_z));
+        readGeometryFilePLY(cla.geometryFile, ref(x_main), ref(y_main), ref(z_main), ref(red_main), ref(green_main), ref(blue_main), ref(num_vertices_to_connect_main), ref(vertex1_main), ref(vertex2_main), ref(vertex3_main), ref(min_x), ref(max_x), ref(min_y), ref(max_y), ref(min_z), ref(max_z), ref(num_element_vertex));
     }
     else
     {
         //READ IN THE GEOMETRY OF THE PLANT FROM TXT FILE
         readGeometryFileTXT(cla.geometryFile, ref(x1_main), ref(y1_main), ref(z1_main), ref(x2_main), ref(y2_main), ref(z2_main), ref(x3_main), ref(y3_main), ref(z3_main));
     }
+    int size_of_x_main = x_main.size();
     
     if(PLY == true)
     {
@@ -548,6 +555,7 @@ int main(int argc, char *argv[])
         {
             cout << "x_main[" << i << "]: " << x_main[i] << endl;
         }
+        testNumberTriangles(num_element_vertex, size_of_x_main);
         
         for(int i = 0; i < x_main.size(); i++)
         {
@@ -622,9 +630,11 @@ int main(int argc, char *argv[])
     vector<double> area_total;
     vector<double> PPFD_total;
     
+    int testing_timestep = 0;
+    
     //FIX: DO THIS FOR EVERY TIMESTEP
     //RETURN COLOR PER PIXEL
-    for(int timestep = 0; timestep <= num; timestep++)
+    for(int timestep = 0; timestep < num; timestep++)
     {
         cout << "timestep = " << timestep << endl;
         debug("timestep: %d", timestep);
@@ -680,6 +690,9 @@ int main(int argc, char *argv[])
         double tempRed;
         double tempGreen;
         double tempBlue;
+        
+        testNumberRays(num_pixels, red_light, width, height, accuracy, ambient_light);
+        testRayDistance(width, height, red_light, white_light);
         
         for(int x = 0; x < width; x++)
         {
@@ -794,7 +807,7 @@ int main(int argc, char *argv[])
                                 
                                 if(shadowed == true)
                                 {
-                                    Color intersection_color = getColorAt(intersection_ray_position, intersection_ray_direction, scene_shapes, index_of_closest_shape, scene_lights, accuracy, ambient_light);
+                                    Color intersection_color = getColorAt(intersection_ray_position, intersection_ray_direction, scene_shapes, index_of_closest_shape, scene_lights, accuracy, ambient_light, shadowed);
                                     
                                     //pixels[current_pixel].r = intersection_color.getColorRed();
                                     //pixels[current_pixel].g = intersection_color.getColorGreen();
@@ -854,6 +867,7 @@ int main(int argc, char *argv[])
         debug("saved image");
         
         //OUTPUT FILE
+        //FIX: IF CLA OUTPUT FILE NAME HAS FILE EXTENSION, REMOVE IT
         std::ostringstream output_string;
         output_string<<cla.outputFile<<"_"<<hour<<"_hour"<<fileType;
         string output_file_name = output_string.str();
@@ -861,7 +875,12 @@ int main(int argc, char *argv[])
         cout << "output_file: " << output_file_name << endl;
         
         writePPFDFile(output_file_name, area_total, PPFD_total, num);
-    }
+        
+        testing_timestep++;
+        
+    }//END TIMESTEP
+    
+    testNumberTimesteps(startHour, endHour, interval, testing_timestep);
     
     delete[] pixels;
     

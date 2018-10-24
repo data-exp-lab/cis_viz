@@ -18,7 +18,7 @@ private:
     Reader(string file_name) : name(file_name) {};
 };
 
-void readGeometryFilePLY(string geometry_file_name, vector<float>& x_main, vector<float>& y_main, vector<float>& z_main, vector<float>& red_main, vector<float>& green_main, vector<float>& blue_main, vector<float>& num_vertices_to_connect_main, vector<float>& vertex1_main, vector<float>& vertex2_main, vector<float>& vertex3_main, float& min_x, float& max_x, float& min_y, float& max_y, float& min_z, float& max_z)
+void readGeometryFilePLY(string geometry_file_name, vector<float>& x_main, vector<float>& y_main, vector<float>& z_main, vector<float>& red_main, vector<float>& green_main, vector<float>& blue_main, vector<float>& num_vertices_to_connect_main, vector<float>& vertex1_main, vector<float>& vertex2_main, vector<float>& vertex3_main, float& min_x, float& max_x, float& min_y, float& max_y, float& min_z, float& max_z, int& num_element_vertex)
 {
     /*
      *  Read through header -> set vertices to number of vertices
@@ -100,6 +100,7 @@ void readGeometryFilePLY(string geometry_file_name, vector<float>& x_main, vecto
                 
                 num_lines_vertices =  std::atoi(tokens[tokens_size - 1].c_str());
                 cout << "num_lines_vertices: " << num_lines_vertices << endl;
+                num_element_vertex = num_lines_vertices;
             }
             if(current_string.find(element_face) != std::string::npos)
             {
