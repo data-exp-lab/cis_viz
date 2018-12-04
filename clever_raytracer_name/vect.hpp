@@ -34,7 +34,21 @@ public:
     double getVectZ()
     {
         return z;
-        
+    }
+    
+    void setVectX(float input_x)
+    {
+        x = input_x;
+    }
+    
+    void setVectY(float input_y)
+    {
+        y = input_y;
+    }
+    
+    void setVectZ(float input_z)
+    {
+        z = input_z;
     }
     
     double magnitude()

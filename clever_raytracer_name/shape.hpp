@@ -11,6 +11,11 @@ class Shape
 {
     
 public:
+    double red;
+    double green;
+    double blue;
+    double alpha;
+    
     Shape();
     
     std::vector<Shape*> shapes;
@@ -18,6 +23,36 @@ public:
     virtual Color getColor()
     {
         return Color(0.0, 0.0, 0.0, 0);
+    }
+    
+    virtual Color setColor(float r, float g, float b, int a)
+    {
+        return Color(r, g, b, 0);
+    }
+    
+    double getColorRed()
+    {
+        return red;
+    }
+    
+    double getColorGreen()
+    {
+        return green;
+    }
+    
+    double getColorBlue()
+    {
+        return blue;
+    }
+    
+    double getColorAlpha()
+    {
+        return alpha;
+    }
+    
+    virtual Color setColor(Color color)
+    {
+        return color;
     }
     
     virtual Vect getNormalAt(Vect intersection_position)
@@ -41,7 +76,5 @@ Shape::Shape()
 {
     
 }
-
-
 
 #endif

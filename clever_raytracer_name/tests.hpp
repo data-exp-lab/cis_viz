@@ -8,6 +8,10 @@
 #include <string>
 #include <cmath>
 
+#include <stdlib.h>
+#include <stdio.h>
+#include <time.h>
+
 #include "vect.hpp"
 #include "ray.hpp"
 #include "camera.hpp"
@@ -16,9 +20,13 @@
 #include "source.hpp"
 #include "shape.hpp"
 
+#include "timing.hpp"
+
 
 
 using namespace std;
+
+#ifdef RUN_TESTS
 
 int testingClosestShapeIndex(vector<double> shape_intersections)
 {
@@ -202,6 +210,10 @@ Color testGetColorAt(Vect intersection_ray_position, Vect intersection_ray_direc
     return final_color.clip();
 }
 
+/*
+ * Beginning of actual tests here
+ */
+
 bool testPLYFileType(bool PLY, string inputFileName, string fileType)
 {
     
@@ -210,6 +222,7 @@ bool testPLYFileType(bool PLY, string inputFileName, string fileType)
 bool testNumberTriangles(int num_element_vertex, int size_of_x1_main)
 {
     //see if the number of items in x, y, z, etc. equals the number of triangles taken out of the .ply file
+    cout << "RUNNING TEST #1: testNumberTriangles" << endl;
     if(num_element_vertex == size_of_x1_main)
     {
         cout << "Test Number of Triangles (testNumberTriangles): PASSED" << endl;
@@ -227,6 +240,14 @@ bool testNumberTriangles(int num_element_vertex, int size_of_x1_main)
 
 bool testNumberRays(int num_pixels, Color test_color, int width, int height, double accuracy, double ambient_light )
 {
+    //TIMING INFORMATION
+    initTimer(1, 18000000, 100);
+    startTimer( testNumberRays_Timer );
+    clock_t total_time_begin;
+    clock_t total_time_end;
+    total_time_begin = clock();
+    
+    cout << "RUNNING TEST #2: testNumberRays" << endl;
     //set camera location for testing
     //Test case 1:
         //fills the screen
@@ -237,11 +258,12 @@ bool testNumberRays(int num_pixels, Color test_color, int width, int height, dou
     
     //Increment if pixel contains shape and is hit by a ray
     int num_pixels_rays_hit = 0;
+    int num_pixels_total = width * height;
     
     vector<Shape*> scene_shapes;
     
     //Set camera and light to orthogonal position to be able to calculate number of pixels in a shape
-    Vect test_camera_position(0, 0, 1);
+    Vect test_camera_position(0, 0, -1);
     Vect origin(0, 0, 0);
     Vect lookAt(0, 0, 0);
     Vect Y(0, 1, 0);
@@ -254,23 +276,26 @@ bool testNumberRays(int num_pixels, Color test_color, int width, int height, dou
     Camera test_scene_camera(test_camera_position, test_camera_direction, camera_right, camera_down);
     
     //Light information
-    Vect test_light_position = test_camera_position;
+    Vect test_light_position(-200000000, 1000, -20000000); //= test_camera_position;
     Light test_scene_light(test_light_position, test_color);
     
     vector<Source*> scene_lights;
     scene_lights.push_back(dynamic_cast<Source*>(&test_scene_light));
     
     //Set shape Z units away from camera/light -->cube that covers all of image
-    Triangle test_triangle1(Vect(10, -10, 0), Vect(-10, 10, 0), Vect(-10, -10, 0), test_color);
-    Triangle test_triangle2(Vect(-10, -10, 0), Vect(10, -10, 0), Vect(10, 10, 0), test_color);
+    Triangle test_triangle1(Vect(1000000000, -100000000, 0), Vect(-1000000000, 1000000000, 0), Vect(-1000000000, -10000000000, 0), test_color);
+    //Triangle test_triangle2(Vect(-10, -10, 0), Vect(10, -10, 0), Vect(10, 10, 0), test_color);
     
     scene_shapes.push_back(dynamic_cast<Shape*>(&test_triangle1));
-    scene_shapes.push_back(dynamic_cast<Shape*>(&test_triangle2));
+    //scene_shapes.push_back(dynamic_cast<Shape*>(&test_triangle2));
     
     double x_amount;
     double y_amount;
     
     bool shadowed = false;
+    double tempRed;
+    double tempGreen;
+    double tempBlue;
     
     //Number of rays that hit shape should be equal to number of pixels
     //Very similar to what loops over all pixels in main.cpp
@@ -333,14 +358,20 @@ bool testNumberRays(int num_pixels, Color test_color, int width, int height, dou
                     //Color current_color = scene_shapes.at(index_of_closest_shape)->getColor();
                     Color current_color = testGetColorAt(intersection_ray_position, intersection_ray_direction, scene_shapes, index_of_closest_shape, scene_lights, accuracy, ambient_light, shadowed);
                     
-                    
                     num_pixels_rays_hit++;
                 }
 
             }
             
         }
+        
     }
+    
+    endTimer(0, testNumberRays_Timer, 10, "testNumberRays");
+    total_time_end = clock();
+    
+    float total_time = ((float)total_time_end - (float)total_time_begin) / 1000000;
+    cout << "testNumberRays() TOTAL TIME: " << total_time << " seconds" << endl;
     
     if(num_pixels_rays_hit == num_pixels)
     {
@@ -350,6 +381,451 @@ bool testNumberRays(int num_pixels, Color test_color, int width, int height, dou
     else
     {
         cout << "Test Number Rays that Hit Object: FAILED" << endl;
+        cout << "Number of rays that should have hit the object: " << num_pixels << endl;
+        cout << "Number of rays that hit the object: " << num_pixels_rays_hit << endl;
+        return false;
+    }
+    
+    
+    
+}
+
+struct test_RGB_Type
+{
+    double r;
+    double g;
+    double b;
+    
+};
+
+bool testNumberRays_antiAliasing(int num_pixels, Color test_color, int width, int height, double accuracy, double ambient_light, int anti_aliasing_depth)
+{
+    //TIMING INFORMATION
+    initTimer(1, 18000000, 100);
+    startTimer( testNumberRays_antiAliasing_Timer );
+    clock_t total_time_begin;
+    clock_t total_time_end;
+    total_time_begin = clock();
+    
+    cout << "RUNNING TEST #3: testNumberRays_antiAliasing" << endl;
+    cout << "ANTI ALIASING FACTOR: " << anti_aliasing_depth << endl;
+    //TEST 1: Do 1 triangles like testNumberRays() to see computation time increase
+    //TEST 2: Do with two triangles together to see if anti-aliasing solves the problem of partial rays
+    test_RGB_Type *pixels = new test_RGB_Type[num_pixels];
+    int current_pixel;
+    double aspect_ratio = (double)width / (double)height;
+    
+    //Increment if pixel contains shape and is hit by a ray
+    int num_pixels_rays_hit = 0;
+    
+    int num_pixels_total = width * height;
+    
+    vector<Shape*> scene_shapes;
+    
+    //Set camera and light to orthogonal position to be able to calculate number of pixels in a shape
+    Vect test_camera_position(0, 0, -1);
+    Vect origin(0, 0, 0);
+    Vect lookAt(0, 0, 0);
+    Vect Y(0, 1, 0);
+    Vect difference_between(test_camera_position.getVectX() - lookAt.getVectX(), test_camera_position.getVectY() - lookAt.getVectY(), test_camera_position.getVectZ() - lookAt.getVectZ());
+    
+    Vect test_camera_direction = difference_between.negative().normalize();
+    Vect camera_right = Y.crossProduct(test_camera_direction).normalize();
+    Vect camera_down = camera_right.crossProduct(test_camera_direction);
+    
+    Camera test_scene_camera(test_camera_position, test_camera_direction, camera_right, camera_down);
+    
+    //Light information
+    Vect test_light_position(-200000000, 1000, -20000000); //= test_camera_position;
+    Light test_scene_light(test_light_position, test_color);
+    
+    vector<Source*> scene_lights;
+    scene_lights.push_back(dynamic_cast<Source*>(&test_scene_light));
+    
+    //Set shape Z units away from camera/light -->cube that covers all of image
+    Triangle test_triangle1(Vect(1000000000, -100000000, 0), Vect(-1000000000, 1000000000, 0), Vect(-1000000000, -10000000000, 0), test_color);
+    //Triangle test_triangle2(Vect(-10, -10, 0), Vect(10, -10, 0), Vect(10, 10, 0), test_color);
+    
+    scene_shapes.push_back(dynamic_cast<Shape*>(&test_triangle1));
+    //scene_shapes.push_back(dynamic_cast<Shape*>(&test_triangle2));
+    
+    double x_amount;
+    double y_amount;
+    
+    bool shadowed = false;
+    double tempRed;
+    double tempGreen;
+    double tempBlue;
+    int anti_aliasing_index;
+    
+    for(int x = 0; x < width; x++)
+    {
+        for(int y = 0; y < height; y++)
+        {
+            current_pixel = y * width + x;
+            
+            //STARTING WITH A BLANK PIXEL
+            double tempRed[anti_aliasing_depth * anti_aliasing_depth];
+            double tempGreen[anti_aliasing_depth * anti_aliasing_depth];
+            double tempBlue[anti_aliasing_depth * anti_aliasing_depth];
+            
+            for(int anti_aliasing_x = 0; anti_aliasing_x < anti_aliasing_depth; anti_aliasing_x++)
+            {
+                for(int anti_aliasing_y = 0; anti_aliasing_y < anti_aliasing_depth; anti_aliasing_y++)
+                {
+                    anti_aliasing_index = anti_aliasing_y * anti_aliasing_depth + anti_aliasing_x;
+                    
+                    //CREATE RAY FROM CAMERA TO CURRENT PIXEL
+                    if(anti_aliasing_depth == 1)
+                    {
+                        if(width > height)
+                        {
+                            //Image is wider than it is tall
+                            x_amount = ((x + 0.5) / width) * aspect_ratio - (((width - height) / (double)height) / 2);
+                            y_amount = ((height - y) + 0.5) / height;
+                        }
+                        else if(height > width)
+                        {
+                            //Image is taller than it is wide
+                            x_amount = (x + 0.5) / width;
+                            y_amount = (((height - y) + 0.5) / height) / aspect_ratio - (((height - width) / (double)width) / 2);
+                        }
+                        else
+                        {
+                            //Image is square
+                            x_amount = (x + 0.5) / width;
+                            y_amount = ((height - y) + 0.5) / height;
+                        }
+                    }
+                    else
+                    {
+                        //ANTI-ALIASING
+                        if(width > height)
+                        {
+                            //IMAGE IS WIDER THAN IT IS TALL
+                            x_amount = ((x + (double)anti_aliasing_x / ((double) anti_aliasing_depth - 1)) / width) * aspect_ratio - (((width - height) / (double)height) / 2);
+                            y_amount = ((height - y) + (double)anti_aliasing_x / ((double)anti_aliasing_depth - 1)) / height;
+                        }
+                        else if(height > width)
+                        {
+                            //IMAGE IS TALLER THAN IT IS WIDE
+                            x_amount = (x + (double)anti_aliasing_x / ((double) anti_aliasing_depth - 1)) / width;
+                            y_amount = (((height - y) + (double)anti_aliasing_x / ((double)anti_aliasing_depth - 1)) / height) / aspect_ratio - (((height - width) / (double)width) / 2);
+                        }
+                        else
+                        {
+                            //IMAGE IS SQUARE
+                            x_amount = (x + (double)anti_aliasing_x / ((double)anti_aliasing_depth - 1)) / width;
+                            y_amount = ((height - y) + (double)anti_aliasing_x / ((double)anti_aliasing_depth - 1)) / height;
+                        }
+                    }
+                    
+                    Vect test_camera_ray_origin = test_scene_camera.getCameraPosition();
+                    Vect test_camera_ray_direction = test_camera_direction.vectAdd(camera_right.vectMult(x_amount - 0.5).vectAdd(camera_down.vectMult(y_amount - 0.5))).normalize();
+                    
+                    Ray camera_ray(test_camera_ray_origin, test_camera_ray_direction);
+                    
+                    vector<double> intersections;
+                    
+                    //LOOP THROUGH OBJECTS IN SCENE, FIND INTERSECTION WITH CAMERA RAY, PUSH VALUE INTO INTERSECTIONS ARRAY
+                    for(int index = 0; index < scene_shapes.size(); index++)
+                    {
+                        intersections.push_back(scene_shapes.at(index)->findIntersection(camera_ray));
+                    }
+                    
+                    int index_of_closest_shape = testingClosestShapeIndex(intersections);
+                    
+                    if(index_of_closest_shape == -1)
+                    {
+                        cout << "Test #2 of Test Number Rays that Hit Object: FAILED" << endl;
+                        cout << "Test Number Rays that Hit Object: FAILED" << endl;
+                        cout << "Test #2: shape should take up every pixel" << endl;
+                        break;
+                    }
+                    else
+                    {
+                        //INDEX CORRESPONDS TO SHAPE IN SCENE
+                        if(intersections.at(index_of_closest_shape) > accuracy)
+                        {
+                            //DETERMINE POSITION AND DIRECTION VECTORS AT POINT OF INTERSECTION
+                            Vect intersection_ray_position = test_camera_ray_origin.vectAdd(test_camera_ray_direction.vectMult(intersections.at(index_of_closest_shape)));
+                            
+                            Vect intersection_ray_direction = test_camera_ray_direction;
+                            
+                            Color current_color = testGetColorAt(intersection_ray_position, intersection_ray_direction, scene_shapes, index_of_closest_shape, scene_lights, accuracy, ambient_light, shadowed);//scene_shapes.at(index_of_closest_shape)->getColor();
+                            
+                            tempRed[anti_aliasing_index] = current_color.getColorRed();
+                            tempGreen[anti_aliasing_index] = current_color.getColorGreen();
+                            tempBlue[anti_aliasing_index] = current_color.getColorBlue();
+                            
+                            
+                            }
+                        }
+                    }
+                }
+                
+                //AVERAGE PIXEL COLORS
+                double totalRed = 0;
+                double totalGreen = 0;
+                double totalBlue = 0;
+                
+                for(int iRed = 0; iRed < anti_aliasing_depth * anti_aliasing_depth; iRed++)
+                {
+                    totalRed = totalRed + tempRed[iRed];
+                }
+                for(int iGreen = 0; iGreen < anti_aliasing_depth * anti_aliasing_depth; iGreen++)
+                {
+                    totalGreen = totalGreen + tempGreen[iGreen];
+                }
+                for(int iBlue = 0; iBlue < anti_aliasing_depth * anti_aliasing_depth; iBlue++)
+                {
+                    totalBlue = totalBlue + tempBlue[iBlue];
+                }
+                
+                double avgRed = totalRed / (anti_aliasing_depth * anti_aliasing_depth);
+                double avgGreen = totalGreen / (anti_aliasing_depth * anti_aliasing_depth);
+                double avgBlue = totalBlue / (anti_aliasing_depth * anti_aliasing_depth);
+                
+                pixels[current_pixel].r = avgRed;
+                pixels[current_pixel].g = avgGreen;
+                pixels[current_pixel].b = avgBlue;
+            
+                num_pixels_rays_hit++;
+            }
+        }
+   // }
+    
+    endTimer(0, testNumberRays_antiAliasing_Timer, 11, "testNumberRays_antiAliasing");
+    total_time_end = clock();
+    
+    float total_time = ((float)total_time_end - (float)total_time_begin) / 1000000;
+    cout << "testNumberRays_antiAliasing() TOTAL TIME: " << total_time << " seconds" << endl;
+    
+    if(num_pixels_rays_hit == num_pixels)
+    {
+        cout << "Test Number Rays that Hit Object with Anti Aliasing: PASSED" << endl;
+        return true;
+    }
+    else
+    {
+        cout << "Test Number Rays that Hit Object with Anti Aliasing: FAILED" << endl;
+        cout << "Number of rays that should have hit the object: " << num_pixels << endl;
+        cout << "Number of rays that hit the object: " << num_pixels_rays_hit << endl;
+        return false;
+    }
+}
+
+bool testNumberRays_antiAliasing_cube(int num_pixels, Color test_color, int width, int height, double accuracy, double ambient_light, int anti_aliasing_depth)
+{
+    //TIMING INFORMATION
+    initTimer(1, 18000000, 100);
+    startTimer( testNumberRays_antiAliasing_cube_Timer );
+    clock_t total_time_begin;
+    clock_t total_time_end;
+    total_time_begin = clock();
+    
+    cout << "RUNNING TEST #6: testNumberRays_antiAliasing_cube" << endl;
+    cout << "ANTI ALIASING FACTOR: " << anti_aliasing_depth << endl;
+    
+    test_RGB_Type *pixels = new test_RGB_Type[num_pixels];
+    int current_pixel;
+    double aspect_ratio = (double)width / (double)height;
+    
+    //Increment if pixel contains shape and is hit by a ray
+    int num_pixels_rays_hit = 0;
+    
+    int num_pixels_total = width * height;
+    
+    vector<Shape*> scene_shapes;
+    
+    //Set camera and light to orthogonal position to be able to calculate number of pixels in a shape
+    Vect test_camera_position(0, 0, -1);
+    Vect origin(0, 0, 0);
+    Vect lookAt(0, 0, 0);
+    Vect Y(0, 1, 0);
+    Vect difference_between(test_camera_position.getVectX() - lookAt.getVectX(), test_camera_position.getVectY() - lookAt.getVectY(), test_camera_position.getVectZ() - lookAt.getVectZ());
+    
+    Vect test_camera_direction = difference_between.negative().normalize();
+    Vect camera_right = Y.crossProduct(test_camera_direction).normalize();
+    Vect camera_down = camera_right.crossProduct(test_camera_direction);
+    
+    Camera test_scene_camera(test_camera_position, test_camera_direction, camera_right, camera_down);
+    
+    //Light information
+    Vect test_light_position(0, 0, -1); //= test_camera_position;
+    Light test_scene_light(test_light_position, test_color);
+    
+    vector<Source*> scene_lights;
+    scene_lights.push_back(dynamic_cast<Source*>(&test_scene_light));
+    
+    //Set shape Z units away from camera/light -->cube that covers all of image
+    Triangle test_triangle1(Vect(100000, -100000, 0), Vect(-100000, 100000, 0), Vect(-100000, -100000, 0), test_color);
+    Triangle test_triangle2(Vect(-100000, -100000, 0), Vect(100000, -100000, 0), Vect(100000, 100000, 0), test_color);
+    
+    scene_shapes.push_back(dynamic_cast<Shape*>(&test_triangle1));
+    scene_shapes.push_back(dynamic_cast<Shape*>(&test_triangle2));
+    
+    double x_amount;
+    double y_amount;
+    
+    bool shadowed = false;
+    double tempRed;
+    double tempGreen;
+    double tempBlue;
+    int anti_aliasing_index;
+    
+    for(int x = 0; x < width; x++)
+    {
+        for(int y = 0; y < height; y++)
+        {
+            current_pixel = y * width + x;
+            
+            //STARTING WITH A BLANK PIXEL
+            double tempRed[anti_aliasing_depth * anti_aliasing_depth];
+            double tempGreen[anti_aliasing_depth * anti_aliasing_depth];
+            double tempBlue[anti_aliasing_depth * anti_aliasing_depth];
+            
+            for(int anti_aliasing_x = 0; anti_aliasing_x < anti_aliasing_depth; anti_aliasing_x++)
+            {
+                for(int anti_aliasing_y = 0; anti_aliasing_y < anti_aliasing_depth; anti_aliasing_y++)
+                {
+                    anti_aliasing_index = anti_aliasing_y * anti_aliasing_depth + anti_aliasing_x;
+                    
+                    //CREATE RAY FROM CAMERA TO CURRENT PIXEL
+                    if(anti_aliasing_depth == 1)
+                    {
+                        if(width > height)
+                        {
+                            //Image is wider than it is tall
+                            x_amount = ((x + 0.5) / width) * aspect_ratio - (((width - height) / (double)height) / 2);
+                            y_amount = ((height - y) + 0.5) / height;
+                        }
+                        else if(height > width)
+                        {
+                            //Image is taller than it is wide
+                            x_amount = (x + 0.5) / width;
+                            y_amount = (((height - y) + 0.5) / height) / aspect_ratio - (((height - width) / (double)width) / 2);
+                        }
+                        else
+                        {
+                            //Image is square
+                            x_amount = (x + 0.5) / width;
+                            y_amount = ((height - y) + 0.5) / height;
+                        }
+                    }
+                    else
+                    {
+                        //ANTI-ALIASING
+                        if(width > height)
+                        {
+                            //IMAGE IS WIDER THAN IT IS TALL
+                            x_amount = ((x + (double)anti_aliasing_x / ((double) anti_aliasing_depth - 1)) / width) * aspect_ratio - (((width - height) / (double)height) / 2);
+                            y_amount = ((height - y) + (double)anti_aliasing_x / ((double)anti_aliasing_depth - 1)) / height;
+                        }
+                        else if(height > width)
+                        {
+                            //IMAGE IS TALLER THAN IT IS WIDE
+                            x_amount = (x + (double)anti_aliasing_x / ((double) anti_aliasing_depth - 1)) / width;
+                            y_amount = (((height - y) + (double)anti_aliasing_x / ((double)anti_aliasing_depth - 1)) / height) / aspect_ratio - (((height - width) / (double)width) / 2);
+                        }
+                        else
+                        {
+                            //IMAGE IS SQUARE
+                            x_amount = (x + (double)anti_aliasing_x / ((double)anti_aliasing_depth - 1)) / width;
+                            y_amount = ((height - y) + (double)anti_aliasing_x / ((double)anti_aliasing_depth - 1)) / height;
+                        }
+                    }
+                    
+                    Vect test_camera_ray_origin = test_scene_camera.getCameraPosition();
+                    Vect test_camera_ray_direction = test_camera_direction.vectAdd(camera_right.vectMult(x_amount - 0.5).vectAdd(camera_down.vectMult(y_amount - 0.5))).normalize();
+                    
+                    Ray camera_ray(test_camera_ray_origin, test_camera_ray_direction);
+                    
+                    vector<double> intersections;
+                    
+                    //LOOP THROUGH OBJECTS IN SCENE, FIND INTERSECTION WITH CAMERA RAY, PUSH VALUE INTO INTERSECTIONS ARRAY
+                    for(int index = 0; index < scene_shapes.size(); index++)
+                    {
+                        intersections.push_back(scene_shapes.at(index)->findIntersection(camera_ray));
+                    }
+                    
+                    int index_of_closest_shape = testingClosestShapeIndex(intersections);
+                    
+                    if(index_of_closest_shape == -1)
+                    {
+                        cout << "Test Number Rays that Hit Object: FAILED" << endl;
+                        cout << "Pixel: " << current_pixel << endl;
+                        break;
+                    }
+                    else
+                    {
+                        //INDEX CORRESPONDS TO SHAPE IN SCENE
+                        if(intersections.at(index_of_closest_shape) > accuracy)
+                        {
+                            //DETERMINE POSITION AND DIRECTION VECTORS AT POINT OF INTERSECTION
+                            Vect intersection_ray_position = test_camera_ray_origin.vectAdd(test_camera_ray_direction.vectMult(intersections.at(index_of_closest_shape)));
+                            
+                            Vect intersection_ray_direction = test_camera_ray_direction;
+                            
+                            Color current_color = testGetColorAt(intersection_ray_position, intersection_ray_direction, scene_shapes, index_of_closest_shape, scene_lights, accuracy, ambient_light, shadowed);//scene_shapes.at(index_of_closest_shape)->getColor();
+                            
+                            tempRed[anti_aliasing_index] = current_color.getColorRed();
+                            tempGreen[anti_aliasing_index] = current_color.getColorGreen();
+                            tempBlue[anti_aliasing_index] = current_color.getColorBlue();
+                         
+                            num_pixels_rays_hit++;
+
+
+                        }
+                    }
+
+                }
+
+            }
+            
+            //AVERAGE PIXEL COLORS
+            double totalRed = 0;
+            double totalGreen = 0;
+            double totalBlue = 0;
+            
+            for(int iRed = 0; iRed < anti_aliasing_depth * anti_aliasing_depth; iRed++)
+            {
+                totalRed = totalRed + tempRed[iRed];
+            }
+            for(int iGreen = 0; iGreen < anti_aliasing_depth * anti_aliasing_depth; iGreen++)
+            {
+                totalGreen = totalGreen + tempGreen[iGreen];
+            }
+            for(int iBlue = 0; iBlue < anti_aliasing_depth * anti_aliasing_depth; iBlue++)
+            {
+                totalBlue = totalBlue + tempBlue[iBlue];
+            }
+            
+            double avgRed = totalRed / (anti_aliasing_depth * anti_aliasing_depth);
+            double avgGreen = totalGreen / (anti_aliasing_depth * anti_aliasing_depth);
+            double avgBlue = totalBlue / (anti_aliasing_depth * anti_aliasing_depth);
+            
+            pixels[current_pixel].r = avgRed;
+            pixels[current_pixel].g = avgGreen;
+            pixels[current_pixel].b = avgBlue;
+            
+        }
+    }
+
+    endTimer(0, testNumberRays_antiAliasing_cube_Timer, 12, "testNumberRays_antiAliasing_cube");
+    total_time_end = clock();
+    
+    float total_time = ((float)total_time_end - (float)total_time_begin) / 1000000;
+    cout << "testNumberRays_antiAliasing_cube() TOTAL TIME: " << total_time << " seconds" << endl;
+    
+    if(num_pixels_rays_hit == num_pixels)
+    {
+        cout << "Test Number Rays that Hit Object with Anti Aliasing with Cube: PASSED" << endl;
+        return true;
+    }
+    else
+    {
+        cout << "Test Number Rays that Hit Object with Anti Aliasing with Cube: FAILED" << endl;
         cout << "Number of rays that should have hit the object: " << num_pixels << endl;
         cout << "Number of rays that hit the object: " << num_pixels_rays_hit << endl;
         return false;
@@ -379,6 +855,8 @@ bool testNumberTimesteps(double start_hour, double end_hour, double interval_hou
 
 bool testRayDistance(int width, int height, Color test_red_light, Color test_white_light)
 {
+    cout << "TEST #4: testRayDistance" << endl;
+    
     int num_pixels = width * height;
     int current_pixel;
     
@@ -450,12 +928,27 @@ bool testRayDistance(int width, int height, Color test_red_light, Color test_whi
 
 bool testColorOfPixel()
 {
+    cout << "TEST #5: testColorOfPixel" << endl;
     
 }
 
 
+//OUTPUT INFO ABOUT WHAT TESTS WERE PASSED AND WHAT ONES WEREN'T
+void testsPassedFailed()
+{
+    
+}
+
+//OUTPUT INFO ABOUT WHAT EACH TEST IS DESIGNED TO DO AND WHAT ITS OUTPUT SHOULD BE
+void testInfo()
+{
+    //TEST 1: Test number of triangles
+    //TEST 2: Test number of rays when entire image should be covered by shape
+    //TEST 3: Test number of rays when entire image should be covered by shape with anti aliasing
+    //TEST 6: Test number of rays with cube as shape covering entire image with anti aliasing
+}
 
 
-
+#endif
 
 #endif

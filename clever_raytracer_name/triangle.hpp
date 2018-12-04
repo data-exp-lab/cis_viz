@@ -15,11 +15,21 @@
 class Triangle : public Shape
 {
 public:
+    Vect normal;
+    
     Vect A;
     Vect B;
     Vect C;
     
-    Vect normal;
+    
+    //FOR PPFD CALCULATIONS
+    std::vector<double> photonFlux_up_dir;
+    std::vector<double> photonFlux_up_diff;
+    std::vector<double> photonFlux_up_scat;
+    std::vector<double> photonFlux_down_dir;
+    std::vector<double> photonFlux_down_diff;
+    std::vector<double> photonFlux_down_scat;
+    
     
     double distance;
     double area;
@@ -27,15 +37,8 @@ public:
     
     vector<Triangle*> triangles;
     
-    //FOR PPFD CALCULATIONS
-    vector<double> photonFlux_up_dir;
-    vector<double> photonFlux_up_diff;
-    vector<double> photonFlux_up_scat;
-    vector<double> photonFlux_down_dir;
-    vector<double> photonFlux_down_diff;
-    vector<double> photonFlux_down_scat;
-    
     vector<double> LEAFT;
+    //GS: STOMATAL CONDUCTANCE
     vector<double> GS;
     vector<double> CI;
     vector<double> PPFDSAT;
@@ -61,7 +64,69 @@ public:
     
     Triangle(const Vect& A, const Vect& B, const Vect& C, const int leafID, const double leafL, const double position, const double CLAI1, const double KT, double KR, const double nitrogenPerArea, double startHour, double endHour, double hourInterval);
     
-    Triangle(const Vect& A, const Vect& B, const Vect& C, const int leafID, const double leafL, const double position, const double CLAI1, const double KT, double KR, const double nitrogenPerArea, double startHour, double endHour, double hourInterval, Color color);
+    Triangle(const Vect A, const Vect B, const Vect C, const int leafID, const double leafL, const double position, const double CLAI1, const double KT, double KR, const double nitrogenPerArea, double startHour, double endHour, double hourInterval, Color color);
+    
+    void setPoint1(Vect point1)
+    {
+        A = point1;
+    }
+    
+    void setPoint2(Vect point2)
+    {
+        B = point2;
+    }
+    
+    void setPoint3(Vect point3)
+    {
+        C = point3;
+    }
+    
+    float getPoint1X()
+    {
+        return A.getVectX();
+    }
+    float getPoint1Y()
+    {
+        return A.getVectY();
+    }
+    float getPoint1Z()
+    {
+        return A.getVectZ();
+    }
+    float getPoint2X()
+    {
+        return B.getVectX();
+    }
+    float getPoint2Y()
+    {
+        return B.getVectY();
+    }
+    float getPoint2Z()
+    {
+        return B.getVectZ();
+    }
+    float getPoint3X()
+    {
+        return C.getVectX();
+    }
+    float getPoint3Y()
+    {
+        return C.getVectY();
+    }
+    float getPoint3Z()
+    {
+        return C.getVectZ();
+    }
+    
+    void add_triangle(Triangle* triangle_ptr)
+    {
+        triangles.push_back(triangle_ptr);
+    }
+    
+    vector<Triangle*> get_triangles()
+    {
+        return triangles;
+    }
     
     Vect getTriangleNormal()
     {
@@ -224,16 +289,21 @@ Triangle::Triangle(const Vect& A, const Vect& B, const Vect& C, const int leafID
     leL = leafL;
     pos = position;
     CLAI = CLAI1;
+    //WHAT GOES THROUGH THE LEAF
     kLeafTransmittance = KT;
+    //WHAT REFLECTS OFF IT
     kLeafReflectance = KR;
+    //ABSORBED LIGHT (?)
+    //kA;
 }
 
 //INCLUDES COLOR
-Triangle::Triangle(const Vect& A, const Vect& B, const Vect& C, const int leafID, const double leafL, const double position, const double CLAI1, const double KT, double KR, const double nitrogenPerArea, double startHour, double endHour, double hourInterval, Color color)
+Triangle::Triangle(const Vect A, const Vect B, const Vect C, const int leafID, const double leafL, const double position, const double CLAI1, const double KT, double KR, const double nitrogenPerArea, double startHour, double endHour, double hourInterval, Color color)
 {
     Vect v0 = A;
     Vect v1 = B;
     Vect v2 = C;
+    Color tri_color = color;
     
     //RIGHT HAND RULE
     normal = (v1 - v0) ^ (v2 - v0);

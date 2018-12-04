@@ -27,7 +27,10 @@
 //DO MORE COMPREHENSIVE/ACCURATE TIMINGS THIS WAY
 #include "timing.hpp"
 #include "debug.hpp"
-#include "tests.hpp"
+
+#ifdef RUN_TESTS
+    #include "tests.hpp"
+#endif
 
 #include "commandArgs.hpp"
 #include "reader.hpp"
@@ -184,7 +187,8 @@ int closestShapeIndex(vector<double> shape_intersections)
     }
 }
 
-Color getColorAt(Vect intersection_ray_position, Vect intersection_ray_direction, vector<Shape*> scene_shapes, int index_of_closest_shape, vector<Source*> scene_lights, double accuracy, double ambient_light, bool shadowed)
+//Color getColorAt(Vect intersection_ray_position, Vect intersection_ray_direction, vector<Shape*> scene_shapes, int index_of_closest_shape, vector<Source*> scene_lights, double accuracy, double ambient_light, bool shadowed)
+Color getColorAt(Vect intersection_ray_position, Vect intersection_ray_direction, vector<Triangle*> scene_shapes, int index_of_closest_shape, vector<Source*> scene_lights, double accuracy, double ambient_light, bool shadowed)
 {
     Color closest_shape_color = scene_shapes.at(index_of_closest_shape)->getColor();
     Vect closest_shape_normal = scene_shapes.at(index_of_closest_shape)->getNormalAt(intersection_ray_position);
@@ -250,6 +254,7 @@ Color getColorAt(Vect intersection_ray_position, Vect intersection_ray_direction
             vector<double> intersections_for_shadows;
             
             for(int o = 0; o < scene_shapes.size() && shadowed == false; o++)
+            //for(int o = 2; o < 3 && shadowed == false; o++)
             {
                 intersections_for_shadows.push_back(scene_shapes.at(o)->findIntersection(shadow_ray));
             }
@@ -334,7 +339,7 @@ int main(int argc, char *argv[])
     string fileType = ".txt";
     string inputFileName = cla.geometryFile;
     
-    bool shadowed = true;
+    bool shadowed = false;
     bool PLY = true;
     
     debug("Shadowed = %d", shadowed);
@@ -396,6 +401,7 @@ int main(int argc, char *argv[])
     vector<float> vertex2_main;
     vector<float> vertex3_main;
     
+    //FIX: MAKE RELATIVE TO COORDINATES; I.E., WHEN SMALLER, USE A SMALLER BUFFER SO SHAPES ARE GOING TO BE SEEN
     //SET UP FIELD WITH MIN AND MAX FOR X, Y, Z DIRECTIONS
     float min_x = 0;
     float max_x = 0;
@@ -404,7 +410,7 @@ int main(int argc, char *argv[])
     float min_z = 0;
     float max_z = 0;
     
-    float buffer = 200.0;
+    float buffer = 20.0;
     
     float min_x_with_buffer;
     float max_x_with_buffer;
@@ -416,7 +422,7 @@ int main(int argc, char *argv[])
     if(PLY == true)
     {
         //READ IN THE GEOMETRY OF THE PLANT FROM PLY FILE
-        readGeometryFilePLY(cla.geometryFile, ref(x_main), ref(y_main), ref(z_main), ref(red_main), ref(green_main), ref(blue_main), ref(num_vertices_to_connect_main), ref(vertex1_main), ref(vertex2_main), ref(vertex3_main), ref(min_x), ref(max_x), ref(min_y), ref(max_y), ref(min_z), ref(max_z), ref(num_element_vertex));
+        readGeometryFilePLY(cla.geometryFile, ref(x_main), ref(y_main), ref(z_main), ref(red_main), ref(green_main), ref(blue_main), ref(num_vertices_to_connect_main), ref(vertex1_main), ref(vertex2_main), ref(vertex3_main), ref(min_x), ref(max_x), ref(min_y), ref(max_y), ref(min_z), ref(max_z), ref(num_element_vertex), ref(num_element_face));
     }
     else
     {
@@ -424,6 +430,8 @@ int main(int argc, char *argv[])
         readGeometryFileTXT(cla.geometryFile, ref(x1_main), ref(y1_main), ref(z1_main), ref(x2_main), ref(y2_main), ref(z2_main), ref(x3_main), ref(y3_main), ref(z3_main));
     }
     int size_of_x_main = x_main.size();
+    cout << "num_element_face: " << num_element_face << endl;
+    debug("num_element_face: %d", num_element_face);
     
     if(PLY == true)
     {
@@ -476,15 +484,13 @@ int main(int argc, char *argv[])
         DOY_main.push_back(DOY_val);
     }
     
-    //CALCULATE PPFD FROM ATMOSPHERIC TRANSMITTANCE
-    climate.climate_calculation_PPFD(cs.LATITUDE, stn, cs.ATMOSPHERIC_TRANSMITTANCE, DOY_main, start, end, interval, ps, cs);
-    
     Vect origin(0, 0, 0);
     Vect X(1, 0, 0);
     Vect Y(0, 1, 0);
     Vect Z(0, 0, 1);
     //3, 1.5, -12
-    Vect camera_position(-2, 0, 0);
+    Vect camera_position(0, 0, 3);
+    //Vect camera_position(0, 75, 50);
     Vect lookAt(0, 0, 0);
     Vect difference_between(camera_position.getVectX() - lookAt.getVectX(), camera_position.getVectY() - lookAt.getVectY(), camera_position.getVectZ() - lookAt.getVectZ());
     
@@ -501,10 +507,13 @@ int main(int argc, char *argv[])
     Color black_light(0.0, 0.0, 0.0, 0);
     Color orange_light(0.9, 0.75, 0.3, 0);
     Color blue_light(0.0, 0.0, 1, 0);
+    Color yellow_light(1, 1, 0, 0);
+    Color purple_light(.5, 0.0, .5, 0);
     
     //FIX: Calculate position of sun, becomes new light
-    Vect light_position(-2, 0, 0);
-   // Vect light_position(-7, 10, -10);
+    Vect light_position(0, 0, 3);
+    //Vect light_position(0, 75, 50);
+    //Vect light_position(-7, 10, -10);
     Light scene_light1(light_position, white_light);
     
     vector<Source*> scene_lights;
@@ -512,104 +521,281 @@ int main(int argc, char *argv[])
 
     double x_amount;
     double y_amount;
-
-    //SCENE OBJECTS
-    Sphere scene_sphere1(origin, 1, blue_light);
-    Plane scene_plane1(Y, -1, red_light);
-    Triangle scene_triangle1(Vect(5, 0, 0), Vect(0, -3, 0), Vect(0, 0, -5), green_light);
     
     vector<Shape*> scene_shapes;
+    vector<Triangle*> scene_triangles;
+
+    //SCENE OBJECTS
+    /*Sphere scene_sphere1(origin, 1, blue_light);
+    Plane scene_plane1(Y, -1, red_light);
+    Triangle scene_triangle1(Vect(5, 0, 0), Vect(0, -3, 0), Vect(0, 0, -5), green_light);
+    Triangle pyramid_triangle0(Vect(1.0, 0.0, 0.0), Vect(0.0, 0.0, 0.0), Vect(0.0, 1.0, 0.0), red_light);
+    Triangle pyramid_triangle1(Vect(1.0, 0.0, 0.0), Vect(0.0, 1.0, 0.0), Vect(1.0, 1.0, 0.0), green_light);
+    Triangle pyramid_triangle2(Vect(0.0, 0.0, 0.0), Vect(1.0, 0.0, 0.0), Vect(0.5, 0.5, 1.6), blue_light);
+    Triangle pyramid_triangle3(Vect(0.0, 0.0, 0.0), Vect(0.5, 0.5, 1.6), Vect(0.0, 1.0, 0.0), purple_light);
+    Triangle pyramid_triangle4(Vect(0.0, 1.0, 0.0), Vect(0.5, 0.5, 1.6), Vect(1.0, 1.0, 0.0), orange_light);
+    Triangle pyramid_triangle5(Vect(1.0, 0.0, 0.0), Vect(1.0, 1.0, 0.0), Vect(0.5, 0.5, 1.6), yellow_light);*/
+    
     //scene_shapes.push_back(dynamic_cast<Shape*>(&scene_sphere1));
     //scene_shapes.push_back(dynamic_cast<Shape*>(&scene_plane1));
     //scene_shapes.push_back(dynamic_cast<Shape*>(&scene_triangle1));
+    /*scene_shapes.push_back(dynamic_cast<Shape*>(&pyramid_triangle0));
+    scene_shapes.push_back(dynamic_cast<Shape*>(&pyramid_triangle1));
+    scene_shapes.push_back(dynamic_cast<Shape*>(&pyramid_triangle2));
+    scene_shapes.push_back(dynamic_cast<Shape*>(&pyramid_triangle3));
+    scene_shapes.push_back(dynamic_cast<Shape*>(&pyramid_triangle4));
+    scene_shapes.push_back(dynamic_cast<Shape*>(&pyramid_triangle5));*/
     
+    /////////////////
+    
+    Vect point1;
+    Vect point2;
+    Vect point3;
+    float point1_x_coord;
+    float point1_y_coord;
+    float point1_z_coord;
+    float point2_x_coord;
+    float point2_y_coord;
+    float point2_z_coord;
+    float point3_x_coord;
+    float point3_y_coord;
+    float point3_z_coord;
+    Triangle triangle_test;
+    Color triangle_color;
+    
+    //SET UP CONNECTIVITY OF POINTS INTO TRIANGLES
+    int num_vertices;
+    int vertex1_index;
+    int vertex2_index;
+    int vertex3_index;
+    
+    float x_for_point1;
+    float y_for_point1;
+    float z_for_point1;
+    float x_for_point2;
+    float y_for_point2;
+    float z_for_point2;
+    float x_for_point3;
+    float y_for_point3;
+    float z_for_point3;
+    
+    Color point1_color;
+    Color point2_color;
+    Color point3_color;
+    
+    int red_color_index;
+    int green_color_index;
+    int blue_color_index;
+    
+    double tri_red_average;
+    double tri_green_average;
+    double tri_blue_average;
+    
+    float point1_red;
+    float point1_green;
+    float point1_blue;
+    float point2_red;
+    float point2_green;
+    float point2_blue;
+    float point3_red;
+    float point3_green;
+    float point3_blue;
+   
     if(PLY == true)
     {
-        //SET UP CONNECTIVITY OF POINTS INTO TRIANGLES
-        int num_vertices;
-        int vertex1_index;
-        int vertex2_index;
-        int vertex3_index;
-        
-        float x_for_point1;
-        float y_for_point1;
-        float z_for_point1;
-        float x_for_point2;
-        float y_for_point2;
-        float z_for_point2;
-        float x_for_point3;
-        float y_for_point3;
-        float z_for_point3;
-        
-        Color point1_set_color;
-        Color point2_set_color;
-        Color point3_set_color;
-        Color triangle_color;
-        
-        int red_color_index;
-        int green_color_index;
-        int blue_color_index;
-        
-        cout << "x_main.size(): " << x_main.size() << endl;
-        for(int i = 0; i < x_main.size(); i++)
-        {
-            cout << "x_main[" << i << "]: " << x_main[i] << endl;
-        }
+#ifdef RUN_TESTS
         testNumberTriangles(num_element_vertex, size_of_x_main);
-        
-        for(int i = 0; i < x_main.size(); i++)
+#endif
+        for(int i = 0; i < num_element_face; i++)
         {
+            cout << "TRIANGLE " << i << endl;
+            debug("TRIANGLE %d", i);
+            
             num_vertices = num_vertices_to_connect_main[i];
             if(num_vertices == 3)
             {
                 vertex1_index = vertex1_main[i];
                 vertex2_index = vertex2_main[i];
                 vertex3_index = vertex3_main[i];
+                cout << "vertex1_index: " << vertex1_index << endl;
+                cout << "vertex2_index: " << vertex2_index << endl;
+                cout << "vertex3_index: " << vertex3_index << endl;
+                debug("vertex1_index: %d", vertex1_index);
+                debug("vertex2_index: %d", vertex2_index);
+                debug("vertex3_index: %d", vertex3_index);
                 
-                Vect point1(x_main[vertex1_index], y_main[vertex1_index], z_main[vertex1_index]);
-                Vect point2(x_main[vertex2_index], y_main[vertex2_index], z_main[vertex2_index]);
-                Vect point3(x_main[vertex3_index], y_main[vertex3_index], z_main[vertex3_index]);
+                point1_x_coord = x_main[vertex1_index];
+                point1_y_coord = y_main[vertex1_index];
+                point1_z_coord = z_main[vertex1_index];
+                cout << "x_main[vertex1_index]: " << x_main[vertex1_index] << endl;
+                cout << "y_main[vertex1_index]: " << y_main[vertex1_index] << endl;
+                cout << "z_main[vertex1_index]: " << z_main[vertex1_index] << endl;
+                debug("x_main[vertex1_index]: %d", x_main[vertex1_index]);
+                debug("y_main[vertex1_index]: %d", y_main[vertex1_index]);
+                debug("z_main[vertex1_index]: %d", z_main[vertex1_index]);
+                point1.setVectX(point1_x_coord);
+                point1.setVectY(point1_y_coord);
+                point1.setVectZ(point1_z_coord);
+                cout << "point1.setVectX(): " << point1.getVectX() << endl;
+                cout << "point1.setVectY(): " << point1.getVectY() << endl;
+                cout << "point1.setVectZ(): " << point1.getVectZ() << endl;
+                debug("point1.setVectX(): %d", point1.getVectX());
+                debug("point1.setVectY(): %d", point1.getVectY());
+                debug("point1.setVectZ(): %d", point1.getVectZ());
+
+                point2_x_coord = x_main[vertex2_index];
+                point2_y_coord = y_main[vertex2_index];
+                point2_z_coord = z_main[vertex2_index];
+                cout << "x_main[vertex2_index]: " << x_main[vertex2_index] << endl;
+                cout << "y_main[vertex2_index]: " << y_main[vertex2_index] << endl;
+                cout << "z_main[vertex2_index]: " << z_main[vertex2_index] << endl;
+                debug("x_main[vertex2_index]: %d", x_main[vertex2_index]);
+                debug("y_main[vertex2_index]: %d", y_main[vertex2_index]);
+                debug("z_main[vertex2_index]: %d", z_main[vertex2_index]);
+                point2.setVectX(point2_x_coord);
+                point2.setVectY(point2_y_coord);
+                point2.setVectZ(point2_z_coord);
+                cout << "point2.setVectX(): " << point2.getVectX() << endl;
+                cout << "point2.setVectY(): " << point2.getVectY() << endl;
+                cout << "point2.setVectZ(): " << point2.getVectZ() << endl;
+                debug("point2.setVectX(): %d", point2.getVectX());
+                debug("point2.setVectY(): %d", point2.getVectY());
+                debug("point2.setVectZ(): %d", point2.getVectZ());
+
+                point3_x_coord = x_main[vertex3_index];
+                point3_y_coord = y_main[vertex3_index];
+                point3_z_coord = z_main[vertex3_index];
+                cout << "x_main[vertex3_main[vertex3_index]]: " << x_main[vertex3_index] << endl;
+                cout << "y_main[vertex3_main[vertex3_index]]: " << y_main[vertex3_index] << endl;
+                cout << "z_main[vertex3_main[vertex3_index]]: " << z_main[vertex3_index] << endl;
+                debug("x_main[vertex3_index]: %d", x_main[vertex3_index]);
+                debug("y_main[vertex3_index]: %d", y_main[vertex3_index]);
+                debug("z_main[vertex3_index]: %d", z_main[vertex3_index]);
+                point3.setVectX(point3_x_coord);
+                point3.setVectY(point3_y_coord);
+                point3.setVectZ(point3_z_coord);
+                cout << "point3.setVectX(): " << point3.getVectX() << endl;
+                cout << "point3.setVectY(): " << point3.getVectY() << endl;
+                cout << "point3.setVectZ(): " << point3.getVectZ() << endl;
+                debug("point3.setVectX(): %d", point3.getVectX());
+                debug("point3.setVectY(): %d", point3.getVectY());
+                debug("point3.setVectZ(): %d", point3.getVectZ());
+
+                //IF R/G/B ARE OUT OF 255, CONVERT TO OUT OF 1
+                if(red_main[vertex1_index] > 1.0)
+                {
+                    point1_red = red_main[vertex1_index] / 256;
+                }
+                else
+                {
+                    point1_red = red_main[vertex1_index];
+                }
                 
-                cout << "point1: " << point1.getVectX() << " " << point1.getVectY() << " " << point1.getVectZ() << endl;
-                cout << "point2: " << point2.getVectX() << " " << point2.getVectY() << " " << point2.getVectZ() << endl;
-                cout << "point3: " << point3.getVectX() << " " << point3.getVectY() << " " << point3.getVectZ() << endl;
+                if(green_main[vertex1_index] > 1.0)
+                {
+                    point1_green = green_main[vertex1_index] / 256;
+                }
+                else
+                {
+                    point1_green = green_main[vertex1_index];
+                }
                 
+                if(blue_main[vertex1_index] > 1.0)
+                {
+                    point1_blue = blue_main[vertex1_index] / 256;
+                }
+                else
+                {
+                    point1_blue = blue_main[vertex1_index];
+                }
+                
+                if(red_main[vertex2_index] > 1.0)
+                {
+                    point2_red = red_main[vertex2_index] / 256;
+                }
+                else
+                {
+                    point2_red = red_main[vertex2_index];
+                }
+                
+                if(green_main[vertex2_index] > 1.0)
+                {
+                    point2_green = green_main[vertex2_index] / 256;
+                }
+                else
+                {
+                    point2_green = green_main[vertex2_index];
+                }
+                
+                if(blue_main[vertex2_index] > 1.0)
+                {
+                    point2_blue = blue_main[vertex2_index] / 256;
+                }
+                else
+                {
+                    point2_blue = blue_main[vertex2_index];
+                }
+                
+                if(red_main[vertex3_index] > 1.0)
+                {
+                    point3_red = red_main[vertex3_index] / 256;
+                }
+                else
+                {
+                    point3_red = red_main[vertex3_index];
+                }
+                
+                if(green_main[vertex3_index] > 1.0)
+                {
+                    point3_green = green_main[vertex3_index] / 256;
+                }
+                else
+                {
+                    point3_green = green_main[vertex3_index];
+                }
+                
+                if(blue_main[vertex3_index] > 1.0)
+                {
+                    point3_blue = blue_main[vertex3_index] / 256;
+                }
+                else
+                {
+                    point3_blue = blue_main[vertex3_index];
+                }
+
                 //COLOR
-                point1_set_color.setColorRed(red_main[vertex1_index]);
-                point1_set_color.setColorGreen(green_main[vertex1_index]);
-                point1_set_color.setColorBlue(blue_main[vertex1_index]);
-                point2_set_color.setColorRed(red_main[vertex2_index]);
-                point2_set_color.setColorGreen(green_main[vertex2_index]);
-                point2_set_color.setColorBlue(blue_main[vertex2_index]);
-                point3_set_color.setColorRed(red_main[vertex3_index]);
-                point3_set_color.setColorGreen(green_main[vertex3_index]);
-                point3_set_color.setColorBlue(blue_main[vertex3_index]);
+                point1_color.setColorRed(point1_red);
+                point1_color.setColorGreen(point1_green);
+                point1_color.setColorBlue(point1_blue);
+                point2_color.setColorRed(point2_red);
+                point2_color.setColorGreen(point2_green);
+                point2_color.setColorBlue(point2_blue);
+                point3_color.setColorRed(point3_red);
+                point3_color.setColorGreen(point3_green);
+                point3_color.setColorBlue(point3_blue);
                 
-                cout << "point1_set_color.setColorRed: " << point1_set_color.getColorRed() << endl;
-                cout << "point1_set_color.setColorGreen: " << point1_set_color.getColorGreen() << endl;
-                cout << "point1_set_color.setColorblue: " << point1_set_color.getColorBlue() << endl;
+                tri_red_average = (point1_color.getColorRed() + point2_color.getColorRed() + point3_color.getColorRed()) / 3;
+                tri_green_average = (point1_color.getColorGreen() + point2_color.getColorGreen() + point3_color.getColorGreen()) / 3;
+                tri_blue_average = (point1_color.getColorBlue() + point2_color.getColorBlue() + point3_color.getColorBlue()) / 3;
                 
-                //FIX: Check that this works
-                triangle_color = point1_set_color.colorAverage(point2_set_color.colorAverage(point3_set_color));
-                cout << "triangle_color.getColorRed(): " << triangle_color.getColorRed() << endl;
-                cout << "triangle_color.getColorGreen(): " << triangle_color.getColorGreen() << endl;
-                cout << "triangle_color.getColorBlue(): " << triangle_color.getColorBlue() << endl;
+                triangle_color.setColorRed(tri_red_average);
+                triangle_color.setColorGreen(tri_green_average);
+                triangle_color.setColorBlue(tri_blue_average);
                 
-                Triangle* newTri = new Triangle(point1, point2, point3, leafID, leafL, position, CLAI, leafTransmittance, leafReflectivity, n_per_area, start, end, intervalHour, triangle_color);
+                scene_triangles.push_back(new Triangle(point1, point2, point3, triangle_color));
                 
-                //scene_shapes.push_back(dynamic_cast<Shape*>(&newTri));
-                
-            }
+            } //end of if (num_vertices == 3)
             //FIX: change once set up to do things other than triangles (if necessary)
             else
             {
                 printf("Cannot construct a triangle from given information");
                 return 0;
             }
-        }
-    }
+       } //end of for loop
+    }//end of if(PLY == true)
     else
     {
+        //FIX: COME BACK AND CREATE TRIANGLES THE SAME WAY AS IN TRIANGLES FROM PLY FILES
         //TXT FILES
         for(int i = 0; i < x1_main.size(); i++)
         {
@@ -620,19 +806,20 @@ int main(int argc, char *argv[])
             cout << "point1: " << point1.getVectX() << " " << point1.getVectY() << " " << point1.getVectZ() << endl;
             Triangle newTri(point1, point2, point3, leafID, leafL, position, CLAI, leafTransmittance, leafReflectivity, n_per_area, start, end, intervalHour);
 
-            scene_shapes.push_back(dynamic_cast<Shape*>(&newTri));
+            //scene_shapes.push_back(dynamic_cast<Shape*>(&newTri));
         }
     }
-    cout << "scene_shapes.size(): " << scene_shapes.size() << endl;
-    
-    debug("Number of shapes in scene: %d", scene_shapes.size());
+    cout << "scene_triangles.size(): " << scene_triangles.size() << endl;
+    debug("Number of shapes in scene: %d", scene_triangles.size());
+ 
+    //CALCULATE PPFD FROM ATMOSPHERIC TRANSMITTANCE
+    climate.climate_calculation_PPFD(cs.LATITUDE, stn, cs.ATMOSPHERIC_TRANSMITTANCE, DOY_main, start, end, interval, ps, cs);
     
     vector<double> area_total;
     vector<double> PPFD_total;
     
     int testing_timestep = 0;
-    
-    //FIX: DO THIS FOR EVERY TIMESTEP
+
     //RETURN COLOR PER PIXEL
     for(int timestep = 0; timestep < num; timestep++)
     {
@@ -658,41 +845,46 @@ int main(int argc, char *argv[])
         //double dif_pf = diffuse_light_ppfd * 1e-4; //ADD IN LIGHT_NEAREST_DISTANCE
         
         //TRIANGLES ARE IN SCENE_SHAPES ALREADY
-        vector<Triangle*>::iterator it;
-        /*for(int j = 0; j < scene_shapes.size(); j++)
+        /*vector<Shape*>::iterator it;
+        for(it = scene_shapes.begin(); it != scene_shapes.end(); it++)
         {
             double triangle_area = (((*it)->B - (*it)->A) ^ ((*it)->C - (*it)->A)).length() * 0.5;
             double area_factor = 1 / (triangle_area * 1e-4);
             
             vector<double> photonFlux_up_dir = (*it)->photonFlux_up_dir;
-            vector<double> photonFlux_up_diff = (*it)->photonFlux_up_diff;
-            vector<double> photonFlux_up_scat = (*it)->photonFlux_up_scat;
-            vector<double> photonFlux_down_dir = (*it)->photonFlux_down_dir;
-            vector<double> photonFlux_down_diff = (*it)->photonFlux_down_diff;
-            vector<double> photonFlux_down_scat = (*it)->photonFlux_down_scat;
+            //vector<double> photonFlux_up_diff = (*it)->photonFlux_up_diff;
+            //vector<double> photonFlux_up_scat = (*it)->photonFlux_up_scat;
+            //vector<double> photonFlux_down_dir = (*it)->photonFlux_down_dir;
+            //vector<double> photonFlux_down_diff = (*it)->photonFlux_down_diff;
+            //vector<double> photonFlux_down_scat = (*it)->photonFlux_down_scat;
             
             //SELECT PPFD FOR GIVEN TIME
-            double it1 = photonFlux_up_dir[timestep];
-            double it2 = photonFlux_up_diff[timestep];
-            double it3 = photonFlux_up_scat[timestep];
-            double it4 = photonFlux_down_dir[timestep];
-            double it5 = photonFlux_down_diff[timestep];
-            double it6 = photonFlux_down_scat[timestep];
+            ////////////double it1 = photonFlux_up_dir[timestep];
+            //double it2 = photonFlux_up_diff[timestep];
+            //double it3 = photonFlux_up_scat[timestep];
+            //double it4 = photonFlux_down_dir[timestep];
+            //double it5 = photonFlux_down_diff[timestep];
+            //double it6 = photonFlux_down_scat[timestep];
             
             // TOTAL PPFD FROM DIRECT, DIFFUSE, AND SCATTERED LIGHT
-            double PPFD_tot = (it1 + it2 + it3 + it4 + it5 + it6) * area_factor;
+            //double PPFD_tot = (it1 + it2 + it3 + it4 + it5 + it6) * area_factor;
+            //double PPFD_tot = it1 * area_factor;
             
-            area_total.push_back(triangle_area);
-            PPFD_total.push_back(PPFD_tot);
+            //area_total.push_back(triangle_area);
+            //PPFD_total.push_back(PPFD_tot);
         }*/
         
         int anti_aliasing_index;
         double tempRed;
         double tempGreen;
         double tempBlue;
+#ifdef RUN_TESTS
+        //testNumberRays(num_pixels, red_light, width, height, accuracy, ambient_light);
+        //testNumberRays_antiAliasing(num_pixels, red_light, width, height, accuracy, ambient_light, anti_aliasing_depth);
         
-        testNumberRays(num_pixels, red_light, width, height, accuracy, ambient_light);
-        testRayDistance(width, height, red_light, white_light);
+        //testNumberRays_antiAliasing_cube(16, red_light, 4, 4, accuracy, ambient_light, anti_aliasing_depth);
+        //testRayDistance(width, height, red_light, white_light);
+#endif
         
         for(int x = 0; x < width; x++)
         {
@@ -766,29 +958,18 @@ int main(int argc, char *argv[])
                         vector<double> intersections;
                         
                         //LOOP THROUGH OBJECTS IN SCENE, FIND INTERSECTION WITH CAMERA RAY, PUSH VALUE INTO INTERSECTIONS ARRAY
-                        for(int index = 0; index < scene_shapes.size(); index++)
+                        for(int index = 0; index < scene_triangles.size(); index++)
                         {
-                            intersections.push_back(scene_shapes.at(index)->findIntersection(camera_ray));
+                            intersections.push_back(scene_triangles.at(index)->findIntersection(camera_ray));
                             debug("intersections: %d", intersections[index]);
                         }
                         
                         int index_of_closest_shape = closestShapeIndex(intersections);
                         debug("index_of_closest_shape: %d", index_of_closest_shape);
                         
-                        //cout << "intersection[" << x << "][" << y << "]: " << index_of_closest_shape << endl;
-                        
-                        //FIX: make this only enabled when doing testing
-                        //Test that color changes
-                        /*pixels[current_pixel].r = 23;
-                         pixels[current_pixel].g = 250;
-                         pixels[current_pixel].b = 50;*/
-                        
                         if(index_of_closest_shape == -1)
                         {
                             //SET BACKGROUND OF IMAGE
-                            /*pixels[current_pixel].r = 0;
-                            pixels[current_pixel].g = 0;
-                            pixels[current_pixel].b = 0;*/
                             tempRed[anti_aliasing_index] = 0;
                             tempGreen[anti_aliasing_index] = 0;
                             tempBlue[anti_aliasing_index] = 0;
@@ -800,6 +981,7 @@ int main(int argc, char *argv[])
                             if(intersections.at(index_of_closest_shape) > accuracy)
                             {
                                 debug("intersections[%d] > accuracy", intersections.at(index_of_closest_shape));
+                                
                                 //DETERMINE POSITION AND DIRECTION VECTORS AT POINT OF INTERSECTION
                                 Vect intersection_ray_position = camera_ray_origin.vectAdd(camera_ray_direction.vectMult(intersections.at(index_of_closest_shape)));
                                 
@@ -807,11 +989,8 @@ int main(int argc, char *argv[])
                                 
                                 if(shadowed == true)
                                 {
-                                    Color intersection_color = getColorAt(intersection_ray_position, intersection_ray_direction, scene_shapes, index_of_closest_shape, scene_lights, accuracy, ambient_light, shadowed);
+                                    Color intersection_color = getColorAt(intersection_ray_position, intersection_ray_direction, scene_triangles, index_of_closest_shape, scene_lights, accuracy, ambient_light, shadowed);
                                     
-                                    //pixels[current_pixel].r = intersection_color.getColorRed();
-                                    //pixels[current_pixel].g = intersection_color.getColorGreen();
-                                    //pixels[current_pixel].b = intersection_color.getColorBlue();
                                     tempRed[anti_aliasing_index] = intersection_color.getColorRed();
                                     tempGreen[anti_aliasing_index] = intersection_color.getColorGreen();
                                     tempBlue[anti_aliasing_index] = intersection_color.getColorBlue();
@@ -819,11 +998,8 @@ int main(int argc, char *argv[])
                                 }
                                 else
                                 {
-                                    Color current_color = scene_shapes.at(index_of_closest_shape)->getColor();
+                                    Color current_color = scene_triangles.at(index_of_closest_shape)->getColor();
                                     
-                                    //pixels[current_pixel].r = current_color.getColorRed();
-                                    //pixels[current_pixel].g = current_color.getColorGreen();
-                                    //pixels[current_pixel].b = current_color.getColorBlue();
                                     tempRed[anti_aliasing_index] = current_color.getColorRed();
                                     tempGreen[anti_aliasing_index] = current_color.getColorGreen();
                                     tempBlue[anti_aliasing_index] = current_color.getColorBlue();
@@ -873,14 +1049,17 @@ int main(int argc, char *argv[])
         string output_file_name = output_string.str();
         
         cout << "output_file: " << output_file_name << endl;
-        
+//#ifdef RUN_TESTS
         writePPFDFile(output_file_name, area_total, PPFD_total, num);
+//#endif
         
         testing_timestep++;
         
     }//END TIMESTEP
-    
+
+#ifdef RUN_TESTS
     testNumberTimesteps(startHour, endHour, interval, testing_timestep);
+#endif
     
     delete[] pixels;
     
@@ -896,9 +1075,9 @@ int main(int argc, char *argv[])
     saveTimers(filename);
     
     debug("end totalTimer");
-    
+
     cout << "EXIT SUCCESSFUL" << endl;
     return 0;
-}
+} //end of main()
 
 

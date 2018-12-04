@@ -18,7 +18,7 @@ private:
     Reader(string file_name) : name(file_name) {};
 };
 
-void readGeometryFilePLY(string geometry_file_name, vector<float>& x_main, vector<float>& y_main, vector<float>& z_main, vector<float>& red_main, vector<float>& green_main, vector<float>& blue_main, vector<float>& num_vertices_to_connect_main, vector<float>& vertex1_main, vector<float>& vertex2_main, vector<float>& vertex3_main, float& min_x, float& max_x, float& min_y, float& max_y, float& min_z, float& max_z, int& num_element_vertex)
+void readGeometryFilePLY(string geometry_file_name, vector<float>& x_main, vector<float>& y_main, vector<float>& z_main, vector<float>& red_main, vector<float>& green_main, vector<float>& blue_main, vector<float>& num_vertices_to_connect_main, vector<float>& vertex1_main, vector<float>& vertex2_main, vector<float>& vertex3_main, float& min_x, float& max_x, float& min_y, float& max_y, float& min_z, float& max_z, int& num_element_vertex, int& num_element_face)
 {
     /*
      *  Read through header -> set vertices to number of vertices
@@ -115,6 +115,7 @@ void readGeometryFilePLY(string geometry_file_name, vector<float>& x_main, vecto
                 
                 num_lines_triangles = std::atoi(tokens[tokens_size - 1].c_str());
                 cout << "num_lines_triangles: " << num_lines_triangles << endl;
+                num_element_face = num_lines_triangles;
             }
             lines_in_header++;
         }

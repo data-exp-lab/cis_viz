@@ -26,11 +26,19 @@ public:
     
     void climate_calculation_PPFD(double latitude, double solarTimeNoon, double atmosphericTransmittance, vector<float> day, double startHour, double endHour, double hourInterval, Parameters ip, Constants cs);
     
+    //TESTING VALIDITY OF PPFD CALCUATIONS --> SIMPLEST FORM
+    void calculate_PPFD(double startHour, double endHour, double hourInterval, Constants cs);
+    
     //FIX: Need these later?
     //void climate_calculation_TAIR(double latitude, double solarTimeNoon, double atmosphericTransmittance, vector<float> day, double startHour, double endHour, double hourInterval, Parameters ip, Constants cs);
     //void directlyInput(Parameters ip, Constants cs);
 
 };
+
+void Climate::calculate_PPFD(double startHour, double endHour, double hourInterval, Constants cs)
+{
+    
+}
 
 void Climate::climate_calculation_PPFD(double latitude, double solarTimeNoon, double atmosphericTransmittance, vector<float> day, double startHour, double endHour, double hourInterval, Parameters ip, Constants cs)
 {
@@ -102,7 +110,7 @@ void Climate::climate_calculation_PPFD(double latitude, double solarTimeNoon, do
             double PPFD2 = 0;
             
             ppfd_direct_light.push_back(PPFD1);
-            ppfd_diffuse_light.push_back(PPFD2);
+            //ppfd_diffuse_light.push_back(PPFD2);
         }
         
     }
