@@ -43,6 +43,8 @@
 
 #include "climate.hpp"
 
+#include "gperftools/profiler.h"
+
 
 
 using namespace std;
@@ -310,6 +312,9 @@ int current_pixel;
 
 int main(int argc, char *argv[])
 {
+    ProfilerStart("/Users/Colleen/gperftools_out/dump.txt");
+    
+    
     clock_t total_time_begin;
     clock_t total_time_end;
     
@@ -1121,6 +1126,9 @@ int main(int argc, char *argv[])
     //SAVE TIMINGS TO FILE
     const char *filename = "timing.txt";
     saveTimers(filename);
+    
+    ProfilerFlush();
+    ProfilerStop();
     
     debug("end totalTimer");
 
