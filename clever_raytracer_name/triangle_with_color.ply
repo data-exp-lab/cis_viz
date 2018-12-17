@@ -1,0 +1,19 @@
+ply
+format ascii 1.0
+comment created by MATLAB ply_write
+element vertex 5
+property float x
+property float y
+property float z
+property uchar_t diffuse_red
+property uchar_t diffuse_green
+property uchar_t diffuse_blue
+element face 1
+property list uchar char vertex_indices
+end_header
+0.000000 0.000000 0.000000 255 0 0 
+1.000000 0.000000 0.000000 255 0 0
+1.000000 1.000000 0.000000 65 45 15
+0.000000 1.000000 0.000000 255 0 0
+0.500000 0.500000 1.600000 65 45 15
+3 1 0 3 

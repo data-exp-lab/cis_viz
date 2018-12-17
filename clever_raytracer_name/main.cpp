@@ -5,6 +5,7 @@
 #include <vector>
 #include <cmath>
 #include <limits>
+#include <valarray>
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -462,6 +463,7 @@ int main(int argc, char *argv[])
     double end = endHour + cs.END_MINUTE / 60;
     double interval = intervalHour + cs.INTERVAL_MINUTE / 60;
     
+    //FIX: DOUBLE CHECK IF WE NEED THESE OR NOT
     int leafID = 1;
     double CLAI = 0.1;
     double PPFD = 1000;
@@ -489,7 +491,7 @@ int main(int argc, char *argv[])
     Vect Y(0, 1, 0);
     Vect Z(0, 0, 1);
     //3, 1.5, -12
-    Vect camera_position(0, 0, 3);
+    Vect camera_position(0, 0, -5);
     //Vect camera_position(0, 75, 50);
     Vect lookAt(0, 0, 0);
     Vect difference_between(camera_position.getVectX() - lookAt.getVectX(), camera_position.getVectY() - lookAt.getVectY(), camera_position.getVectZ() - lookAt.getVectZ());
@@ -511,7 +513,7 @@ int main(int argc, char *argv[])
     Color purple_light(.5, 0.0, .5, 0);
     
     //FIX: Calculate position of sun, becomes new light
-    Vect light_position(0, 0, 3);
+    Vect light_position(0, 0, -5);
     //Vect light_position(0, 75, 50);
     //Vect light_position(-7, 10, -10);
     Light scene_light1(light_position, white_light);
@@ -600,13 +602,19 @@ int main(int argc, char *argv[])
     float point3_red;
     float point3_green;
     float point3_blue;
+    
+    double triangle_area;
+    double area_factor;
+    vector<double> triangle_areas;
    
     if(PLY == true)
     {
 #ifdef RUN_TESTS
         testNumberTriangles(num_element_vertex, size_of_x_main);
 #endif
+        //setupTrianglesPLY(ref(scene_triangles), num_element_face, num_vertices, vertex1_index, vertex2_index, vertex3_index, point1, point2, point3, point1_x_coord, point1_y_coord, point1_z_coord, point2_x_coord, point2_y_coord, point2_z_coord, point3_x_coord, point3_y_coord, point3_z_coord, triangle_color, point1_color, point2_color, point3_color, tri_red_average, tri_green_average, tri_blue_average, point1_red, point1_green, point1_blue, point2_red, point2_green, point2_blue, point3_red, point3_green, point3_blue, red(num_vertices_to_connect_main), ref(x_main), ref(y_main), ref(z_main), ref(red_main), ref(green_main), ref(blue_main), ref(vertex1_main), ref(vertex2_main), ref(vertex3_main));
         for(int i = 0; i < num_element_face; i++)
+        //for(int i = 1; i < 2; i++)
         {
             cout << "TRIANGLE " << i << endl;
             debug("TRIANGLE %d", i);
@@ -782,6 +790,10 @@ int main(int argc, char *argv[])
                 triangle_color.setColorGreen(tri_green_average);
                 triangle_color.setColorBlue(tri_blue_average);
                 
+                triangle_area = ((point2 - point1) ^ (point3 - point1)).length() * 0.5;
+                debug("triangle_area: %d", triangle_area);
+                triangle_areas.push_back(triangle_area);
+                
                 scene_triangles.push_back(new Triangle(point1, point2, point3, triangle_color));
                 
             } //end of if (num_vertices == 3)
@@ -813,12 +825,27 @@ int main(int argc, char *argv[])
     debug("Number of shapes in scene: %d", scene_triangles.size());
  
     //CALCULATE PPFD FROM ATMOSPHERIC TRANSMITTANCE
-    climate.climate_calculation_PPFD(cs.LATITUDE, stn, cs.ATMOSPHERIC_TRANSMITTANCE, DOY_main, start, end, interval, ps, cs);
+    //climate.climate_calculation_PPFD(cs.LATITUDE, stn, cs.ATMOSPHERIC_TRANSMITTANCE, DOY_main, start, end, interval, ps, cs);
     
     vector<double> area_total;
-    vector<double> PPFD_total;
+    vector<double> PPFD_totals;
+    
+    for(int i = 0; i < triangle_areas.size(); i++)
+    {
+        debug("triangle_area[%d]: %d", i, triangle_area[i]);
+    }
+    
+    double area_factor_temp;
+    vector<double> area_factors;
+    //CALCULATE AREA_FACTOR TO CALCULATE PPFD LATER
+    for(int i = 0; i < triangle_areas.size(); i++)
+    {
+        area_factor_temp =  1 / (triangle_areas[i] * 1e-4);
+        area_factors.push_back(area_factor_temp);
+    }
     
     int testing_timestep = 0;
+    double individual_ppfd = 0;
 
     //RETURN COLOR PER PIXEL
     for(int timestep = 0; timestep < num; timestep++)
@@ -830,20 +857,19 @@ int main(int argc, char *argv[])
         cout << "hour = " << hour << endl;
         debug("hour: %d", hour);
         
-        area_total.clear();
-        PPFD_total.clear();
+        //area_total.clear();
+        //PPFD_total.clear();
+        //double light_d_x = climate.direct_light_d_list[timestep].x;
+        //double light_d_y = climate.direct_light_d_list[timestep].y;
+        //double light_d_z = climate.direct_light_d_list[timestep].z;
         
-        double light_d_x = climate.direct_light_d_list[timestep].x;
-        double light_d_y = climate.direct_light_d_list[timestep].y;
-        double light_d_z = climate.direct_light_d_list[timestep].z;
-        
-        double direct_light_ppfd = climate.ppfd_direct_light[timestep];
+        //double direct_light_ppfd = climate.ppfd_direct_light[timestep];
         //FIX: MAKE DIFFUSE STUFF WORK
         //double diffuse_light_ppfd = climate.ppfd_diffuse_light[timestep];
         
-        double dir_pf = direct_light_ppfd * 1e-4; //ADD IN LIGHT_NEAREST_DISTANCE
+        //double dir_pf = direct_light_ppfd * 1e-4; //ADD IN LIGHT_NEAREST_DISTANCE
         //double dif_pf = diffuse_light_ppfd * 1e-4; //ADD IN LIGHT_NEAREST_DISTANCE
-        
+
         //TRIANGLES ARE IN SCENE_SHAPES ALREADY
         /*vector<Shape*>::iterator it;
         for(it = scene_shapes.begin(); it != scene_shapes.end(); it++)
@@ -873,6 +899,8 @@ int main(int argc, char *argv[])
             //area_total.push_back(triangle_area);
             //PPFD_total.push_back(PPFD_tot);
         }*/
+        valarray<float> PPFD_dir_light_per_triangle(0., width * height);
+        int test_for_greater_than_minus_1 = 0;
         
         int anti_aliasing_index;
         double tempRed;
@@ -885,7 +913,6 @@ int main(int argc, char *argv[])
         //testNumberRays_antiAliasing_cube(16, red_light, 4, 4, accuracy, ambient_light, anti_aliasing_depth);
         //testRayDistance(width, height, red_light, white_light);
 #endif
-        
         for(int x = 0; x < width; x++)
         {
             for(int y = 0; y < height; y++)
@@ -962,6 +989,11 @@ int main(int argc, char *argv[])
                         {
                             intersections.push_back(scene_triangles.at(index)->findIntersection(camera_ray));
                             debug("intersections: %d", intersections[index]);
+                            //cout << "intersections[" << current_pixel << "]: " << intersections[index] << endl;
+                            if(intersections[index] > -1)
+                            {
+                                test_for_greater_than_minus_1++;
+                            }
                         }
                         
                         int index_of_closest_shape = closestShapeIndex(intersections);
@@ -974,12 +1006,14 @@ int main(int argc, char *argv[])
                             tempGreen[anti_aliasing_index] = 0;
                             tempBlue[anti_aliasing_index] = 0;
                             debug("Set pixels[%d] to black", pixels[current_pixel]);
+                            PPFD_dir_light_per_triangle[current_pixel] = 0.;
                         }
                         else
                         {
                             //INDEX CORRESPONDS TO SHAPE IN SCENE
                             if(intersections.at(index_of_closest_shape) > accuracy)
                             {
+                                climate.calculate_PPFD_direct_light(current_pixel, ref(PPFD_dir_light_per_triangle), cs, ref(individual_ppfd));
                                 debug("intersections[%d] > accuracy", intersections.at(index_of_closest_shape));
                                 
                                 //DETERMINE POSITION AND DIRECTION VECTORS AT POINT OF INTERSECTION
@@ -1039,20 +1073,34 @@ int main(int argc, char *argv[])
             }
         }
         
+        cout << "PPFD_dir_light_per_triangle SUM: " << PPFD_dir_light_per_triangle.sum() << endl;
+        cout << "test_for_greater_than_minus_1: " << test_for_greater_than_minus_1 << endl;
+        
+        //FIX: make dynamic for more than one triangle and PPFD
+        area_factor = 1 / (triangle_areas[1] * 1e-4);
+        double PPFD_total = PPFD_dir_light_per_triangle.sum() * area_factor;
+        PPFD_totals.push_back(individual_ppfd);
+        //for(int i = 0; i < PPFD_dir_light_per_triangle.size(); i++)
+        //{
+        //    cout << "PPFD_dir_light_per_triangle[" << i << "]: " << PPFD_dir_light_per_triangle[i] << endl;
+        //}
+        for(int i = 0; i < PPFD_totals.size(); i++)
+        {
+            cout << "PPFD_totals[" << i << "]: " << PPFD_totals[i] << endl;
+        }
+        
         savebmp("test.bmp", width, height, dpi, pixels);
         debug("saved image");
         
         //OUTPUT FILE
         //FIX: IF CLA OUTPUT FILE NAME HAS FILE EXTENSION, REMOVE IT
-        std::ostringstream output_string;
+        /*std::ostringstream output_string;
         output_string<<cla.outputFile<<"_"<<hour<<"_hour"<<fileType;
         string output_file_name = output_string.str();
         
         cout << "output_file: " << output_file_name << endl;
-//#ifdef RUN_TESTS
-        writePPFDFile(output_file_name, area_total, PPFD_total, num);
-//#endif
-        
+        writePPFDFile(output_file_name, triangle_areas, PPFD_totals, num);
+        */
         testing_timestep++;
         
     }//END TIMESTEP

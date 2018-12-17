@@ -9,6 +9,7 @@
 #include "climate.hpp"
 #include "equations.hpp"
 #include "normal.hpp"
+#include "debug.hpp"
 
 #include <vector>
 
@@ -65,6 +66,187 @@ public:
     Triangle(const Vect& A, const Vect& B, const Vect& C, const int leafID, const double leafL, const double position, const double CLAI1, const double KT, double KR, const double nitrogenPerArea, double startHour, double endHour, double hourInterval);
     
     Triangle(const Vect A, const Vect B, const Vect C, const int leafID, const double leafL, const double position, const double CLAI1, const double KT, double KR, const double nitrogenPerArea, double startHour, double endHour, double hourInterval, Color color);
+    
+    /*setupTrianglesPLY(vector<Triangle*>& scene_triangles, int num_element_face, int num_vertices, int vertex1_index, int vertex2_index, int vertex3_index, Vect point1, Vect point2, Vect point3, float point1_x_coord, float point1_y_coord, float point1_z_coord, float point2_x_coord, float point2_y_coord, float point2_z_coord, float point3_x_coord, float point3_y_coord, float point3_z_coord, Color triangle_color, Color point1_color, Color point2_color, Color point3_color, double tri_red_average, double tri_green_average, double tri_blue_average, float point1_red, float point1_green, float point1_blue, float point2_red, float point2_green, float point2_blue, float point3_red, float point3_green, float point3_blue, vector<float>& num_vertices_to_connect_main, vector<float>& x_main, vector<float>& y_main, vector<float>& z_main, vector<float>& red_main, vector<float>& green_main, vector<float>& blue_main, vector<float>& vertex1_main, vector<float>& vertex2_main, vector<float>& vertex3_main)
+    {
+        for(int i = 0; i < num_element_face; i++)
+        {
+            cout << "TRIANGLE " << i << endl;
+            debug("TRIANGLE %d", i);
+            
+            num_vertices = num_vertices_to_connect_main[i];
+            if(num_vertices == 3)
+            {
+                vertex1_index = vertex1_main[i];
+                vertex2_index = vertex2_main[i];
+                vertex3_index = vertex3_main[i];
+                cout << "vertex1_index: " << vertex1_index << endl;
+                cout << "vertex2_index: " << vertex2_index << endl;
+                cout << "vertex3_index: " << vertex3_index << endl;
+                debug("vertex1_index: %d", vertex1_index);
+                debug("vertex2_index: %d", vertex2_index);
+                debug("vertex3_index: %d", vertex3_index);
+                
+                point1_x_coord = x_main[vertex1_index];
+                point1_y_coord = y_main[vertex1_index];
+                point1_z_coord = z_main[vertex1_index];
+                cout << "x_main[vertex1_index]: " << x_main[vertex1_index] << endl;
+                cout << "y_main[vertex1_index]: " << y_main[vertex1_index] << endl;
+                cout << "z_main[vertex1_index]: " << z_main[vertex1_index] << endl;
+                debug("x_main[vertex1_index]: %d", x_main[vertex1_index]);
+                debug("y_main[vertex1_index]: %d", y_main[vertex1_index]);
+                debug("z_main[vertex1_index]: %d", z_main[vertex1_index]);
+                point1.setVectX(point1_x_coord);
+                point1.setVectY(point1_y_coord);
+                point1.setVectZ(point1_z_coord);
+                cout << "point1.setVectX(): " << point1.getVectX() << endl;
+                cout << "point1.setVectY(): " << point1.getVectY() << endl;
+                cout << "point1.setVectZ(): " << point1.getVectZ() << endl;
+                debug("point1.setVectX(): %d", point1.getVectX());
+                debug("point1.setVectY(): %d", point1.getVectY());
+                debug("point1.setVectZ(): %d", point1.getVectZ());
+                
+                point2_x_coord = x_main[vertex2_index];
+                point2_y_coord = y_main[vertex2_index];
+                point2_z_coord = z_main[vertex2_index];
+                cout << "x_main[vertex2_index]: " << x_main[vertex2_index] << endl;
+                cout << "y_main[vertex2_index]: " << y_main[vertex2_index] << endl;
+                cout << "z_main[vertex2_index]: " << z_main[vertex2_index] << endl;
+                debug("x_main[vertex2_index]: %d", x_main[vertex2_index]);
+                debug("y_main[vertex2_index]: %d", y_main[vertex2_index]);
+                debug("z_main[vertex2_index]: %d", z_main[vertex2_index]);
+                point2.setVectX(point2_x_coord);
+                point2.setVectY(point2_y_coord);
+                point2.setVectZ(point2_z_coord);
+                cout << "point2.setVectX(): " << point2.getVectX() << endl;
+                cout << "point2.setVectY(): " << point2.getVectY() << endl;
+                cout << "point2.setVectZ(): " << point2.getVectZ() << endl;
+                debug("point2.setVectX(): %d", point2.getVectX());
+                debug("point2.setVectY(): %d", point2.getVectY());
+                debug("point2.setVectZ(): %d", point2.getVectZ());
+                
+                point3_x_coord = x_main[vertex3_index];
+                point3_y_coord = y_main[vertex3_index];
+                point3_z_coord = z_main[vertex3_index];
+                cout << "x_main[vertex3_main[vertex3_index]]: " << x_main[vertex3_index] << endl;
+                cout << "y_main[vertex3_main[vertex3_index]]: " << y_main[vertex3_index] << endl;
+                cout << "z_main[vertex3_main[vertex3_index]]: " << z_main[vertex3_index] << endl;
+                debug("x_main[vertex3_index]: %d", x_main[vertex3_index]);
+                debug("y_main[vertex3_index]: %d", y_main[vertex3_index]);
+                debug("z_main[vertex3_index]: %d", z_main[vertex3_index]);
+                point3.setVectX(point3_x_coord);
+                point3.setVectY(point3_y_coord);
+                point3.setVectZ(point3_z_coord);
+                cout << "point3.setVectX(): " << point3.getVectX() << endl;
+                cout << "point3.setVectY(): " << point3.getVectY() << endl;
+                cout << "point3.setVectZ(): " << point3.getVectZ() << endl;
+                debug("point3.setVectX(): %d", point3.getVectX());
+                debug("point3.setVectY(): %d", point3.getVectY());
+                debug("point3.setVectZ(): %d", point3.getVectZ());
+                
+                //IF R/G/B ARE OUT OF 255, CONVERT TO OUT OF 1
+                if(red_main[vertex1_index] > 1.0)
+                {
+                    point1_red = red_main[vertex1_index] / 256;
+                }
+                else
+                {
+                    point1_red = red_main[vertex1_index];
+                }
+                
+                if(green_main[vertex1_index] > 1.0)
+                {
+                    point1_green = green_main[vertex1_index] / 256;
+                }
+                else
+                {
+                    point1_green = green_main[vertex1_index];
+                }
+                
+                if(blue_main[vertex1_index] > 1.0)
+                {
+                    point1_blue = blue_main[vertex1_index] / 256;
+                }
+                else
+                {
+                    point1_blue = blue_main[vertex1_index];
+                }
+                
+                if(red_main[vertex2_index] > 1.0)
+                {
+                    point2_red = red_main[vertex2_index] / 256;
+                }
+                else
+                {
+                    point2_red = red_main[vertex2_index];
+                }
+                
+                if(green_main[vertex2_index] > 1.0)
+                {
+                    point2_green = green_main[vertex2_index] / 256;
+                }
+                else
+                {
+                    point2_green = green_main[vertex2_index];
+                }
+                
+                if(blue_main[vertex2_index] > 1.0)
+                {
+                    point2_blue = blue_main[vertex2_index] / 256;
+                }
+                else
+                {
+                    point2_blue = blue_main[vertex2_index];
+                }
+                
+                if(red_main[vertex3_index] > 1.0)
+                {
+                    point3_red = red_main[vertex3_index] / 256;
+                }
+                else
+                {
+                    point3_red = red_main[vertex3_index];
+                }
+                
+                if(green_main[vertex3_index] > 1.0)
+                {
+                    point3_green = green_main[vertex3_index] / 256;
+                }
+                else
+                {
+                    point3_green = green_main[vertex3_index];
+                }
+                
+                if(blue_main[vertex3_index] > 1.0)
+                {
+                    point3_blue = blue_main[vertex3_index] / 256;
+                }
+                else
+                {
+                    point3_blue = blue_main[vertex3_index];
+                }
+                
+                //COLOR
+                point1_color.setColorRed(point1_red);
+                point1_color.setColorGreen(point1_green);
+                point1_color.setColorBlue(point1_blue);
+                point2_color.setColorRed(point2_red);
+                point2_color.setColorGreen(point2_green);
+                point2_color.setColorBlue(point2_blue);
+                point3_color.setColorRed(point3_red);
+                point3_color.setColorGreen(point3_green);
+                point3_color.setColorBlue(point3_blue);
+                
+                tri_red_average = (point1_color.getColorRed() + point2_color.getColorRed() + point3_color.getColorRed()) / 3;
+                tri_green_average = (point1_color.getColorGreen() + point2_color.getColorGreen() + point3_color.getColorGreen()) / 3;
+                tri_blue_average = (point1_color.getColorBlue() + point2_color.getColorBlue() + point3_color.getColorBlue()) / 3;
+                
+                triangle_color.setColorRed(tri_red_average);
+                triangle_color.setColorGreen(tri_green_average);
+                triangle_color.setColorBlue(tri_blue_average);
+                
+                scene_triangles.push_back(new Triangle(point1, point2, point3, triangle_color));
+    }*/
     
     void setPoint1(Vect point1)
     {

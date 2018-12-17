@@ -7,6 +7,9 @@
 #include "constants.hpp"
 #include "parameters.hpp"
 
+#include "math.h"
+#include <valarray>
+
 using namespace std;
 
 class Climate
@@ -29,6 +32,8 @@ public:
     //TESTING VALIDITY OF PPFD CALCUATIONS --> SIMPLEST FORM
     void calculate_PPFD(double startHour, double endHour, double hourInterval, Constants cs);
     
+    void calculate_PPFD_direct_light(int current_pixel, valarray<float>& PPFD_dir_light_per_triangle, Constants cs, double& individual_PPFD);
+    
     //FIX: Need these later?
     //void climate_calculation_TAIR(double latitude, double solarTimeNoon, double atmosphericTransmittance, vector<float> day, double startHour, double endHour, double hourInterval, Parameters ip, Constants cs);
     //void directlyInput(Parameters ip, Constants cs);
@@ -37,6 +42,61 @@ public:
 
 void Climate::calculate_PPFD(double startHour, double endHour, double hourInterval, Constants cs)
 {
+    
+}
+
+void Climate::calculate_PPFD_direct_light(int current_pixel, valarray<float>& PPFD_dir_light_per_triangle, Constants cs, double& individual_PPFD)
+{
+    //ITERATION 1: set to 1.0
+    //PPFD_dir_light_per_triangle[current_pixel] = 1.0;
+    
+    //FIX: Currently hard coded; need to make it variable
+    int day = 180;
+    
+    //FIX: Hard code to noon
+    double hour = 12;
+    double solarTimeNoon = 12;
+    double latitude = 40.6;
+    //TIME ANGLE
+    double h = 15 * (hour - solarTimeNoon) / 180 * cs.PI;
+    
+    double derta = -23.45 * cos(2 * cs.PI * (day + 10) / 365) / 180 * cs.PI;
+    double phi = latitude / 180 * cs.PI;
+    double thetas = asin((cos(h) * cos(derta) * cos(phi) + sin(derta) * sin(phi)));
+    
+    double temp = (float)(sin(derta) * cos(phi) - cos(h) * cos(derta) * sin(phi)) / cos(thetas);
+    
+    double phys;
+    if(temp >= 1)
+    {
+        phys = 0;
+    }
+    else
+    {
+        if(temp < -1)
+        {
+            temp = -1;
+        }
+    }
+    
+    if(h > 0)
+    {
+        phys = -phys;
+    }
+    
+    double elevationAngle = thetas;
+    double azimuthAngle = phys;
+    
+    //FIX: double check there isn't a stack issue here like with the triangles
+    Vect v;
+    v.x = cos(elevationAngle) * cos(azimuthAngle);
+    v.y = cos(elevationAngle) * sin(azimuthAngle);
+    v.z = -sin(elevationAngle);
+    
+    double ppfd = cs.kSOLAR_constant * pow(1., 1 / sin(elevationAngle)) * sin(elevationAngle);
+    
+    PPFD_dir_light_per_triangle[current_pixel] = ppfd;
+    individual_PPFD = ppfd;
     
 }
 
