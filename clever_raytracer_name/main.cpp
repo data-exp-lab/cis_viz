@@ -1132,6 +1132,9 @@ int main(int argc, char *argv[])
     
     debug("end totalTimer");
 
+    cout << "TOTAL HITS:   " << Triangle::hits << endl;
+    cout << "TOTAL MISSES: " << Triangle::misses << endl;
+
     cout << "EXIT SUCCESSFUL" << endl;
     return 0;
 } //end of main()

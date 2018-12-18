@@ -56,6 +56,9 @@ public:
     double nitrogenPerA;
     
     vector<double> a;
+
+    static long long misses;
+    static long long hits;
     
     Triangle();
     
@@ -353,6 +356,7 @@ public:
         if(a == 0)
         {
             //RAY PARALLEL TO TRIANGLE
+            //this->misses++;
             return -1;
         }
         else
@@ -385,11 +389,13 @@ public:
             if((test_CA >= 0) && (test_BC >= 0) && (test_AB >= 0))
             {
                 //INSIDE OF TRIANGLE
+                this->hits++;
                 return -1 * b / a;
             }
             else
             {
                 //MISSED TRIANGLE
+                this->misses++;
                 return -1;
             }
         }
@@ -521,5 +527,8 @@ Triangle::Triangle(const Vect A, const Vect B, const Vect C, const int leafID, c
     kLeafReflectance = KR;
 }
 
+
+long long Triangle::misses = 0;
+long long Triangle::hits = 0;
 
 #endif
