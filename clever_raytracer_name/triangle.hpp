@@ -5,11 +5,13 @@
 #include "vect.hpp"
 #include "color.hpp"
 #include "ray.hpp"
+#include "bbox.hpp"
 
 #include "climate.hpp"
 #include "equations.hpp"
 #include "normal.hpp"
 #include "debug.hpp"
+
 
 #include <vector>
 
@@ -56,9 +58,11 @@ public:
     double nitrogenPerA;
     
     vector<double> a;
-
-    static long long misses;
-    static long long hits;
+    
+    static long long triangle_misses;
+    static long long triangle_hits;
+    static long long bbox_hits;
+    static long long bbox_misses;
     
     Triangle();
     
@@ -69,6 +73,8 @@ public:
     Triangle(const Vect& A, const Vect& B, const Vect& C, const int leafID, const double leafL, const double position, const double CLAI1, const double KT, double KR, const double nitrogenPerArea, double startHour, double endHour, double hourInterval);
     
     Triangle(const Vect A, const Vect B, const Vect C, const int leafID, const double leafL, const double position, const double CLAI1, const double KT, double KR, const double nitrogenPerArea, double startHour, double endHour, double hourInterval, Color color);
+    
+    BBox getBoundingBox(void);
     
     /*setupTrianglesPLY(vector<Triangle*>& scene_triangles, int num_element_face, int num_vertices, int vertex1_index, int vertex2_index, int vertex3_index, Vect point1, Vect point2, Vect point3, float point1_x_coord, float point1_y_coord, float point1_z_coord, float point2_x_coord, float point2_y_coord, float point2_z_coord, float point3_x_coord, float point3_y_coord, float point3_z_coord, Color triangle_color, Color point1_color, Color point2_color, Color point3_color, double tri_red_average, double tri_green_average, double tri_blue_average, float point1_red, float point1_green, float point1_blue, float point2_red, float point2_green, float point2_blue, float point3_red, float point3_green, float point3_blue, vector<float>& num_vertices_to_connect_main, vector<float>& x_main, vector<float>& y_main, vector<float>& z_main, vector<float>& red_main, vector<float>& green_main, vector<float>& blue_main, vector<float>& vertex1_main, vector<float>& vertex2_main, vector<float>& vertex3_main)
     {
@@ -86,9 +92,6 @@ public:
                 cout << "vertex1_index: " << vertex1_index << endl;
                 cout << "vertex2_index: " << vertex2_index << endl;
                 cout << "vertex3_index: " << vertex3_index << endl;
-                debug("vertex1_index: %d", vertex1_index);
-                debug("vertex2_index: %d", vertex2_index);
-                debug("vertex3_index: %d", vertex3_index);
                 
                 point1_x_coord = x_main[vertex1_index];
                 point1_y_coord = y_main[vertex1_index];
@@ -96,18 +99,12 @@ public:
                 cout << "x_main[vertex1_index]: " << x_main[vertex1_index] << endl;
                 cout << "y_main[vertex1_index]: " << y_main[vertex1_index] << endl;
                 cout << "z_main[vertex1_index]: " << z_main[vertex1_index] << endl;
-                debug("x_main[vertex1_index]: %d", x_main[vertex1_index]);
-                debug("y_main[vertex1_index]: %d", y_main[vertex1_index]);
-                debug("z_main[vertex1_index]: %d", z_main[vertex1_index]);
                 point1.setVectX(point1_x_coord);
                 point1.setVectY(point1_y_coord);
                 point1.setVectZ(point1_z_coord);
                 cout << "point1.setVectX(): " << point1.getVectX() << endl;
                 cout << "point1.setVectY(): " << point1.getVectY() << endl;
                 cout << "point1.setVectZ(): " << point1.getVectZ() << endl;
-                debug("point1.setVectX(): %d", point1.getVectX());
-                debug("point1.setVectY(): %d", point1.getVectY());
-                debug("point1.setVectZ(): %d", point1.getVectZ());
                 
                 point2_x_coord = x_main[vertex2_index];
                 point2_y_coord = y_main[vertex2_index];
@@ -115,18 +112,12 @@ public:
                 cout << "x_main[vertex2_index]: " << x_main[vertex2_index] << endl;
                 cout << "y_main[vertex2_index]: " << y_main[vertex2_index] << endl;
                 cout << "z_main[vertex2_index]: " << z_main[vertex2_index] << endl;
-                debug("x_main[vertex2_index]: %d", x_main[vertex2_index]);
-                debug("y_main[vertex2_index]: %d", y_main[vertex2_index]);
-                debug("z_main[vertex2_index]: %d", z_main[vertex2_index]);
                 point2.setVectX(point2_x_coord);
                 point2.setVectY(point2_y_coord);
                 point2.setVectZ(point2_z_coord);
                 cout << "point2.setVectX(): " << point2.getVectX() << endl;
                 cout << "point2.setVectY(): " << point2.getVectY() << endl;
                 cout << "point2.setVectZ(): " << point2.getVectZ() << endl;
-                debug("point2.setVectX(): %d", point2.getVectX());
-                debug("point2.setVectY(): %d", point2.getVectY());
-                debug("point2.setVectZ(): %d", point2.getVectZ());
                 
                 point3_x_coord = x_main[vertex3_index];
                 point3_y_coord = y_main[vertex3_index];
@@ -134,18 +125,12 @@ public:
                 cout << "x_main[vertex3_main[vertex3_index]]: " << x_main[vertex3_index] << endl;
                 cout << "y_main[vertex3_main[vertex3_index]]: " << y_main[vertex3_index] << endl;
                 cout << "z_main[vertex3_main[vertex3_index]]: " << z_main[vertex3_index] << endl;
-                debug("x_main[vertex3_index]: %d", x_main[vertex3_index]);
-                debug("y_main[vertex3_index]: %d", y_main[vertex3_index]);
-                debug("z_main[vertex3_index]: %d", z_main[vertex3_index]);
                 point3.setVectX(point3_x_coord);
                 point3.setVectY(point3_y_coord);
                 point3.setVectZ(point3_z_coord);
                 cout << "point3.setVectX(): " << point3.getVectX() << endl;
                 cout << "point3.setVectY(): " << point3.getVectY() << endl;
                 cout << "point3.setVectZ(): " << point3.getVectZ() << endl;
-                debug("point3.setVectX(): %d", point3.getVectX());
-                debug("point3.setVectY(): %d", point3.getVectY());
-                debug("point3.setVectZ(): %d", point3.getVectZ());
                 
                 //IF R/G/B ARE OUT OF 255, CONVERT TO OUT OF 1
                 if(red_main[vertex1_index] > 1.0)
@@ -323,9 +308,9 @@ public:
         return normal;
     }
     
-    double getTriangleDistance()
+    double getTriangleDistance(Vect normal)
     {
-        normal = getTriangleNormal();
+        //normal = getTriangleNormal();
         distance = normal.dotProduct(A);
         
         return distance;
@@ -349,14 +334,44 @@ public:
         Vect ray_origin = ray.getRayOrigin();
         
         normal = getTriangleNormal();
-        distance = getTriangleDistance();
+        distance = getTriangleDistance(normal);
+
+        //cout << "ray_direction: " << ray_direction.getVectX() << "  " << ray_direction.getVectY() << "  " << ray_direction.getVectZ() << endl;
+        //cout << "ray_origin: " << ray_origin.getVectX() << "  " << ray_origin.getVectY() << "  " << ray_origin.getVectZ() << endl;
+        
+        //TEST FOR INTERSECTION WITH BBOX
+        //if it doesn't intersect with bbox, terminate
+        //else, continue
+        float t;
+        //BOUNDING BOX SPECIFIC TO EACH TRIANGLE
+        BBox bbox_for_triangle = getBoundingBox();
+
+        /*cout << "bbox_for_triangle minX: " << bbox_for_triangle.getBBoxXMin() << endl;
+        cout << "bbox_for_triangle maxX: " << bbox_for_triangle.getBBoxXMax() << endl;
+        cout << "bbox_for_triangle minY: " << bbox_for_triangle.getBBoxYMin() << endl;
+        cout << "bbox_for_triangle maxY: " << bbox_for_triangle.getBBoxYMax() << endl;
+        cout << "bbox_for_triangle minZ: " << bbox_for_triangle.getBBoxZMin() << endl;
+        cout << "bbox_for_triangle maxZ: " << bbox_for_triangle.getBBoxZMax() << endl;*/
+        
+        if(bbox_for_triangle.intersectBBox(ray, bbox_for_triangle))
+        //if(bbox_for_triangle.insideBBox(A) && bbox_for_triangle.insideBBox(B) && bbox_for_triangle.insideBBox(C))
+        {
+            //std::cout << "TRUE" << std::endl;
+            this->bbox_hits++;
+        }
+        else
+        {
+            //std::cout << "FALSE" << std::endl;
+            this->bbox_misses++;
+            return false;
+        }
         
         double a = ray_direction.dotProduct(normal);
         
         if(a == 0)
         {
             //RAY PARALLEL TO TRIANGLE
-            //this->misses++;
+            this->triangle_misses++;
             return -1;
         }
         else
@@ -375,31 +390,49 @@ public:
             Vect CA(C.getVectX() - A.getVectX(), C.getVectY() - A.getVectY(), C.getVectZ() - A.getVectZ());
             Vect QA(Q.getVectX() - A.getVectX(), Q.getVectY() - A.getVectY(), Q.getVectZ() - A.getVectZ());
             double test_CA = (CA.crossProduct(QA)).dotProduct(normal);
+            if(test_CA < 0)
+            {
+                this->triangle_misses++;
+                return -1;
+            }
             
             //[BC x QC] * n >= 0
             Vect BC(B.getVectX() - C.getVectX(), B.getVectY() - C.getVectY(), B.getVectZ() - C.getVectZ());
             Vect QC(Q.getVectX() - C.getVectX(), Q.getVectY() - C.getVectY(), Q.getVectZ() - C.getVectZ());
             double test_BC = (BC.crossProduct(QC)).dotProduct(normal);
+            if(test_BC < 0)
+            {
+                this->triangle_misses++;
+                return -1;
+            }
             
             //[AB x QB] * n >= 0
             Vect AB(A.getVectX() - B.getVectX(), A.getVectY() - B.getVectY(), A.getVectZ() - B.getVectZ());
             Vect QB(Q.getVectX() - B.getVectX(), Q.getVectY() - B.getVectY(), Q.getVectZ() - B.getVectZ());
             double test_AB = (AB.crossProduct(QB)).dotProduct(normal);
-            
-            if((test_CA >= 0) && (test_BC >= 0) && (test_AB >= 0))
+            if(test_AB < 0)
             {
-                //INSIDE OF TRIANGLE
-                this->hits++;
-                return -1 * b / a;
+                this->triangle_misses++;
+                return -1;
             }
-            else
+            
+            //if((test_CA >= 0) && (test_BC >= 0) && (test_AB >= 0))
+            //{
+                //INSIDE OF TRIANGLE
+                this->triangle_hits++;
+                return distance_to_plane;
+                //return -1 * b / a;
+            //}
+            /*else
             {
                 //MISSED TRIANGLE
                 this->misses++;
                 return -1;
-            }
+            }*/
         }
     }
+    
+    
 };
 
 Triangle::Triangle()
@@ -452,7 +485,7 @@ Triangle::Triangle(const Vect& A, const Vect& B, const Vect& C, const int leafID
     normal = (v1 - v0) ^ (v2 - v0);
     normal.normalize();
     
-    area = ((v1 -v0) ^ (v2 - v0)).length() * 0.5;
+    area = ((v1 - v0) ^ (v2 - v0)).length() * 0.5;
     int num = (int)((endHour - startHour) / hourInterval);
     
     for(int i = 0; i <= num; i++)
@@ -527,8 +560,33 @@ Triangle::Triangle(const Vect A, const Vect B, const Vect C, const int leafID, c
     kLeafReflectance = KR;
 }
 
+//MIGHT NEED TO PASS A, B, AND C AS PARAMETERS
+BBox Triangle::getBoundingBox(void)
+{
+    double delta = 0.0001;
+    //double delta = 0.5;
+    /*cout << "A.x: " << A.x << endl;
+    cout << "A.y: " << A.y << endl;
+    cout << "A.z: " << A.z << endl;
+    cout << "B.x: " << B.x << endl;
+    cout << "B.y: " << B.y << endl;
+    cout << "B.z: " << B.z << endl;
+    cout << "C.x: " << C.x << endl;
+    cout << "C.y: " << C.y << endl;
+    cout << "C.z: " << C.z << endl;
+    */
+    return (BBox(min(min(A.x, B.x), C.x) - delta, max(max(A.x, B.x), C.x) + delta,
+                 min(min(A.y, B.y), C.y) - delta, max(max(A.y, B.y), C.y) + delta,
+                 min(min(A.z, B.z), C.z) - delta, max(max(A.z, B.z), C.z) + delta));
+}
+//FIX: CHECK IN GET_BBOX IN TRIANGLE FOR IF THE RAY STARTS INSIDE OF THE BBOX-->RETURN TRUE IF IT DOES
 
-long long Triangle::misses = 0;
-long long Triangle::hits = 0;
+
+
+long long Triangle::triangle_misses = 0;
+long long Triangle::triangle_hits = 0;
+long long Triangle::bbox_hits = 0;
+long long Triangle::bbox_misses = 0;
+
 
 #endif

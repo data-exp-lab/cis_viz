@@ -60,9 +60,15 @@ public:
     {
         double magnitude = sqrt((x * x) + (y * y) + (z * z));
         return (Vect(x / magnitude, y / magnitude, z / magnitude));
+        
+        /*if(magnitude > 0)
+        {
+            double invMag = 1 / magnitude;
+        }
+        return(Vect(x *= invMag, y *= invMag, z *= invMag));*/
     }
     
-    Vect negative ()
+    Vect negative()
     {
         return (Vect(-x, -y, -z));
     }

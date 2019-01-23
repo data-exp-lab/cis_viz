@@ -20,14 +20,16 @@ inline void DisplayUsage(char *argv[])
             "  interval hour       = -i 1, 14.5        \n"
             "  leaf transmittance  = -l .9, .5         \n"
             "  leaf reflectivity   = -j .8, .25        \n"
+            "  image width         = -w 640            \n"
+            "  image height        = -h 480            \n"
             "  anti aliasing       = -a 1, 2, 3        \n"
-            "  help                = -h \n"
+            "  help                = -z \n"
             "\n\n",
             argv[0]);
     exit(1);
 }
 
-const char *commandLineOptions = "g:o:f:e:i:l:j:a:h";
+const char *commandLineOptions = "g:o:f:e:i:l:j:w:h:a:z";
 
 //PROCESS COMMAND LINE INPUT
 void ProcessCommandLine(int argc, char *argv[])
@@ -63,17 +65,23 @@ void ProcessCommandLine(int argc, char *argv[])
             case 'j':
                 cla.leafReflectivity = atof(optarg);
                 break;
+            case 'w':
+                cla.imageWidth = atof(optarg);
+                break;
+            case 'h':
+                cla.imageHeight = atof(optarg);
+                break;
             case 'a':
                 cla.antiAliasingDepth = atof(optarg);
                 break;
-            case 'h':
+            case 'z':
                 DisplayUsage(argv);
                 break;
         }
     }
     
     //CHECK FOR ALL REQUIRED ARGUMENTS
-    if(cla.geometryFile == 0 || cla.outputFile == 0 || cla.startHour == 0 || cla.endHour == 0 || cla.intervalHour == 0 || cla.leafTransmittance == 0 || cla.leafReflectivity == 0 || cla.antiAliasingDepth == 0)
+    if(cla.geometryFile == 0 || cla.outputFile == 0 || cla.startHour == 0 || cla.endHour == 0 || cla.intervalHour == 0 || cla.leafTransmittance == 0 || cla.leafReflectivity == 0 || cla.imageWidth == 0 || cla.imageHeight == 0 || cla.antiAliasingDepth == 0)
     {
         DisplayUsage(argv);
     }

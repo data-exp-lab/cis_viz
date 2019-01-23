@@ -40,12 +40,9 @@
 #include "parameters.hpp"
 #include "equations.hpp"
 #include "normal.hpp"
+#include "bbox.hpp"
 
 #include "climate.hpp"
-
-#include "gperftools/profiler.h"
-
-
 
 using namespace std;
 
@@ -312,8 +309,7 @@ int current_pixel;
 
 int main(int argc, char *argv[])
 {
-    ProfilerStart("/Users/Colleen/gperftools_out/dump.txt");
-    
+    //ProfilerStart("cis_ray.prof");
     
     clock_t total_time_begin;
     clock_t total_time_end;
@@ -331,8 +327,10 @@ int main(int argc, char *argv[])
     
     int dpi = 72;
     
-    int width = 640;
-    int height = 480;
+    //int width = 640;
+    //int height = 480;
+    int width = cla.imageWidth;
+    int height = cla.imageHeight;
     int anti_aliasing_depth = cla.antiAliasingDepth;
     double anti_aliasing_threshold = 0.1;
     
@@ -345,7 +343,7 @@ int main(int argc, char *argv[])
     string fileType = ".txt";
     string inputFileName = cla.geometryFile;
     
-    bool shadowed = false;
+    bool shadowed = true;
     bool PLY = true;
     
     debug("Shadowed = %d", shadowed);
@@ -436,7 +434,6 @@ int main(int argc, char *argv[])
         readGeometryFileTXT(cla.geometryFile, ref(x1_main), ref(y1_main), ref(z1_main), ref(x2_main), ref(y2_main), ref(z2_main), ref(x3_main), ref(y3_main), ref(z3_main));
     }
     int size_of_x_main = x_main.size();
-    cout << "num_element_face: " << num_element_face << endl;
     debug("num_element_face: %d", num_element_face);
     
     if(PLY == true)
@@ -448,12 +445,12 @@ int main(int argc, char *argv[])
         min_z_with_buffer = min_z - buffer;
         max_z_with_buffer = max_z + buffer;
         
-        cout << "min_x_with_buffer: " << min_x_with_buffer << endl;
+        /*cout << "min_x_with_buffer: " << min_x_with_buffer << endl;
         cout << "max_x_with_buffer: " << max_x_with_buffer << endl;
         cout << "min_y_with_buffer: " << min_y_with_buffer << endl;
         cout << "max_y_with_buffer: " << max_y_with_buffer << endl;
         cout << "min_z_with_buffer: " << min_z_with_buffer << endl;
-        cout << "max_z_with_buffer: " << max_z_with_buffer << endl;
+        cout << "max_z_with_buffer: " << max_z_with_buffer << endl;*/
         
     }
     
@@ -496,14 +493,19 @@ int main(int argc, char *argv[])
     Vect Y(0, 1, 0);
     Vect Z(0, 0, 1);
     //3, 1.5, -12
-    Vect camera_position(0, 0, -5);
-    //Vect camera_position(0, 75, 50);
+    Vect camera_position(0, -1, -25);
+    //Vect camera_position(0, 0, -30);
     Vect lookAt(0, 0, 0);
     Vect difference_between(camera_position.getVectX() - lookAt.getVectX(), camera_position.getVectY() - lookAt.getVectY(), camera_position.getVectZ() - lookAt.getVectZ());
     
     Vect camera_direction = difference_between.negative().normalize();
+    cout << "CAMERA DIRECTION" << endl;
+    cout << "X: " << camera_direction.getVectX() << " Y: " << camera_direction.getVectY() << " Z: " << camera_direction.getVectZ() << endl;
     Vect camera_right = Y.crossProduct(camera_direction).normalize();
+
     Vect camera_down = camera_right.crossProduct(camera_direction);
+    cout << "CAMERA DOWN" << endl;
+    cout << "X: " << camera_down.getVectX() << " Y: " << camera_down.getVectY() << " Z: " << camera_down.getVectZ() << endl;
     
     Camera scene_camera(camera_position, camera_direction, camera_right, camera_down);
     
@@ -518,8 +520,9 @@ int main(int argc, char *argv[])
     Color purple_light(.5, 0.0, .5, 0);
     
     //FIX: Calculate position of sun, becomes new light
-    Vect light_position(0, 0, -5);
-    //Vect light_position(0, 75, 50);
+    //Vect light_position(0, -1, -25);
+    Vect light_position = camera_position;
+    //Vect light_position(0, 0, -30);
     //Vect light_position(-7, 10, -10);
     Light scene_light1(light_position, white_light);
     
@@ -615,13 +618,11 @@ int main(int argc, char *argv[])
     if(PLY == true)
     {
 #ifdef RUN_TESTS
-        testNumberTriangles(num_element_vertex, size_of_x_main);
+        //testNumberTriangles(num_element_vertex, size_of_x_main);
 #endif
         //setupTrianglesPLY(ref(scene_triangles), num_element_face, num_vertices, vertex1_index, vertex2_index, vertex3_index, point1, point2, point3, point1_x_coord, point1_y_coord, point1_z_coord, point2_x_coord, point2_y_coord, point2_z_coord, point3_x_coord, point3_y_coord, point3_z_coord, triangle_color, point1_color, point2_color, point3_color, tri_red_average, tri_green_average, tri_blue_average, point1_red, point1_green, point1_blue, point2_red, point2_green, point2_blue, point3_red, point3_green, point3_blue, red(num_vertices_to_connect_main), ref(x_main), ref(y_main), ref(z_main), ref(red_main), ref(green_main), ref(blue_main), ref(vertex1_main), ref(vertex2_main), ref(vertex3_main));
         for(int i = 0; i < num_element_face; i++)
-        //for(int i = 1; i < 2; i++)
         {
-            cout << "TRIANGLE " << i << endl;
             debug("TRIANGLE %d", i);
             
             num_vertices = num_vertices_to_connect_main[i];
@@ -630,9 +631,6 @@ int main(int argc, char *argv[])
                 vertex1_index = vertex1_main[i];
                 vertex2_index = vertex2_main[i];
                 vertex3_index = vertex3_main[i];
-                cout << "vertex1_index: " << vertex1_index << endl;
-                cout << "vertex2_index: " << vertex2_index << endl;
-                cout << "vertex3_index: " << vertex3_index << endl;
                 debug("vertex1_index: %d", vertex1_index);
                 debug("vertex2_index: %d", vertex2_index);
                 debug("vertex3_index: %d", vertex3_index);
@@ -640,18 +638,12 @@ int main(int argc, char *argv[])
                 point1_x_coord = x_main[vertex1_index];
                 point1_y_coord = y_main[vertex1_index];
                 point1_z_coord = z_main[vertex1_index];
-                cout << "x_main[vertex1_index]: " << x_main[vertex1_index] << endl;
-                cout << "y_main[vertex1_index]: " << y_main[vertex1_index] << endl;
-                cout << "z_main[vertex1_index]: " << z_main[vertex1_index] << endl;
                 debug("x_main[vertex1_index]: %d", x_main[vertex1_index]);
                 debug("y_main[vertex1_index]: %d", y_main[vertex1_index]);
                 debug("z_main[vertex1_index]: %d", z_main[vertex1_index]);
                 point1.setVectX(point1_x_coord);
                 point1.setVectY(point1_y_coord);
                 point1.setVectZ(point1_z_coord);
-                cout << "point1.setVectX(): " << point1.getVectX() << endl;
-                cout << "point1.setVectY(): " << point1.getVectY() << endl;
-                cout << "point1.setVectZ(): " << point1.getVectZ() << endl;
                 debug("point1.setVectX(): %d", point1.getVectX());
                 debug("point1.setVectY(): %d", point1.getVectY());
                 debug("point1.setVectZ(): %d", point1.getVectZ());
@@ -659,18 +651,12 @@ int main(int argc, char *argv[])
                 point2_x_coord = x_main[vertex2_index];
                 point2_y_coord = y_main[vertex2_index];
                 point2_z_coord = z_main[vertex2_index];
-                cout << "x_main[vertex2_index]: " << x_main[vertex2_index] << endl;
-                cout << "y_main[vertex2_index]: " << y_main[vertex2_index] << endl;
-                cout << "z_main[vertex2_index]: " << z_main[vertex2_index] << endl;
                 debug("x_main[vertex2_index]: %d", x_main[vertex2_index]);
                 debug("y_main[vertex2_index]: %d", y_main[vertex2_index]);
                 debug("z_main[vertex2_index]: %d", z_main[vertex2_index]);
                 point2.setVectX(point2_x_coord);
                 point2.setVectY(point2_y_coord);
                 point2.setVectZ(point2_z_coord);
-                cout << "point2.setVectX(): " << point2.getVectX() << endl;
-                cout << "point2.setVectY(): " << point2.getVectY() << endl;
-                cout << "point2.setVectZ(): " << point2.getVectZ() << endl;
                 debug("point2.setVectX(): %d", point2.getVectX());
                 debug("point2.setVectY(): %d", point2.getVectY());
                 debug("point2.setVectZ(): %d", point2.getVectZ());
@@ -678,18 +664,12 @@ int main(int argc, char *argv[])
                 point3_x_coord = x_main[vertex3_index];
                 point3_y_coord = y_main[vertex3_index];
                 point3_z_coord = z_main[vertex3_index];
-                cout << "x_main[vertex3_main[vertex3_index]]: " << x_main[vertex3_index] << endl;
-                cout << "y_main[vertex3_main[vertex3_index]]: " << y_main[vertex3_index] << endl;
-                cout << "z_main[vertex3_main[vertex3_index]]: " << z_main[vertex3_index] << endl;
                 debug("x_main[vertex3_index]: %d", x_main[vertex3_index]);
                 debug("y_main[vertex3_index]: %d", y_main[vertex3_index]);
                 debug("z_main[vertex3_index]: %d", z_main[vertex3_index]);
                 point3.setVectX(point3_x_coord);
                 point3.setVectY(point3_y_coord);
                 point3.setVectZ(point3_z_coord);
-                cout << "point3.setVectX(): " << point3.getVectX() << endl;
-                cout << "point3.setVectY(): " << point3.getVectY() << endl;
-                cout << "point3.setVectZ(): " << point3.getVectZ() << endl;
                 debug("point3.setVectX(): %d", point3.getVectX());
                 debug("point3.setVectY(): %d", point3.getVectY());
                 debug("point3.setVectZ(): %d", point3.getVectZ());
@@ -805,7 +785,7 @@ int main(int argc, char *argv[])
             //FIX: change once set up to do things other than triangles (if necessary)
             else
             {
-                printf("Cannot construct a triangle from given information");
+                printf("Cannot construct a triangle from given information\n");
                 return 0;
             }
        } //end of for loop
@@ -917,7 +897,9 @@ int main(int argc, char *argv[])
         
         //testNumberRays_antiAliasing_cube(16, red_light, 4, 4, accuracy, ambient_light, anti_aliasing_depth);
         //testRayDistance(width, height, red_light, white_light);
+//        testBoundingBox(num_pixels, red_light, width, height, accuracy, ambient_light);
 #endif
+
         for(int x = 0; x < width; x++)
         {
             for(int y = 0; y < height; y++)
@@ -990,6 +972,7 @@ int main(int argc, char *argv[])
                         vector<double> intersections;
                         
                         //LOOP THROUGH OBJECTS IN SCENE, FIND INTERSECTION WITH CAMERA RAY, PUSH VALUE INTO INTERSECTIONS ARRAY
+                        //cout << "current_pixel: " << current_pixel << endl;
                         for(int index = 0; index < scene_triangles.size(); index++)
                         {
                             intersections.push_back(scene_triangles.at(index)->findIntersection(camera_ray));
@@ -1099,19 +1082,19 @@ int main(int argc, char *argv[])
         
         //OUTPUT FILE
         //FIX: IF CLA OUTPUT FILE NAME HAS FILE EXTENSION, REMOVE IT
-        /*std::ostringstream output_string;
+        std::ostringstream output_string;
         output_string<<cla.outputFile<<"_"<<hour<<"_hour"<<fileType;
         string output_file_name = output_string.str();
         
         cout << "output_file: " << output_file_name << endl;
         writePPFDFile(output_file_name, triangle_areas, PPFD_totals, num);
-        */
+        
         testing_timestep++;
         
     }//END TIMESTEP
 
 #ifdef RUN_TESTS
-    testNumberTimesteps(startHour, endHour, interval, testing_timestep);
+    //testNumberTimesteps(startHour, endHour, interval, testing_timestep);
 #endif
     
     delete[] pixels;
@@ -1127,15 +1110,15 @@ int main(int argc, char *argv[])
     const char *filename = "timing.txt";
     saveTimers(filename);
     
-    ProfilerFlush();
-    ProfilerStop();
-    
     debug("end totalTimer");
-
-    cout << "TOTAL HITS:   " << Triangle::hits << endl;
-    cout << "TOTAL MISSES: " << Triangle::misses << endl;
+    
+    cout << "TRIANGLE HITS:   " << Triangle::triangle_hits << endl;
+    cout << "TRIANGLE MISSES: " << Triangle::triangle_misses << endl;
+    cout << "BBOX HITS:       " << Triangle::bbox_hits << endl;
+    cout << "BBOX MISSES:     " << Triangle::bbox_misses << endl;
 
     cout << "EXIT SUCCESSFUL" << endl;
+
     return 0;
 } //end of main()
 

@@ -84,12 +84,11 @@ void readGeometryFilePLY(string geometry_file_name, vector<float>& x_main, vecto
         while(current_string != "end_header")
         {
             getline(geometry_file, current_string);
-            cout << current_string << endl;
             
             //FIX: MAKE THESE ASSIGNMENTS VARIABLE BASED ON STRING
             if(current_string.find(element_vertex) != std::string::npos)
             {
-                cout << "found element_vertex" << endl;
+                //cout << "found element_vertex" << endl;
                 std::stringstream temp(current_string);
                 
                 while(temp >> i)
@@ -99,12 +98,12 @@ void readGeometryFilePLY(string geometry_file_name, vector<float>& x_main, vecto
                 tokens_size = tokens.size();
                 
                 num_lines_vertices =  std::atoi(tokens[tokens_size - 1].c_str());
-                cout << "num_lines_vertices: " << num_lines_vertices << endl;
+                //cout << "num_lines_vertices: " << num_lines_vertices << endl;
                 num_element_vertex = num_lines_vertices;
             }
             if(current_string.find(element_face) != std::string::npos)
             {
-                cout << "found element_face" << endl;
+                //cout << "found element_face" << endl;
                 std::stringstream temp(current_string);
                 
                 while(temp >> i)
@@ -114,14 +113,14 @@ void readGeometryFilePLY(string geometry_file_name, vector<float>& x_main, vecto
                 tokens_size = tokens.size();
                 
                 num_lines_triangles = std::atoi(tokens[tokens_size - 1].c_str());
-                cout << "num_lines_triangles: " << num_lines_triangles << endl;
+                //cout << "num_lines_triangles: " << num_lines_triangles << endl;
                 num_element_face = num_lines_triangles;
             }
             lines_in_header++;
         }
         int counter = lines_in_header + 1;
-        cout << "counter before starting: " << counter << endl;
-        cout << "lines_in_header: " << lines_in_header << endl;
+        //cout << "counter before starting: " << counter << endl;
+        //cout << "lines_in_header: " << lines_in_header << endl;
         
         while((geometry_file >> num)) //&& (counter != (lines_in_header + num_lines_vertices)))
         {
@@ -130,15 +129,15 @@ void readGeometryFilePLY(string geometry_file_name, vector<float>& x_main, vecto
                 numbers_in_line_vertices.push_back(num);
                 if(numbers_in_line_vertices.size() == NUM_COLUMNS_X_Y_Z_R_G_B)
                 {
-                    for(int i = 0; i < numbers_in_line_vertices.size(); i++)
+                    /*for(int i = 0; i < numbers_in_line_vertices.size(); i++)
                     {
                         cout << "numbers_in_line_vertices[" << i << "]: " << numbers_in_line_vertices[i] << endl;
-                    }
+                    }*/
                     geometry_file_x_y_z_r_g_b.push_back(numbers_in_line_vertices);
                     numbers_in_line_vertices.clear();
                     
                     counter++;
-                    cout << "counter: " << counter << endl;
+                    //cout << "counter: " << counter << endl;
                 }
             }
             else//((counter > (lines_in_header + num_lines_vertices)) && (counter <= lines_in_header + num_lines_vertices + num_lines_triangles))
@@ -147,15 +146,15 @@ void readGeometryFilePLY(string geometry_file_name, vector<float>& x_main, vecto
                 
                 if(numbers_in_line_triangles.size() == NUM_COLUMNS_CONNECTIVITY)
                 {
-                    for(int i = 0; i < numbers_in_line_triangles.size(); i++)
+                    /*for(int i = 0; i < numbers_in_line_triangles.size(); i++)
                     {
                         cout << "numbers_in_line_triangles[" << i << "]: " << numbers_in_line_triangles[i] << endl;
-                    }
+                    }*/
                     geometry_file_connectivity.push_back(numbers_in_line_triangles);
                     numbers_in_line_triangles.clear();
                     
                     counter++;
-                    cout << "counter: " << counter << endl;
+                    //cout << "counter: " << counter << endl;
                 }
             }
         }
@@ -211,8 +210,8 @@ void readGeometryFilePLY(string geometry_file_name, vector<float>& x_main, vecto
                         temp_min_x = x[i];
                     }
                 }
-                cout << "temp_max_x: " << temp_max_x << endl;
-                cout << "temp_min_x: " << temp_min_x << endl;
+                //cout << "temp_max_x: " << temp_max_x << endl;
+                //cout << "temp_min_x: " << temp_min_x << endl;
             }
             if((column_to_input - 1) == 1)
             {
@@ -232,8 +231,8 @@ void readGeometryFilePLY(string geometry_file_name, vector<float>& x_main, vecto
                         temp_min_y = y[i];
                     }
                 }
-                cout << "temp_max_y: " << temp_max_y << endl;
-                cout << "temp_min_y: " << temp_min_y << endl;
+                //cout << "temp_max_y: " << temp_max_y << endl;
+                //cout << "temp_min_y: " << temp_min_y << endl;
             }
             if((column_to_input - 1) == 2)
             {
@@ -253,8 +252,8 @@ void readGeometryFilePLY(string geometry_file_name, vector<float>& x_main, vecto
                         temp_min_z = z[i];
                     }
                 }
-                cout << "temp_max_z: " << temp_max_z << endl;
-                cout << "temp_min_z: " << temp_min_z << endl;
+                //cout << "temp_max_z: " << temp_max_z << endl;
+                //cout << "temp_min_z: " << temp_min_z << endl;
             }
             if((column_to_input - 1) == 3)
             {
