@@ -40,7 +40,12 @@
 #include "parameters.hpp"
 #include "equations.hpp"
 #include "normal.hpp"
+
+//#include "accel.hpp"
+//#include "bvh.hpp"
 #include "bbox.hpp"
+//#include "bbox_accel.hpp"
+#include "mesh.hpp"
 
 #include "climate.hpp"
 
@@ -499,13 +504,13 @@ int main(int argc, char *argv[])
     Vect difference_between(camera_position.getVectX() - lookAt.getVectX(), camera_position.getVectY() - lookAt.getVectY(), camera_position.getVectZ() - lookAt.getVectZ());
     
     Vect camera_direction = difference_between.negative().normalize();
-    cout << "CAMERA DIRECTION" << endl;
-    cout << "X: " << camera_direction.getVectX() << " Y: " << camera_direction.getVectY() << " Z: " << camera_direction.getVectZ() << endl;
+    //cout << "CAMERA DIRECTION" << endl;
+    //cout << "X: " << camera_direction.getVectX() << " Y: " << camera_direction.getVectY() << " Z: " << camera_direction.getVectZ() << endl;
     Vect camera_right = Y.crossProduct(camera_direction).normalize();
 
     Vect camera_down = camera_right.crossProduct(camera_direction);
-    cout << "CAMERA DOWN" << endl;
-    cout << "X: " << camera_down.getVectX() << " Y: " << camera_down.getVectY() << " Z: " << camera_down.getVectZ() << endl;
+    //cout << "CAMERA DOWN" << endl;
+    //cout << "X: " << camera_down.getVectX() << " Y: " << camera_down.getVectY() << " Z: " << camera_down.getVectZ() << endl;
     
     Camera scene_camera(camera_position, camera_direction, camera_right, camera_down);
     
@@ -620,7 +625,7 @@ int main(int argc, char *argv[])
 #ifdef RUN_TESTS
         //testNumberTriangles(num_element_vertex, size_of_x_main);
 #endif
-        //setupTrianglesPLY(ref(scene_triangles), num_element_face, num_vertices, vertex1_index, vertex2_index, vertex3_index, point1, point2, point3, point1_x_coord, point1_y_coord, point1_z_coord, point2_x_coord, point2_y_coord, point2_z_coord, point3_x_coord, point3_y_coord, point3_z_coord, triangle_color, point1_color, point2_color, point3_color, tri_red_average, tri_green_average, tri_blue_average, point1_red, point1_green, point1_blue, point2_red, point2_green, point2_blue, point3_red, point3_green, point3_blue, red(num_vertices_to_connect_main), ref(x_main), ref(y_main), ref(z_main), ref(red_main), ref(green_main), ref(blue_main), ref(vertex1_main), ref(vertex2_main), ref(vertex3_main));
+        
         for(int i = 0; i < num_element_face; i++)
         {
             debug("TRIANGLE %d", i);
@@ -887,6 +892,7 @@ int main(int argc, char *argv[])
         valarray<float> PPFD_dir_light_per_triangle(0., width * height);
         int test_for_greater_than_minus_1 = 0;
         
+        float tNear = INFINITY;
         int anti_aliasing_index;
         double tempRed;
         double tempGreen;
@@ -975,7 +981,8 @@ int main(int argc, char *argv[])
                         //cout << "current_pixel: " << current_pixel << endl;
                         for(int index = 0; index < scene_triangles.size(); index++)
                         {
-                            intersections.push_back(scene_triangles.at(index)->findIntersection(camera_ray));
+                            //intersections.push_back(scene_triangles.at(index)->findIntersection(camera_ray));
+                            intersections.push_back(scene_triangles.at(index)->intersect(camera_ray, tNear));
                             debug("intersections: %d", intersections[index]);
                             //cout << "intersections[" << current_pixel << "]: " << intersections[index] << endl;
                             if(intersections[index] > -1)

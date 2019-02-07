@@ -56,6 +56,11 @@ public:
         return sqrt((x * x) + (y * y) + (z * z));
     }
     
+    Vect inverse()
+    {
+        return (Vect(1 / x, 1 / y, 1 / z));
+    }
+    
     Vect normalize()
     {
         double magnitude = sqrt((x * x) + (y * y) + (z * z));

@@ -83,6 +83,14 @@ public:
         return z1;
     }
     
+    Vect centroid() const
+    {
+        BBox bbox;
+        Vect min((bbox.getBBoxXMin() * .5), (bbox.getBBoxYMin() * .5), (bbox.getBBoxZMin() * .5));
+        Vect max((bbox.getBBoxXMax() * .5), (bbox.getBBoxYMax() * .5), (bbox.getBBoxZMax() * .5));
+        
+        return min + max;
+    }
     
     bool insideBBox(const Vect& point) const
     {
@@ -190,7 +198,7 @@ public:
         return (t0 < t1 && t1 > 0);
     }
     
-    
 };
+
 
 #endif

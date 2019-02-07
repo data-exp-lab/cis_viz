@@ -24,6 +24,10 @@ public:
     Vect B;
     Vect C;
     
+    //BBox bbox;
+    
+    const float kEpsilon = 1e-8;
+    
     
     //FOR PPFD CALCULATIONS
     std::vector<double> photonFlux_up_dir;
@@ -76,166 +80,6 @@ public:
     
     BBox getBoundingBox(void);
     
-    /*setupTrianglesPLY(vector<Triangle*>& scene_triangles, int num_element_face, int num_vertices, int vertex1_index, int vertex2_index, int vertex3_index, Vect point1, Vect point2, Vect point3, float point1_x_coord, float point1_y_coord, float point1_z_coord, float point2_x_coord, float point2_y_coord, float point2_z_coord, float point3_x_coord, float point3_y_coord, float point3_z_coord, Color triangle_color, Color point1_color, Color point2_color, Color point3_color, double tri_red_average, double tri_green_average, double tri_blue_average, float point1_red, float point1_green, float point1_blue, float point2_red, float point2_green, float point2_blue, float point3_red, float point3_green, float point3_blue, vector<float>& num_vertices_to_connect_main, vector<float>& x_main, vector<float>& y_main, vector<float>& z_main, vector<float>& red_main, vector<float>& green_main, vector<float>& blue_main, vector<float>& vertex1_main, vector<float>& vertex2_main, vector<float>& vertex3_main)
-    {
-        for(int i = 0; i < num_element_face; i++)
-        {
-            cout << "TRIANGLE " << i << endl;
-            debug("TRIANGLE %d", i);
-            
-            num_vertices = num_vertices_to_connect_main[i];
-            if(num_vertices == 3)
-            {
-                vertex1_index = vertex1_main[i];
-                vertex2_index = vertex2_main[i];
-                vertex3_index = vertex3_main[i];
-                cout << "vertex1_index: " << vertex1_index << endl;
-                cout << "vertex2_index: " << vertex2_index << endl;
-                cout << "vertex3_index: " << vertex3_index << endl;
-                
-                point1_x_coord = x_main[vertex1_index];
-                point1_y_coord = y_main[vertex1_index];
-                point1_z_coord = z_main[vertex1_index];
-                cout << "x_main[vertex1_index]: " << x_main[vertex1_index] << endl;
-                cout << "y_main[vertex1_index]: " << y_main[vertex1_index] << endl;
-                cout << "z_main[vertex1_index]: " << z_main[vertex1_index] << endl;
-                point1.setVectX(point1_x_coord);
-                point1.setVectY(point1_y_coord);
-                point1.setVectZ(point1_z_coord);
-                cout << "point1.setVectX(): " << point1.getVectX() << endl;
-                cout << "point1.setVectY(): " << point1.getVectY() << endl;
-                cout << "point1.setVectZ(): " << point1.getVectZ() << endl;
-                
-                point2_x_coord = x_main[vertex2_index];
-                point2_y_coord = y_main[vertex2_index];
-                point2_z_coord = z_main[vertex2_index];
-                cout << "x_main[vertex2_index]: " << x_main[vertex2_index] << endl;
-                cout << "y_main[vertex2_index]: " << y_main[vertex2_index] << endl;
-                cout << "z_main[vertex2_index]: " << z_main[vertex2_index] << endl;
-                point2.setVectX(point2_x_coord);
-                point2.setVectY(point2_y_coord);
-                point2.setVectZ(point2_z_coord);
-                cout << "point2.setVectX(): " << point2.getVectX() << endl;
-                cout << "point2.setVectY(): " << point2.getVectY() << endl;
-                cout << "point2.setVectZ(): " << point2.getVectZ() << endl;
-                
-                point3_x_coord = x_main[vertex3_index];
-                point3_y_coord = y_main[vertex3_index];
-                point3_z_coord = z_main[vertex3_index];
-                cout << "x_main[vertex3_main[vertex3_index]]: " << x_main[vertex3_index] << endl;
-                cout << "y_main[vertex3_main[vertex3_index]]: " << y_main[vertex3_index] << endl;
-                cout << "z_main[vertex3_main[vertex3_index]]: " << z_main[vertex3_index] << endl;
-                point3.setVectX(point3_x_coord);
-                point3.setVectY(point3_y_coord);
-                point3.setVectZ(point3_z_coord);
-                cout << "point3.setVectX(): " << point3.getVectX() << endl;
-                cout << "point3.setVectY(): " << point3.getVectY() << endl;
-                cout << "point3.setVectZ(): " << point3.getVectZ() << endl;
-                
-                //IF R/G/B ARE OUT OF 255, CONVERT TO OUT OF 1
-                if(red_main[vertex1_index] > 1.0)
-                {
-                    point1_red = red_main[vertex1_index] / 256;
-                }
-                else
-                {
-                    point1_red = red_main[vertex1_index];
-                }
-                
-                if(green_main[vertex1_index] > 1.0)
-                {
-                    point1_green = green_main[vertex1_index] / 256;
-                }
-                else
-                {
-                    point1_green = green_main[vertex1_index];
-                }
-                
-                if(blue_main[vertex1_index] > 1.0)
-                {
-                    point1_blue = blue_main[vertex1_index] / 256;
-                }
-                else
-                {
-                    point1_blue = blue_main[vertex1_index];
-                }
-                
-                if(red_main[vertex2_index] > 1.0)
-                {
-                    point2_red = red_main[vertex2_index] / 256;
-                }
-                else
-                {
-                    point2_red = red_main[vertex2_index];
-                }
-                
-                if(green_main[vertex2_index] > 1.0)
-                {
-                    point2_green = green_main[vertex2_index] / 256;
-                }
-                else
-                {
-                    point2_green = green_main[vertex2_index];
-                }
-                
-                if(blue_main[vertex2_index] > 1.0)
-                {
-                    point2_blue = blue_main[vertex2_index] / 256;
-                }
-                else
-                {
-                    point2_blue = blue_main[vertex2_index];
-                }
-                
-                if(red_main[vertex3_index] > 1.0)
-                {
-                    point3_red = red_main[vertex3_index] / 256;
-                }
-                else
-                {
-                    point3_red = red_main[vertex3_index];
-                }
-                
-                if(green_main[vertex3_index] > 1.0)
-                {
-                    point3_green = green_main[vertex3_index] / 256;
-                }
-                else
-                {
-                    point3_green = green_main[vertex3_index];
-                }
-                
-                if(blue_main[vertex3_index] > 1.0)
-                {
-                    point3_blue = blue_main[vertex3_index] / 256;
-                }
-                else
-                {
-                    point3_blue = blue_main[vertex3_index];
-                }
-                
-                //COLOR
-                point1_color.setColorRed(point1_red);
-                point1_color.setColorGreen(point1_green);
-                point1_color.setColorBlue(point1_blue);
-                point2_color.setColorRed(point2_red);
-                point2_color.setColorGreen(point2_green);
-                point2_color.setColorBlue(point2_blue);
-                point3_color.setColorRed(point3_red);
-                point3_color.setColorGreen(point3_green);
-                point3_color.setColorBlue(point3_blue);
-                
-                tri_red_average = (point1_color.getColorRed() + point2_color.getColorRed() + point3_color.getColorRed()) / 3;
-                tri_green_average = (point1_color.getColorGreen() + point2_color.getColorGreen() + point3_color.getColorGreen()) / 3;
-                tri_blue_average = (point1_color.getColorBlue() + point2_color.getColorBlue() + point3_color.getColorBlue()) / 3;
-                
-                triangle_color.setColorRed(tri_red_average);
-                triangle_color.setColorGreen(tri_green_average);
-                triangle_color.setColorBlue(tri_blue_average);
-                
-                scene_triangles.push_back(new Triangle(point1, point2, point3, triangle_color));
-    }*/
-    
     void setPoint1(Vect point1)
     {
         A = point1;
@@ -249,6 +93,21 @@ public:
     void setPoint3(Vect point3)
     {
         C = point3;
+    }
+    
+    Vect getPoint1()
+    {
+        return A;
+    }
+    
+    Vect getPoint2()
+    {
+        return B;
+    }
+    
+    Vect getPoint3()
+    {
+        return C;
     }
     
     float getPoint1X()
@@ -328,13 +187,20 @@ public:
         return normal;
     }
     
+    Vect cross(const Vect& a, const Vect& b)
+    {
+        return Vect((a.y * b.z - a.z * b.y), (a.z * b.x - a.x * b.z), (a.x * b.y - a.y * b.x));
+    }
+    
+    float dot(const Vect& va, const Vect& vb)
+    {
+        return va.x * vb.x + va.y * vb.y + va.z * vb.z;
+    }
+    
     virtual double findIntersection(Ray ray)
     {
         Vect ray_direction = ray.getRayDirection();
         Vect ray_origin = ray.getRayOrigin();
-        
-        normal = getTriangleNormal();
-        distance = getTriangleDistance(normal);
 
         //cout << "ray_direction: " << ray_direction.getVectX() << "  " << ray_direction.getVectY() << "  " << ray_direction.getVectZ() << endl;
         //cout << "ray_origin: " << ray_origin.getVectX() << "  " << ray_origin.getVectY() << "  " << ray_origin.getVectZ() << endl;
@@ -366,6 +232,8 @@ public:
             return false;
         }
         
+        normal = getTriangleNormal();
+        distance = getTriangleDistance(normal);
         double a = ray_direction.dotProduct(normal);
         
         if(a == 0)
@@ -430,6 +298,63 @@ public:
                 return -1;
             }*/
         }
+    }
+  
+    //BASED ON MOLLER-TRUMBOR METHOD
+    //FIX: MAKE REFERENCES TO INFO SO NOT PASSING THINGS AROUND
+    bool rayTriangleIntersect(Vect origin, Vect direction, Vect v0, Vect v1, Vect v2, float &t, float& u, float &v)
+    {
+        Vect v0v1 = v1 - v0;
+        Vect v0v2 = v2 - v0;
+        Vect p_vect = cross(direction, v0v2);
+        float determinant = dot(v0v1, p_vect);
+        
+        //IF CLOSE TO 0, RAY AND TRIANGLE ARE PARALLEL
+        if(fabs(determinant) < kEpsilon)
+        {
+            return false;
+        }
+        
+        float inv_determinant = 1 / determinant;
+        
+        Vect t_vect = origin - v0;
+        u = dot(t_vect, p_vect) * inv_determinant;
+        if(u < 0 || u > 1)
+        {
+            return false;
+        }
+        
+        Vect q_vect = cross(t_vect, v0v1);
+        v = dot(direction, q_vect) * inv_determinant;
+        if(v < 0 || u + v > 1)
+        {
+            return false;
+        }
+        
+        t = dot(v0v2, q_vect) * inv_determinant;
+        
+        return true;
+    }
+    
+    bool intersect(Ray& ray, float &tNear)
+    {
+        float t;
+        float u;
+        float v;
+        int intersected_triangle_index;
+        bool intersected = false;
+        
+        for(int i = 0; i < triangles.size(); ++i)
+        {
+            if(rayTriangleIntersect(ray.getRayOrigin(), ray.getRayDirection(), triangles[i]->getPoint1(), triangles[i]->getPoint2(), triangles[i]->getPoint3(), t, u, v) && t < tNear)
+            {
+                tNear = t;
+                intersected_triangle_index = i;
+                intersected = true;
+            }
+        }
+        
+        return intersected;
     }
     
     
