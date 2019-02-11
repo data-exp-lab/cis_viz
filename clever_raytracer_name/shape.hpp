@@ -4,6 +4,7 @@
 #include "ray.hpp"
 #include "vect.hpp"
 #include "color.hpp"
+#include "bbox.hpp"
 
 #include <vector>
 
@@ -15,7 +16,7 @@ public:
     double green;
     double blue;
     double alpha;
-    
+        
     Shape();
     
     std::vector<Shape*> shapes;
@@ -64,6 +65,8 @@ public:
     {
         return 0;
     }
+    
+    //virtual bool intersect(Ray& ray, float &tNear, vector<Triangle*> triangles) = 0;
     
     virtual std::vector<Shape*> get_shapes()
     {

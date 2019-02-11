@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.6)
 project(cis_ray)
 
 IF(APPLE)
-	ADD_DEFINITIONS(-pipe -std=c++11 -stdlib=libc++)
+	ADD_DEFINITIONS(-pipe -Ofast -O3 -std=c++11 -stdlib=libc++)
 ELSE(APPLE)
 	ADD_DEFINITIONS(-pipe -std=gnu++1y -Wall)
 ENDIF(APPLE)

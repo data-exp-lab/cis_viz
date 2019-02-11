@@ -6,6 +6,9 @@
 #include <cmath>
 #include <limits>
 #include <valarray>
+#include <memory>
+#include <cassert>
+#include <chrono>
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -41,10 +44,10 @@
 #include "equations.hpp"
 #include "normal.hpp"
 
-//#include "accel.hpp"
+#include "accel.hpp"
 //#include "bvh.hpp"
 #include "bbox.hpp"
-//#include "bbox_accel.hpp"
+#include "bbox_accel.hpp"
 #include "mesh.hpp"
 
 #include "climate.hpp"
@@ -575,7 +578,6 @@ int main(int argc, char *argv[])
     float point3_x_coord;
     float point3_y_coord;
     float point3_z_coord;
-    Triangle triangle_test;
     Color triangle_color;
     
     //SET UP CONNECTIVITY OF POINTS INTO TRIANGLES
@@ -785,6 +787,7 @@ int main(int argc, char *argv[])
                 triangle_areas.push_back(triangle_area);
                 
                 scene_triangles.push_back(new Triangle(point1, point2, point3, triangle_color));
+                //test_triangles.push_back(new Triangle(point1, point2, point3, triangle_color));
                 
             } //end of if (num_vertices == 3)
             //FIX: change once set up to do things other than triangles (if necessary)
@@ -816,6 +819,12 @@ int main(int argc, char *argv[])
  
     //CALCULATE PPFD FROM ATMOSPHERIC TRANSMITTANCE
     //climate.climate_calculation_PPFD(cs.LATITUDE, stn, cs.ATMOSPHERIC_TRANSMITTANCE, DOY_main, start, end, interval, ps, cs);
+    vector<std::unique_ptr<Triangle>> triangles;
+    for(int i = 0; i < scene_triangles.size(); i++)
+    {
+        //triangles.get(scene_triangles[i]);
+    }
+    //std::unique_ptr<Acceleration> bbox_accel(new BBoxAcceleration(scene_triangles));
     
     vector<double> area_total;
     vector<double> PPFD_totals;
@@ -836,6 +845,10 @@ int main(int argc, char *argv[])
     
     int testing_timestep = 0;
     double individual_ppfd = 0;
+    
+
+    
+    std::unique_ptr<Acceleration> accel_bbox(new BBoxAcceleration(scene_triangles));
 
     //RETURN COLOR PER PIXEL
     for(int timestep = 0; timestep < num; timestep++)
@@ -979,18 +992,25 @@ int main(int argc, char *argv[])
                         
                         //LOOP THROUGH OBJECTS IN SCENE, FIND INTERSECTION WITH CAMERA RAY, PUSH VALUE INTO INTERSECTIONS ARRAY
                         //cout << "current_pixel: " << current_pixel << endl;
-                        for(int index = 0; index < scene_triangles.size(); index++)
-                        {
+                        //for(int index = 0; index < scene_triangles.size(); index++)
+                        //{
+                            //1. WITH ORIGINAL BBOX
                             //intersections.push_back(scene_triangles.at(index)->findIntersection(camera_ray));
-                            intersections.push_back(scene_triangles.at(index)->intersect(camera_ray, tNear));
-                            debug("intersections: %d", intersections[index]);
-                            //cout << "intersections[" << current_pixel << "]: " << intersections[index] << endl;
-                            if(intersections[index] > -1)
+                            //2. WITH MORE EFFICIENT TRIANGLE INTERSECTION METHOD
+                            //intersections.push_back(scene_triangles.at(index)->intersect(camera_ray, tNear, scene_triangles.at(index), index));
+                            //intersections.push_back(scene_triangles.at(index)->intersect(camera_ray, tNear));
+                            intersections.push_back(accel_bbox->intersect(camera_ray, tNear, scene_triangles));
+                        //intersections.push_back(scene_triangles.at(index)->intersect(camera_ray, tNear));
+                            //3.
+                            
+
+                            /*if(intersections[index] > -1)
                             {
                                 test_for_greater_than_minus_1++;
-                            }
-                        }
+                            }*/
+                        //}
                         
+                        //cout << "intersections.size(): " << intersections.size() << endl;
                         int index_of_closest_shape = closestShapeIndex(intersections);
                         debug("index_of_closest_shape: %d", index_of_closest_shape);
                         

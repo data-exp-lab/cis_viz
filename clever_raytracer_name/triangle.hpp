@@ -24,7 +24,7 @@ public:
     Vect B;
     Vect C;
     
-    //BBox bbox;
+    BBox bbox;
     
     const float kEpsilon = 1e-8;
     
@@ -43,6 +43,7 @@ public:
     Color color;
     
     vector<Triangle*> triangles;
+    Triangle* test_triangle;
     
     vector<double> LEAFT;
     //GS: STOMATAL CONDUCTANCE
@@ -301,9 +302,11 @@ public:
     }
   
     //BASED ON MOLLER-TRUMBOR METHOD
+    //https://cadxfem.org/inf/Fast%20MinimumStorage%20RayTriangle%20Intersection.pdf
     //FIX: MAKE REFERENCES TO INFO SO NOT PASSING THINGS AROUND
     bool rayTriangleIntersect(Vect origin, Vect direction, Vect v0, Vect v1, Vect v2, float &t, float& u, float &v)
     {
+        cout << "inside rayTriangleIntersect" << endl;
         Vect v0v1 = v1 - v0;
         Vect v0v2 = v2 - v0;
         Vect p_vect = cross(direction, v0v2);
@@ -336,7 +339,34 @@ public:
         return true;
     }
     
-    bool intersect(Ray& ray, float &tNear)
+    //virtual bool intersect(Ray& ray, float &tNear, Triangle* test_triangles)
+    bool intersect(Ray& ray, float &tNear, vector<Triangle*> triangles)
+    {
+        cout << "inside triangle intersect function" << endl;
+        float t;
+        float u;
+        float v;
+        int intersected_triangle_index;
+        bool intersected = false;
+
+        //cout << "triangles.size(): " << triangles.size() << endl;
+        for(int i = 0; i < triangles.size(); ++i)
+        //for(const auto& triangle: triangles)
+        {
+            //if(rayTriangleIntersect(ray.getRayOrigin(), ray.getRayDirection(), triangles[i]->getPoint1(), triangles[i]->getPoint2(), triangles[i]->getPoint3(), t, u, v) && t < tNear)
+            if(rayTriangleIntersect(ray.getRayOrigin(), ray.getRayDirection(), triangles[i]->getPoint1(), triangles[i]->getPoint2(), triangles[i]->getPoint3(), t, u, v) && t < tNear)
+            {
+                tNear = t;
+                intersected_triangle_index = i;
+                //intersected_triangle_index = index;
+                intersected = true;
+            }
+        }
+        
+        return intersected;
+    }
+    
+    /*virtual bool intersect(Ray& ray, float &tNear)
     {
         float t;
         float u;
@@ -344,18 +374,21 @@ public:
         int intersected_triangle_index;
         bool intersected = false;
         
+        //cout << "triangles.size(): " << triangles.size() << endl;
         for(int i = 0; i < triangles.size(); ++i)
         {
-            if(rayTriangleIntersect(ray.getRayOrigin(), ray.getRayDirection(), triangles[i]->getPoint1(), triangles[i]->getPoint2(), triangles[i]->getPoint3(), t, u, v) && t < tNear)
+        if(rayTriangleIntersect(ray.getRayOrigin(), ray.getRayDirection(), triangles[i]->getPoint1(), triangles[i]->getPoint2(), triangles[i]->getPoint3(), t, u, v) && t < tNear)
+        //if(rayTriangleIntersect(ray.getRayOrigin(), ray.getRayDirection(), test_triangles->getPoint1(), test_triangles->getPoint2(), test_triangles->getPoint3(), t, u, v) && t < tNear)
             {
                 tNear = t;
                 intersected_triangle_index = i;
+                //intersected_triangle_index = index;
                 intersected = true;
             }
         }
         
         return intersected;
-    }
+    }*/
     
     
 };
