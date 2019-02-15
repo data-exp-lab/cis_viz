@@ -992,23 +992,20 @@ int main(int argc, char *argv[])
                         
                         //LOOP THROUGH OBJECTS IN SCENE, FIND INTERSECTION WITH CAMERA RAY, PUSH VALUE INTO INTERSECTIONS ARRAY
                         //cout << "current_pixel: " << current_pixel << endl;
-                        //for(int index = 0; index < scene_triangles.size(); index++)
-                        //{
+                        for(int index = 0; index < scene_triangles.size(); index++)
+                        {
                             //1. WITH ORIGINAL BBOX
-                            //intersections.push_back(scene_triangles.at(index)->findIntersection(camera_ray));
+                            intersections.push_back(scene_triangles.at(index)->findIntersection(camera_ray));
                             //2. WITH MORE EFFICIENT TRIANGLE INTERSECTION METHOD
-                            //intersections.push_back(scene_triangles.at(index)->intersect(camera_ray, tNear, scene_triangles.at(index), index));
-                            //intersections.push_back(scene_triangles.at(index)->intersect(camera_ray, tNear));
-                            intersections.push_back(accel_bbox->intersect(camera_ray, tNear, scene_triangles));
-                        //intersections.push_back(scene_triangles.at(index)->intersect(camera_ray, tNear));
-                            //3.
+                            //intersections.push_back(accel_bbox->intersect(camera_ray, tNear, scene_triangles));
+                            //intersections.push_back(scene_triangles[index]->intersect(camera_ray, tNear);
                             
 
                             /*if(intersections[index] > -1)
                             {
                                 test_for_greater_than_minus_1++;
                             }*/
-                        //}
+                        }
                         
                         //cout << "intersections.size(): " << intersections.size() << endl;
                         int index_of_closest_shape = closestShapeIndex(intersections);

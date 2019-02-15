@@ -33,8 +33,7 @@ public:
         for(const auto& triangle: triangles)
         {
             BBox tri_bbox = triangle->getBoundingBox();
-            //cout << "inside intersect for loop in bbox_accel" << endl;
-            //cout << "triangles[" << i << "]: " << endl;
+
             //TEST IF RAY INTERSECTS THE BOX
             //if(triangles[i]->bbox.intersectBBox(ray, triangles[i]->getBoundingBox()))
             //if(triangle->bbox.intersectBBox(ray, triangle->getBoundingBox()))

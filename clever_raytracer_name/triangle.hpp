@@ -315,6 +315,7 @@ public:
         //IF CLOSE TO 0, RAY AND TRIANGLE ARE PARALLEL
         if(fabs(determinant) < kEpsilon)
         {
+            cout << "fabs(determinant) < kEpsilon" << endl;
             return false;
         }
         
@@ -324,6 +325,7 @@ public:
         u = dot(t_vect, p_vect) * inv_determinant;
         if(u < 0 || u > 1)
         {
+            cout << "u < 0 || u > 1" << endl;
             return false;
         }
         
@@ -331,11 +333,13 @@ public:
         v = dot(direction, q_vect) * inv_determinant;
         if(v < 0 || u + v > 1)
         {
+            cout << "v < 0 || u + v > 1" << endl;
             return false;
         }
         
         t = dot(v0v2, q_vect) * inv_determinant;
         
+        cout << "RETURNED TRUE IN RAYTRIANGLEINTERSECT" << endl;
         return true;
     }
     
@@ -353,7 +357,7 @@ public:
         for(int i = 0; i < triangles.size(); ++i)
         //for(const auto& triangle: triangles)
         {
-            //if(rayTriangleIntersect(ray.getRayOrigin(), ray.getRayDirection(), triangles[i]->getPoint1(), triangles[i]->getPoint2(), triangles[i]->getPoint3(), t, u, v) && t < tNear)
+
             if(rayTriangleIntersect(ray.getRayOrigin(), ray.getRayDirection(), triangles[i]->getPoint1(), triangles[i]->getPoint2(), triangles[i]->getPoint3(), t, u, v) && t < tNear)
             {
                 tNear = t;
